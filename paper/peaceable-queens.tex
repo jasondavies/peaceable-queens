@@ -357,9 +357,10 @@ of Lemmas~\ref{lem:label}--\ref{lem:sym} and both programs adversarially. It wro
 brute-force and CP-SAT checks above. It found no error affecting the results. Its minor corrections (a
 misstated number of fixed lines for the $n=13$ SAT cubes in an earlier draft, Corollary~\ref{cor:sound}
 as the precise statement of what the pruning needs, and the Burnside test of completeness) are
-incorporated. An external AI review (ChatGPT Pro) of the code, which also reran the search for $n=16$
-and recomputed the Burnside counts for $n\le20$, found eight defects, now corrected, none of which
-affected the claimed values. The resumable drivers trusted logged results in a reused directory whenever
+incorporated. Two rounds of external AI review (ChatGPT Pro) of the code, which also reran the search for
+$n=16$, recomputed the Burnside counts for $n\le20$ and for the torus runs, and recomputed the largest
+LP certificates for $n=20$, found thirteen defects, now corrected, none of which affected the claimed
+values. The resumable drivers trusted logged results in a reused directory whenever
 the cube list matched, even for a different $T$; every run reported here used a fresh directory for its
 $(n,T)$, and the drivers now bind each directory to a manifest of all parameters and refuse a mismatch.
 The torus program shifted signed integers beyond their width while building symmetry representatives
@@ -368,7 +369,12 @@ counters. The verification script ignored a failure of the leaf sampler and acce
 names; the completion log of the A260680(16) run was missing from the repository; the pinned
 \texttt{drat-trim} did not compile under GCC~14; the LP above was stated with $s\in[0,1]$; and the
 solvers accepted out-of-range arguments (a huge $Q$ overflowed, and an empty part of a partition reported
-infeasibility). Each correction has a regression test in \texttt{scripts/verify.py}.
+infeasibility). The second round found that two drivers starting at the same moment in one directory
+could publish each other's manifest (creation is now locked and atomic), that $K=0$ produced an empty
+list of cubes which a driver reported as infeasible (now rejected, and no driver reports a verdict for an
+empty work list), that the cube-range argument accepted trailing characters, and that the torus checks
+did not require each part exactly once; it also asked for a stale sentence in the README to be updated. Auditing for the same patterns, we also made
+the second implementation reject a slice that cannot contain any row mask. Each correction has a regression test in \texttt{scripts/verify.py}.
 
 \paragraph{What has to be trusted.} The upper bounds rest on Lemmas~\ref{lem:label}--\ref{lem:sym} and
 on the first program. Table~\ref{tab:cover} lists what checked each value. For $n\le18$ a second,
@@ -445,7 +451,8 @@ The computational claims are reproduced by \texttt{scripts/verify.py}. At the ti
 mathematics and the code have been checked only by AI systems and by computer verification. These checks
 include an adversarial review of the proofs and of both search programs by an independent AI referee,
 who also wrote the Burnside, LP-certificate, brute-force and CP-SAT checks of Section~\ref{sec:ver}, and an
-external AI review of the code (ChatGPT Pro), whose findings are corrected (Section~\ref{sec:ver}). No
+two rounds of external AI review of the code (ChatGPT Pro), whose findings are corrected
+(Section~\ref{sec:ver}). No
 independent human expert has reviewed the work. The human author has not read this manuscript or checked
 its arguments. The author takes responsibility for the accuracy of this disclosure.
 

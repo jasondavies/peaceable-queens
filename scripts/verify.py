@@ -338,12 +338,78 @@ def step_robust(fast=True):
     rc, o = drv(CODE / 'run_pqv_parts.py', 10, 15, 3, td / 'p', 0, 1); rcb, ob = drv(CODE / 'run_pqv_parts.py', 10, 14, 3, td / 'p', 2)
     rcc, oc = drv(CODE / 'run_pqv_parts.py', 10, 15, 3, td / 'p', 3)
     s.gate(rc == 0 and rcb != 0 and 'fields differ: T' in ob and rcc != 0, 'run_pqv_parts.py refuses another T and slice ids >= m')
+    # 1b. second review: K = 0 (no cubes) and an empty work list must never become INFEASIBLE
+    rc, o = drv(CODE / 'run_cubes.py', 4, 2, 0, 2, td / 'k0')
+    s.gate(rc != 0 and 'VERDICT' not in o, 'run_cubes.py 4 2 0 (K = 0) is refused, no verdict (pq2 4 2 is FEASIBLE)')
+    rc, o = drv(CODE / 'run_cubes.py', 8, 9, 0, 2, td / 'k0b')
+    s.gate(rc != 0 and 'VERDICT' not in o, 'run_cubes.py 8 9 0 (K = 0) is refused, no verdict')
+    fake = td / 'fake_list.sh'; fake.write_text('#!/bin/sh\necho "cubes 0"\n'); fake.chmod(0o755)
+    for drvname, var in (('run_cubes.py', 'PQ_PQ2_BIN'), ('run_enum.py', 'PQ_PQENUM_BIN')):
+        r = subprocess.run([PY, str(CODE / drvname), '8', '9', '1', '2', str(td / ('empty_' + drvname))], capture_output=True, text=True,
+                           env=dict(ENV, **{var: str(fake)}))
+        s.gate(r.returncode != 0 and 'empty work list' in r.stderr and 'VERDICT' not in r.stdout,
+               '%s refuses an empty cube list (fake solver printing "cubes 0")' % drvname)
+    # 1c. second review: manifest creation races, forced by pausing a process inside bind()
+    def binder(outdir, T, pause=None, exclusive=False):
+        code_ = ('import sys; sys.path.insert(0, %r); import runmanifest as rm; '
+                 'rm.bind(%r, {"program": "test", "n": 8, "T": %d}, %r, %r, exclusive=%r); print("BOUND", %d)'
+                 % (str(CODE), str(outdir), T, str(PQ2), str(outdir / 'results.log'), exclusive, T))
+        env = dict(ENV, PQ_MANIFEST_PAUSE=str(pause)) if pause else ENV
+        return subprocess.Popen([PY, '-c', code_], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
+    def wait_reached(go, k):
+        t0 = time.time()
+        while len(list(go.parent.glob(go.name + '.reached.*'))) < k and time.time() - t0 < 30:
+            time.sleep(0.02)
+    for label, T2, want_b in (('conflicting', 9, False), ('identical', 10, True)):
+        d = td / ('race_' + label); d.mkdir(); go = td / ('go_' + label)
+        A = binder(d, 10, pause=go); wait_reached(go, 1)          # A paused after writing its temporary manifest
+        B = binder(d, T2)                                         # B starts while A holds the manifest lock
+        time.sleep(0.5); b_waiting = B.poll() is None             # ... so B must be waiting, not overwriting
+        go.write_text('go')
+        oa, ea = A.communicate(timeout=60); ob, eb = B.communicate(timeout=60)
+        man = json.loads((d / 'run_manifest.json').read_text())
+        ok = b_waiting and A.returncode == 0 and man['T'] == 10 and ((B.returncode == 0) == want_b)
+        if not want_b: ok = ok and 'fields differ: T' in eb
+        s.gate(ok, 'forced interleaving, %s configs: A (T=10) paused inside bind, B (T=%d) waits; A publishes T=10, B %s'
+               % (label, T2, 'succeeds' if want_b else 'refuses'))
+        if not want_b:
+            C = binder(d, 9); oc, ec = C.communicate(timeout=60)
+            s.gate(C.returncode != 0 and 'fields differ: T' in ec, 'a later ordinary T=9 bind of that directory is refused')
+    d = td / 'race_many'; d.mkdir(); bad = 0
+    for rnd in range(20):
+        dd = d / str(rnd); dd.mkdir()
+        P = [binder(dd, 10) for _ in range(4)]
+        outs = [p.communicate(timeout=60) for p in P]
+        bad += sum(p.returncode != 0 or 'BOUND 10' not in o for p, (o, e) in zip(P, outs))
+        bad += len(list(dd.glob('.manifest-tmp.*'))) != 0 or json.loads((dd / 'run_manifest.json').read_text())['T'] != 10
+    s.gate(bad == 0, '20 rounds of 4 simultaneous identical binds: all succeed, one manifest, no temporary files left')
+    d = td / 'race_mixed'; d.mkdir(); bad = 0
+    for rnd in range(20):
+        dd = d / str(rnd); dd.mkdir()
+        P = [binder(dd, 9 + (i % 2)) for i in range(4)]
+        outs = [p.communicate(timeout=60) for p in P]
+        T0 = json.loads((dd / 'run_manifest.json').read_text())['T']
+        bad += any((p.returncode == 0) != ((9 + (i % 2)) == T0) for i, p in enumerate(P))
+    s.gate(bad == 0, '20 rounds of 4 simultaneous binds with T=9 and T=10 mixed: exactly the processes matching the published manifest succeed')
+    # a second single-writer driver in the same directory is refused while the first runs
+    d = td / 'two_drivers'; go = td / 'go_two'
+    A = subprocess.Popen([PY, str(CODE / 'run_cubes.py'), '8', '10', '1', '2', str(d)], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         text=True, env=dict(ENV, PQ_MANIFEST_PAUSE=str(go)))
+    wait_reached(go, 1)
+    rcb, ob = drv(CODE / 'run_cubes.py', 8, 9, 1, 2, d)
+    go.write_text('go'); oa, ea = A.communicate(timeout=120)
+    s.gate(rcb != 0 and 'another driver is running' in ob and A.returncode == 0 and 'VERDICT: INFEASIBLE' in oa
+           and json.loads((d / 'run_manifest.json').read_text())['T'] == 10,
+           'a second run_cubes.py (T=9) in a directory in use (T=10) is refused; the first finishes with its own T')
     # 2. strict solver arguments (each must exit nonzero instead of reporting a verdict)
     bad = {PQ2: ['4 2 -K 1 -cube 0:1 -Q 1500000000', '4 2 -m 0', '4 2 -m 2 -j 2', '4 2 -K 1 -cube 99999:100000',
-                 '4 2 -K 1 -cube 3:2', '4 2 -K 9', '30 2', '4 x', '4 2 -K', '4 2 -cube 0:1'],
-           PQENUM: ['4 2 -K 1 -cube 0:1 -Q 1500000000', '4 2 -m 2 -j 2', '4 2 -K 1 -cube 99999:100000'],
-           PQT: ['20 52 -m 0', '20 52 -m 2 -j 2', '40 5', '12 x', '12 18 -m', '12 18 -x 1'],
-           PQV: ['4 2 0', '4 2 1 --part 2 2', '4 2 1 --part 0 0', '4 2 1 --bogus', '40 2', '4 -1', '4 2 1 --part 1']}
+                 '4 2 -K 1 -cube 3:2', '4 2 -K 9', '30 2', '4 x', '4 2 -K', '4 2 -cube 0:1', '4 2 -K 0 -list',
+                 '4 2 -K 1 -cube 0:1junk', '4 2 -K 1 -cube 0:1:2', '4 2 -K 1x', '4 2 -Q 256x', '4 2 -m 2x', '4 2x'],
+           PQENUM: ['4 2 -K 1 -cube 0:1 -Q 1500000000', '4 2 -m 2 -j 2', '4 2 -K 1 -cube 99999:100000', '4 2 -K 0 -list',
+                    '4 2 -K 1 -cube 0:1junk'],
+           PQT: ['20 52 -m 0', '20 52 -m 2 -j 2', '40 5', '12 x', '12 18 -m', '12 18 -x 1', '12 18 -m 3x', '12 18 -m 3 -j 1x'],
+           PQV: ['4 2 0', '4 2 1 --part 2 2', '4 2 1 --part 0 0', '4 2 1 --bogus', '40 2', '4 -1', '4 2 1 --part 1',
+                 '4 2 1 --part 17 199', '4 2 1x']}
     for prog, cases in bad.items():
         for c in cases:
             rc, o, e = sh([prog] + c.split(), nice=False)
@@ -581,21 +647,30 @@ def step_side(fast=True):
     for l in tv.splitlines():
         m = re.match(r'^(\S+) part (\d+) (\d+) torus n=(\d+) T=(\d+) (FEASIBLE|INFEASIBLE) reps=\d+ pairs=(\d+) leaves=(\d+) searched=(\d+) nodes2=(\d+) flows=(\d+)', l)
         if m: parts[m.group(1)].append(m.groups())
+    def rows_ok(tag, complete):
+        P = parts.get(tag, [])
+        m = re.match(r'n(\d+)_T(\d+)$', tag)
+        if not P or not m: return False
+        Ms = {x[2] for x in P}; ids = [int(x[1]) for x in P]
+        ok = len(Ms) == 1 and all((x[3], x[4]) == m.groups() for x in P) and len(set(ids)) == len(ids) and all(0 <= j < int(P[0][2]) for j in ids)
+        return ok and (not complete or sorted(ids) == list(range(int(P[0][2]))))
+    s.gate(all(rows_ok(t, all(x[5] == 'INFEASIBLE' for x in parts[t])) for t in parts),
+           'torus records: every row has the n and T of its run, one M per run, distinct part ids < M; every infeasible run has parts 0..M-1 exactly once')
     tkn = [int(x) for x in CLAIMS['a279405_known'].split(',')]
     vok = True
     for n in (4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18):
         a_ = tkn[n - 1]
         f, g = parts.get('n%d_T%d' % (n, a_), []), parts.get('n%d_T%d' % (n, a_ + 1), [])
-        vok &= any(x[5] == 'FEASIBLE' for x in f) and len(g) == int(g[0][2]) and all(x[5] == 'INFEASIBLE' for x in g)
+        vok &= any(x[5] == 'FEASIBLE' for x in f) and rows_ok('n%d_T%d' % (n, a_ + 1), True) and all(x[5] == 'INFEASIBLE' for x in g)
     s.gate(vok, 'corrected torus program: feasible at a(n) and infeasible at a(n)+1 for n = 4..14, 16, 18')
     p52 = parts['n20_T52']; tot = lambda P, k: sum(int(x[k]) for x in P)
     orig = re.search(r'pairs=(\d+) leaves=(\d+) searched=(\d+) nodes2=(\d+) flows=(\d+)', (DATA / 'side' / 'pqt_n20_T52.out').read_text()).groups()
-    s.gate(len(p52) == 60 and all(x[5] == 'INFEASIBLE' for x in p52) and tuple(str(tot(p52, k)) for k in (6, 7, 8, 9, 10)) == orig
+    s.gate(len(p52) == 60 and rows_ok('n20_T52', True) and p52[0][2] == '60' and all(x[5] == 'INFEASIBLE' for x in p52) and tuple(str(tot(p52, k)) for k in (6, 7, 8, 9, 10)) == orig
            and orig[0] == CLAIMS['TorusPairs'] and orig[2] == CLAIMS['TorusSearched'],
            'corrected torus program, n=20, T=52: all 60 parts infeasible, pairs/leaves/searched/nodes2/flows identical to the original run')
     s.gate(any(x[5] == 'FEASIBLE' for x in parts['n20_T51']), 'corrected torus program, n=20, T=51: feasible')
     p65 = parts['n22_T%s' % CLAIMS['TorusTwentyTwoT']]
-    s.gate(len(p65) == 60 and all(x[5] == 'INFEASIBLE' for x in p65) and str(tot(p65, 6)) == CLAIMS['TorusPairsTwentyTwo']
+    s.gate(len(p65) == 60 and rows_ok('n22_T%s' % CLAIMS['TorusTwentyTwoT'], True) and p65[0][2] == '60' and all(x[5] == 'INFEASIBLE' for x in p65) and str(tot(p65, 6)) == CLAIMS['TorusPairsTwentyTwo']
            and str(tot(p65, 8)) == CLAIMS['TorusSearchedTwentyTwo'],
            'torus n=22, T=%s: all 60 parts infeasible (%s orbits, %s searched)' % (CLAIMS['TorusTwentyTwoT'], CLAIMS['TorusPairsTwentyTwo'], CLAIMS['TorusSearchedTwentyTwo']))
     s.gate(any(x[5] == 'FEASIBLE' for x in parts['n22_T%s' % CLAIMS['TorusTwentyTwo']]), 'torus n=22, T=%s: feasible' % CLAIMS['TorusTwentyTwo'])
@@ -750,6 +825,9 @@ def step_tamper():
         dst = copy(); f = dst / 'data' / 'pqv' / 'pqv_n18_T48_parts.log'
         t = f.read_text().splitlines(); del t[100]; f.write_text('\n'.join(t) + '\n')
         cases.append(('n=18 verifier: one slice deleted', dst, 'logs'))
+        dst = copy(); f = dst / 'data' / 'side' / 'torus_fixed' / 'summary.txt'
+        f.write_text(f.read_text().replace('n22_T65 part 7 60 ', 'n22_T65 part 8 60 ', 1))
+        cases.append(('torus n=22: part 7 relabelled as a second part 8', dst, 'side'))
         for name, dst, only in cases:
             rc = run(dst, only)
             s.note('%s -> exit %d' % (name, rc))

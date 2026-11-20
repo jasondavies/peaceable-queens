@@ -103,9 +103,10 @@ Lemma 4.1.
 **By exact computation:** the upper bounds a(n) ≤ ⌊7n²/48⌋ for n = 16, …, 20; the side results.
 
 **Main residual risks:**
-- the correctness of `code/pq2.c`. For n ≤ 17 a separately written program (different canonical form, network, max-flow
-  algorithm and language) repeats the whole search with identical orbit counts. For n = 18 it repeats part of the
-  search, and for n = 19 and 20 it was not run;
+- the correctness of `code/pq2.c` for n = 19 and 20. For every n ≤ 18 a separately written program (different
+  canonical form, network, max-flow algorithm and language) repeats the whole search with identical orbit counts
+  (for n = 18 in 199 slices). For n = 19 and 20 it was not run (estimated about 290 and 1,400 CPU hours); there the
+  Burnside counts, replays of cloud-computed cubes and the LP certificates are the cross-checks;
 - the two programs share the method (Lemmas 2.1–4.1). The SAT/DRAT and exact LP checks avoid Lemmas 3.1–4.1, and the
   definition-level checks avoid all of them, but these checks cover only samples or small n;
 - the side results (A260680 n = 11…16, torus n = 20 and 22) have a single implementation.

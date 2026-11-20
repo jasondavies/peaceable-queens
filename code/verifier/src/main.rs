@@ -207,7 +207,10 @@ fn main() {
     let mut sample: Option<(u64, u64)> = None;
     // --part j m : only the rows-masks r with r % m == j (a slice of the full search; the slices j = 0..m-1 partition it)
     let part: Option<(u32, u32)> = match args.iter().position(|a| a == "--part") { Some(i) => Some((num(&args, i + 1, "slice index"), num(&args, i + 2, "slice modulus"))), None => None };
-    if let Some((pj, pm)) = part { if pm == 0 || pj >= pm { fail("--part j m needs m >= 1 and 0 <= j < m"); } }
+    if let Some((pj, pm)) = part {
+        if pm == 0 || pj >= pm { fail("--part j m needs m >= 1 and 0 <= j < m"); }
+        if (pj as u64) >= (1u64 << n) { fail("--part: slice j contains no row mask r < 2^n (empty slice)"); }
+    }
     let minprod: i64 = match args.iter().position(|a| a == "--minprod") { Some(i) => num(&args, i + 1, "minprod"), None => 0 };
     if let Some(i) = args.iter().position(|a| a == "--sample") { sample = Some((num(&args, i + 1, "sample size"), num(&args, i + 2, "sample seed"))); }
     let inst = Arc::new(Inst { n, t });

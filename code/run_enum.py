@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import runmanifest as rm
-PQE = os.path.join(HERE, '..', 'build', 'pqenum')
+PQE = os.environ.get('PQ_PQENUM_BIN') or os.path.join(HERE, '..', 'build', 'pqenum')   # override only for tests
 SRC = os.path.join(HERE, 'pqenum.c')
 FIELDS = ['n1', 'leaves', 'searched', 'n2', 'flows', 'time']
 if len(sys.argv) < 6: sys.exit(__doc__)
@@ -22,6 +22,10 @@ r = subprocess.run([PQE, n, a, '-K', K, '-list'], capture_output=True, text=True
 if r.returncode != 0: rm.die('pqenum -list failed: ' + r.stderr.strip())
 lst = r.stdout
 cubes = {int(l.split()[1]): l.split()[2] for l in lst.splitlines() if l.startswith('cube ')}
+ids = [int(l.split()[1]) for l in lst.splitlines() if l.startswith('cube ')]
+if ids != list(range(len(ids))) or [l for l in lst.splitlines() if l.startswith('cubes ')] != ['cubes %d' % len(ids)]:
+    rm.die('malformed cube list from pqenum -list')
+rm.require_work(len(cubes), 'pqenum -list gave no cubes')
 logp, bp = os.path.join(out, 'cubes.log'), os.path.join(out, 'boards.txt')
 rm.bind(out, {'program': 'pqenum', 'n': int(n), 'a': int(a), 'K': int(K), 'pqenum_source_sha256': rm.sha_file(SRC),
               'cube_list_sha256': rm.sha_text(lst), 'cubes': len(cubes)}, PQE, logp, adopt='--adopt' in sys.argv)

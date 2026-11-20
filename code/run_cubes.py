@@ -20,7 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import runmanifest as rm
 
-PQ2 = os.path.join(HERE, '..', 'build', 'pq2')
+PQ2 = os.environ.get('PQ_PQ2_BIN') or os.path.join(HERE, '..', 'build', 'pq2')   # override only for tests
 SRC = os.path.join(HERE, 'pq2.c')
 FIELDS = ['n1', 'leaves', 'searched', 'n2', 'flows', 'time']
 
@@ -50,6 +50,11 @@ def main():
     if r.returncode != 0: rm.die('pq2 -list failed: ' + r.stderr.strip())
     lines = [l for l in r.stdout.splitlines() if l.startswith('cube ')]
     cubes = {int(l.split()[1]): l.split()[2] for l in lines}
+    # the list must be well formed: ids 0..N-1 in order and a final 'cubes N' line with the same N
+    tail = [l for l in r.stdout.splitlines() if l.startswith('cubes ')]
+    if [int(l.split()[1]) for l in lines] != list(range(len(lines))) or tail != ['cubes %d' % len(lines)]:
+        rm.die('malformed cube list from pq2 -list')
+    rm.require_work(len(cubes), 'pq2 -list gave no cubes')
     logp = os.path.join(out, 'cubes.log')
     rm.bind(out, {'program': 'pq2', 'n': n, 'T': T, 'K': K, 'pq2_source_sha256': rm.sha_file(SRC),
                   'cube_list_sha256': rm.sha_text(r.stdout), 'cubes': len(cubes)}, PQ2, logp, adopt='--adopt' in a)

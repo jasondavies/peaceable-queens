@@ -19,9 +19,10 @@ if len(args) < 4: sys.exit(__doc__)
 n, T, m, out = args[0], args[1], int(args[2]), args[3]
 js = [int(x) for x in args[4:]]
 if m < 1 or any(not 0 <= j < m for j in js): rm.die('need m >= 1 and 0 <= j < m')
+rm.require_work(len(js), 'no slices given')
 logp = os.path.join(out, 'parts.log')
 rm.bind(out, {'program': 'pqv', 'n': int(n), 'T': int(T), 'm': m, 'pqv_source_sha256': rm.sha_file(SRC)}, PQV, logp,
-        adopt='--adopt' in sys.argv)
+        adopt='--adopt' in sys.argv, exclusive=False)
 
 
 def check(p):

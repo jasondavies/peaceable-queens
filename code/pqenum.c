@@ -268,10 +268,10 @@ int main(int argc,char**argv){
   if(argc<3){fprintf(stderr,"usage: n T [options]\n");return 1;}
   n=(int)argInt(argv[1],1,MAXN,"n"); T=(int)argInt(argv[2],0,MAXN*MAXN,"T"); int K=-1, cubeGiven=0;
   for(int i=3;i<argc;i++){
-    if(!strcmp(argv[i],"-K")) K=(int)argInt(nextArg(&i,argc,argv),0,MAXN,"K");
+    if(!strcmp(argv[i],"-K")) K=(int)argInt(nextArg(&i,argc,argv),1,MAXN,"K");   // K=0 would emit no cubes
     else if(!strcmp(argv[i],"-list")) listMode=1;
     else if(!strcmp(argv[i],"-cube")){ const char*v=nextArg(&i,argc,argv); char a[32],b[32];
-      if(strlen(v)>60||sscanf(v,"%31[0-9]:%31[0-9]",a,b)!=2){fprintf(stderr,"invalid -cube '%s' (want lo:hi)\n",v); exit(1);}
+      int used=-1; if(strlen(v)>60||sscanf(v,"%31[0-9]:%31[0-9]%n",a,b,&used)!=2||used<0||v[used]){fprintf(stderr,"invalid -cube '%s' (want lo:hi)\n",v); exit(1);}
       cubeLo=argInt(a,0,(1LL<<40),"cube lo"); cubeHi=argInt(b,1,(1LL<<40),"cube hi");
       if(cubeLo>=cubeHi){fprintf(stderr,"invalid -cube: lo must be < hi\n"); exit(1);} cubeGiven=1; }
     else if(!strcmp(argv[i],"-m")) modM=(int)argInt(nextArg(&i,argc,argv),1,1<<20,"-m");
