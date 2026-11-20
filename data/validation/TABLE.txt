@@ -1,0 +1,36 @@
+columns: pq2 | pqv (Rust) | pq2 -nosym | pqv --nobound | SAT queens enc. | SAT lines enc.
+n= 1 T= 1 a(n)= 0 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | UNSAT+DRUP   | UNSAT+DRUP   | pq2 wall 0.0s | 
+n= 2 T= 1 a(n)= 0 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | UNSAT+DRUP   | UNSAT+DRUP   | pq2 wall 0.0s | 
+n= 3 T= 1 a(n)= 1 | FEASIBLE     | FEASIBLE     | FEASIBLE     | FEASIBLE     | SAT          | SAT          | pq2 wall 0.0s | n=3 white=1 black=2 min=1 attacks=0 OK
+n= 3 T= 2 a(n)= 1 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | UNSAT+DRUP   | UNSAT+DRUP   | pq2 wall 0.0s | 
+n= 4 T= 2 a(n)= 2 | FEASIBLE     | FEASIBLE     | FEASIBLE     | FEASIBLE     | SAT          | SAT          | pq2 wall 0.0s | n=4 white=2 black=2 min=2 attacks=0 OK
+n= 4 T= 3 a(n)= 2 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | UNSAT+DRUP   | UNSAT+DRUP   | pq2 wall 0.0s | 
+n= 5 T= 4 a(n)= 4 | FEASIBLE     | FEASIBLE     | FEASIBLE     | FEASIBLE     | SAT          | SAT          | pq2 wall 0.0s | n=5 white=4 black=4 min=4 attacks=0 OK
+n= 5 T= 5 a(n)= 4 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | UNSAT+DRUP   | UNSAT+DRUP   | pq2 wall 0.0s | 
+n= 6 T= 5 a(n)= 5 | FEASIBLE     | FEASIBLE     | FEASIBLE     | FEASIBLE     | SAT          | SAT          | pq2 wall 0.0s | n=6 white=5 black=5 min=5 attacks=0 OK
+n= 6 T= 6 a(n)= 5 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | UNSAT+DRUP   | UNSAT+DRUP   | pq2 wall 0.0s | 
+n= 7 T= 7 a(n)= 7 | FEASIBLE     | FEASIBLE     | FEASIBLE     | FEASIBLE     | SAT          | SAT          | pq2 wall 0.0s | n=7 white=7 black=7 min=7 attacks=0 OK
+n= 7 T= 8 a(n)= 7 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | UNSAT+DRUP   | UNSAT+DRUP   | pq2 wall 0.0s | 
+n= 8 T= 9 a(n)= 9 | FEASIBLE     | FEASIBLE     | FEASIBLE     | FEASIBLE     | SAT          | SAT          | pq2 wall 0.0s | n=8 white=9 black=9 min=9 attacks=0 OK
+n= 8 T=10 a(n)= 9 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | UNSAT+DRUP   | UNSAT+DRUP   | pq2 wall 0.0s | 
+n= 9 T=12 a(n)=12 | FEASIBLE     | FEASIBLE     | FEASIBLE     | FEASIBLE     | -            | -            | pq2 wall 0.0s | n=9 white=12 black=12 min=12 attacks=0 OK
+n= 9 T=13 a(n)=12 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | -            | -            | pq2 wall 0.0s | 
+n=10 T=14 a(n)=14 | FEASIBLE     | FEASIBLE     | FEASIBLE     | FEASIBLE     | -            | -            | pq2 wall 0.1s | n=10 white=14 black=15 min=14 attacks=0 OK
+n=10 T=15 a(n)=14 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | -            | -            | pq2 wall 0.2s | 
+n=11 T=17 a(n)=17 | FEASIBLE     | FEASIBLE     | FEASIBLE     | FEASIBLE     | -            | -            | pq2 wall 0.0s | n=11 white=18 black=17 min=17 attacks=0 OK
+n=11 T=18 a(n)=17 | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | INFEASIBLE   | -            | -            | pq2 wall 0.9s | 
+n=12 T=21 a(n)=21 | FEASIBLE     | FEASIBLE     | -            | -            | -            | -            | pq2 wall 4.3s | n=12 white=21 black=21 min=21 attacks=0 OK
+n=12 T=22 a(n)=21 | INFEASIBLE   | INFEASIBLE   | -            | -            | -            | -            | pq2 wall 2.3s | 
+n=13 T=24 a(n)=24 | FEASIBLE     | FEASIBLE     | -            | -            | -            | -            | pq2 wall 0.1s | n=13 white=25 black=24 min=24 attacks=0 OK
+n=13 T=25 a(n)=24 | INFEASIBLE   | INFEASIBLE   | -            | -            | -            | -            | pq2 wall 13.1s | 
+n=14 T=28 a(n)=28 | FEASIBLE     | FEASIBLE     | -            | -            | -            | -            | pq2 wall 86.2s | n=14 white=28 black=28 min=28 attacks=0 OK
+n=14 T=29 a(n)=28 | INFEASIBLE   | INFEASIBLE   | -            | -            | -            | -            | pq2 wall 58.2s | 
+n=15 T=32 a(n)=32 | FEASIBLE     | FEASIBLE     | -            | -            | -            | -            | pq2 wall 41.6s | n=15 white=32 black=32 min=32 attacks=0 OK
+n=15 T=33 a(n)=32 | INFEASIBLE   | INFEASIBLE   | -            | -            | -            | -            | pq2 wall 303.3s | 
+selftest n=3 iters=3000 mismatches=0
+selftest n=4 iters=3000 mismatches=0
+selftest n=5 iters=3000 mismatches=0
+selftest n=6 iters=3000 mismatches=0
+selftest n=7 iters=3000 mismatches=0
+selftest n=8 iters=3000 mismatches=0
+ALL CONSISTENT WITH OEIS: True

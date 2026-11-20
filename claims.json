@@ -1,0 +1,259 @@
+{
+ "_comment": "Every number of the paper that a computation checks. scripts/verify.py compares recomputed values and the recorded logs (data/) with these values exactly; scripts/make_claims_tex.py writes paper/claims.tex from this file.",
+ "Date": "November 20, 2026",
+ "a_known": "0,0,1,2,4,5,7,9,12,14,17,21,24,28,32",
+ "aSixteen": "37",
+ "aSeventeen": "42",
+ "aEighteen": "47",
+ "aNineteen": "52",
+ "aTwenty": "58",
+ "ainley_1_30": "0,0,1,2,4,5,7,9,12,14,17,21,24,28,32,37,42,47,52,58,64,70,77,84,91,98,105,114,122,131",
+ "a260680_known": "1,1,1,10,3,35,19,71,18,380",
+ "a279405_known": "0,0,0,2,2,4,4,8,7,12,10,18,16,25,20,32,28,42",
+ "EnumEleven": "696",
+ "EnumTwelve": "4",
+ "EnumThirteen": "2155",
+ "EnumFourteen": "579",
+ "EnumFifteen": "2298",
+ "TorusTwenty": "51",
+ "TorusTwentyT": "52",
+ "TorusPairs": "163664896",
+ "TorusSearched": "4675",
+ "Cubes": "4708",
+ "sha_pq2c": "56beca6e60805d4a50446ac315bbeaedfa8b65980ce489550db5fd210d2dfa63",
+ "sha_pqv": "2f334ca40f0dd67e763fa672f8a11ee296ee42c585426f8ae883c58438964aee",
+ "SelftestTrials": "18000",
+ "SatSamples": "411",
+ "BruteN": "8",
+ "CpsatN": "7",
+ "LpUniform": "2000",
+ "LpBalanced": "2000",
+ "LpNbSixteen": "529",
+ "LpNbNineteen": "742",
+ "lp": {
+  "16": {
+   "board_checked": "529",
+   "max_bound_float": "37.5"
+  },
+  "17": {
+   "board_checked": "596",
+   "max_bound_float": "42.111111119389534"
+  },
+  "18": {
+   "board_checked": "667",
+   "max_bound_float": "47.5"
+  },
+  "19": {
+   "board_checked": "742",
+   "max_bound_float": "52.55555556807667"
+  }
+ },
+ "runs": {
+  "3": {
+   "a": "1",
+   "T": "2",
+   "leaves": "3",
+   "searched": "0",
+   "cpu_seconds": "0.00",
+   "time_tex": "$<0.01$\\,s"
+  },
+  "4": {
+   "a": "2",
+   "T": "3",
+   "leaves": "10",
+   "searched": "0",
+   "cpu_seconds": "0.00",
+   "time_tex": "$<0.01$\\,s"
+  },
+  "5": {
+   "a": "4",
+   "T": "5",
+   "leaves": "21",
+   "searched": "0",
+   "cpu_seconds": "0.00",
+   "time_tex": "$<0.01$\\,s"
+  },
+  "6": {
+   "a": "5",
+   "T": "6",
+   "leaves": "169",
+   "searched": "0",
+   "cpu_seconds": "0.00",
+   "time_tex": "$<0.01$\\,s"
+  },
+  "7": {
+   "a": "7",
+   "T": "8",
+   "leaves": "686",
+   "searched": "0",
+   "cpu_seconds": "0.00",
+   "time_tex": "$<0.01$\\,s"
+  },
+  "8": {
+   "a": "9",
+   "T": "10",
+   "leaves": "2450",
+   "searched": "0",
+   "cpu_seconds": "0.01",
+   "time_tex": "$0.01$\\,s"
+  },
+  "9": {
+   "a": "12",
+   "T": "13",
+   "leaves": "8526",
+   "searched": "0",
+   "cpu_seconds": "0.02",
+   "time_tex": "$0.02$\\,s"
+  },
+  "10": {
+   "a": "14",
+   "T": "15",
+   "leaves": "46481",
+   "searched": "0",
+   "cpu_seconds": "0.22",
+   "time_tex": "$0.22$\\,s"
+  },
+  "11": {
+   "a": "17",
+   "T": "18",
+   "leaves": "189337",
+   "searched": "0",
+   "cpu_seconds": "0.93",
+   "time_tex": "$0.93$\\,s"
+  },
+  "12": {
+   "a": "21",
+   "T": "22",
+   "leaves": "688447",
+   "searched": "0",
+   "cpu_seconds": "2.34",
+   "time_tex": "$2.34$\\,s"
+  },
+  "13": {
+   "a": "24",
+   "T": "25",
+   "leaves": "2994131",
+   "searched": "0",
+   "cpu_seconds": "13.04",
+   "time_tex": "$13.0$\\,s"
+  },
+  "14": {
+   "a": "28",
+   "T": "29",
+   "leaves": "12441976",
+   "searched": "0",
+   "cpu_seconds": "58.22",
+   "time_tex": "$58.2$\\,s"
+  },
+  "15": {
+   "a": "32",
+   "T": "33",
+   "leaves": "51084014",
+   "searched": "0",
+   "cpu_seconds": "303.07",
+   "time_tex": "$303$\\,s"
+  },
+  "16": {
+   "a": "37",
+   "T": "38",
+   "leaves": "204573866",
+   "flows": "296734582",
+   "searched": "0",
+   "cpu_seconds": "1456.789",
+   "time_tex": "$1457$\\,s"
+  },
+  "17": {
+   "a": "42",
+   "T": "43",
+   "leaves": "817258210",
+   "flows": "1173397010",
+   "searched": "0",
+   "cpu_seconds": "6489.191",
+   "time_tex": "$6489$\\,s"
+  },
+  "18": {
+   "a": "47",
+   "T": "48",
+   "leaves": "3562197100",
+   "flows": "5637793082",
+   "searched": "0",
+   "cpu_seconds": "34763.139",
+   "time_tex": "$9.7$\\,h"
+  },
+  "19": {
+   "a": "52",
+   "T": "53",
+   "leaves": "14324893730",
+   "flows": "23359307267",
+   "searched": "0",
+   "cpu_seconds": "181507.894",
+   "time_tex": "$50.4$\\,h"
+  },
+  "20": {
+   "a": "58",
+   "T": "59",
+   "leaves": "57257809825",
+   "flows": "94033985316",
+   "searched": "0",
+   "cpu_seconds": "798803.515",
+   "time_tex": "$221.9$\\,h"
+  }
+ },
+ "pqv_parts": {
+  "18": {
+   "m": "199",
+   "parts": [
+    "118",
+    "140",
+    "21",
+    "7",
+    "109",
+    "182",
+    "46",
+    "31",
+    "114",
+    "61",
+    "85",
+    "169",
+    "125",
+    "122",
+    "198",
+    "126",
+    "160",
+    "50",
+    "177",
+    "64",
+    "67",
+    "117",
+    "192",
+    "75",
+    "83",
+    "133",
+    "44",
+    "30",
+    "172",
+    "175",
+    "147",
+    "51",
+    "43",
+    "93"
+   ],
+   "leaves": "608745733"
+  }
+ },
+ "SatN": "8",
+ "NosymN": "11",
+ "SatUniform": "200",
+ "SatBalanced": "200",
+ "SatCubesTwelve": "8",
+ "SatCubesThirteen": "3",
+ "TorusMinutes": "33",
+ "WorkersMax": "8",
+ "EnumSixteen": "26",
+ "EnumLabSixteen": "416",
+ "EnumCubesSixteen": "65536",
+ "SatSixteenLeaves": "400",
+ "ReplayNineteen": "24",
+ "ReplayTwenty": "24",
+ "pages": "10"
+}

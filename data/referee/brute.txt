@@ -1,0 +1,14 @@
+$ python3 code/referee/brute.py 8 4   (49.5 s)
+n 1 a(n) = 0
+n 2 a(n) = 0
+n 3 a(n) = 1
+n 4 a(n) = 2
+n 5 a(n) = 4
+n 6 a(n) = 5
+n 7 a(n) = 7
+n 8 a(n) = 9
+n 1 blocking a(n) = 0
+n 2 blocking a(n) = 0
+n 3 blocking a(n) = 1
+n 4 blocking a(n) = 2
+{"line_sharing": {"1": 0, "2": 0, "3": 1, "4": 2, "5": 4, "6": 5, "7": 7, "8": 9}, "blocking": {"1": 0, "2": 0, "3": 1, "4": 2}}

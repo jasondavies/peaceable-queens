@@ -1,0 +1,125 @@
+// pqt.c -- peaceable queens on the n x n TORUS (OEIS A279405), same method as pq2.c.
+// Lines: rows i, columns j, diagonals (i-j mod n), antidiagonals (i+j mod n): 4n lines, each cell on 4.
+// Stage 1: (R,C) with R and C each the lexicographically smallest (as an integer code) of its dihedral
+//   orbit (cyclic shifts and reversal of the index set Z_n): translations (i,j)->(i+s,j+t) and the
+//   reflections (i,j)->(-i,j), (i,j)->(i,-j) are torus symmetries that act on R and C independently.
+//   Swap (i,j)->(j,i) and colour complement are handled by keeping (R,C) only if its code is <= the codes
+//   of (rep C, rep R), (rep ~R, rep ~C), (rep ~C, rep ~R).  (NOTES, Lemma T.)
+// Stage 2: as pq2 (pairwise min cut on the 2n diagonal nodes; for even n two cells may share a
+//   (diagonal, antidiagonal) pair, handled per cell).
+// usage: pqt n T [-m M -j J]   (-m/-j: only the outer representatives R = reps[a] with a % M == J;
+//                                the parts J = 0..M-1 partition the search)
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <stdint.h>
+#define MAXN 32
+static int n,T,NC,ND,Q=256;
+static int cellD[MAXN*MAXN], cellA[MAXN*MAXN], kindc[MAXN*MAXN];
+static int dCells[MAXN][2*MAXN], dLen[MAXN], aCells[MAXN][2*MAXN], aLen[MAXN];
+static int xd[MAXN], ya[MAXN], possW, possB, found=0, solR=0, solC=0, solx[MAXN], soly[MAXN];
+static long long leaves=0, nodes2=0, flows=0, leafSearched=0;
+#define MAXV (2*MAXN+4)
+#define MAXE (2*(MAXN*MAXN*2+8*MAXN+8))
+static int head[MAXV],nxt[MAXE],to[MAXE],cp[MAXE],ne_,nv_,lvl[MAXV],it_[MAXV],qq[MAXV];
+static inline void addE(int u,int v,int c){ if(c<=0) return;
+  to[ne_]=v;cp[ne_]=c;nxt[ne_]=head[u];head[u]=ne_++; to[ne_]=u;cp[ne_]=0;nxt[ne_]=head[v];head[v]=ne_++; }
+static int bfs(int s,int t){ for(int i=0;i<nv_;i++)lvl[i]=-1; int qh=0,qt=0; qq[qt++]=s; lvl[s]=0;
+  while(qh<qt){int u=qq[qh++]; for(int e=head[u];e>=0;e=nxt[e]) if(cp[e]>0&&lvl[to[e]]<0){lvl[to[e]]=lvl[u]+1;qq[qt++]=to[e];}}
+  return lvl[t]>=0; }
+static int dfsF(int u,int t,int f){ if(u==t) return f;
+  for(int*e=&it_[u];*e>=0;*e=nxt[*e]){int v=to[*e];
+    if(cp[*e]>0&&lvl[v]==lvl[u]+1){int d=dfsF(v,t,f<cp[*e]?f:cp[*e]); if(d>0){cp[*e]-=d;cp[*e^1]+=d;return d;}}}
+  return 0; }
+static long long maxflow(int s,int t){ long long fl=0; flows++;
+  while(bfs(s,t)){ for(int i=0;i<nv_;i++)it_[i]=head[i]; int f; while((f=dfsF(s,t,1<<30))>0) fl+=f; } return fl; }
+static int cx[MAXN],cy[MAXN];
+static long long evalU(int p,int*Wo,int*Bo){
+  int A=p,Bw=Q-p; long long gains=0; int s=0,t=1; nv_=2+2*ND; ne_=0; for(int i=0;i<nv_;i++)head[i]=-1;
+  static int capS[2*MAXN],capT[2*MAXN]; for(int i=0;i<2*ND;i++)capS[i]=capT[i]=0;
+  for(int c=0;c<NC;c++){int d=cellD[c],a=cellA[c],k=kindc[c]; if(!k) continue; int vd=xd[d],va=ya[a];
+    if(k>0){ if(vd==0||va==0||A==0) continue; gains+=A;
+      if(vd<0&&va<0){ capS[d]+=A; addE(2+d,2+ND+a,A);} else if(vd<0) capS[d]+=A; else if(va<0) capS[ND+a]+=A; }
+    else { if(vd==1||va==1||Bw==0) continue; gains+=Bw;
+      if(vd<0&&va<0){ capT[d]+=Bw; addE(2+ND+a,2+d,Bw);} else if(vd<0) capT[d]+=Bw; else if(va<0) capT[ND+a]+=Bw; } }
+  for(int i=0;i<2*ND;i++){int m=capS[i]<capT[i]?capS[i]:capT[i]; gains-=m; addE(s,2+i,capS[i]-m); addE(2+i,t,capT[i]-m);}
+  long long cut=maxflow(s,t);
+  for(int d=0;d<ND;d++) cx[d]=xd[d]>=0?xd[d]:(lvl[2+d]>=0);
+  for(int a=0;a<ND;a++) cy[a]=ya[a]>=0?ya[a]:(lvl[2+ND+a]>=0);
+  int W=0,B=0; for(int c=0;c<NC;c++){int k=kindc[c]; if(k>0&&cx[cellD[c]]&&cy[cellA[c]])W++; else if(k<0&&!cx[cellD[c]]&&!cy[cellA[c]])B++;}
+  *Wo=W;*Bo=B; return gains-cut;
+}
+static int curR,curC;
+static int boundPrune(int*pHint){
+  int lo=0,hi=Q,p=*pHint;
+  for(int it=0;it<20;it++){ int W,B; long long U=evalU(p,&W,&B);
+    if(W>=T&&B>=T){ found=1; solR=curR; solC=curC; memcpy(solx,cx,sizeof cx); memcpy(soly,cy,sizeof cy); return 1; }
+    if(U<(long long)Q*T){*pHint=p; return 1;}
+    if(W>B) hi=p-1; else if(W<B) lo=p+1; else return 0; if(lo>hi) return 0; p=(lo+hi)/2; }
+  return 0;
+}
+// a cell on line (diag d / anti a) is "W-alive" if it is a W-candidate and its other line is not B
+static void setDA(int k,int v){
+  if(k<ND){int d=k; xd[d]=v; for(int q=0;q<dLen[d];q++){int c=dCells[d][q],a=cellA[c],t=kindc[c]; if(t>0&&v==0&&ya[a]!=0) possW--; if(t<0&&v==1&&ya[a]!=1) possB--;}}
+  else {int a=k-ND; ya[a]=v; for(int q=0;q<aLen[a];q++){int c=aCells[a][q],d=cellD[c],t=kindc[c]; if(t>0&&v==0&&xd[d]!=0) possW--; if(t<0&&v==1&&xd[d]!=1) possB--;}}
+}
+static void unsetDA(int k){
+  if(k<ND){int d=k,v=xd[d]; xd[d]=-1; for(int q=0;q<dLen[d];q++){int c=dCells[d][q],a=cellA[c],t=kindc[c]; if(t>0&&v==0&&ya[a]!=0) possW++; if(t<0&&v==1&&ya[a]!=1) possB++;}}
+  else {int a=k-ND,v=ya[a]; ya[a]=-1; for(int q=0;q<aLen[a];q++){int c=aCells[a][q],d=cellD[c],t=kindc[c]; if(t>0&&v==0&&xd[d]!=0) possW++; if(t<0&&v==1&&xd[d]!=1) possB++;}}
+}
+static void dfs2(int dep,int pHint){
+  nodes2++;
+  if(possW<T||possB<T) return;
+  if(boundPrune(&pHint)) return;
+  if(dep==2*ND){fprintf(stderr,"internal: undecided leaf\n");exit(2);}
+  int k = (dep&1) ? ND+dep/2 : dep/2;    // alternate diag / anti
+  int first = k<ND?cx[k]:cy[k-ND];
+  for(int q=0;q<2&&!found;q++){int v=q?1-first:first; setDA(k,v); dfs2(dep+1,pHint); unsetDA(k);}
+}
+static void stage2(int R,int C){
+  int nW=0,nB=0; curR=R; curC=C;
+  for(int c=0;c<NC;c++){int i=c/n,j=c%n,ri=R>>i&1,cj=C>>j&1; kindc[c]=(ri&&cj)?1:(!ri&&!cj)?-1:0; if(kindc[c]>0)nW++; else if(kindc[c]<0)nB++;}
+  if(nW<T||nB<T) return;
+  leaves++; possW=nW; possB=nB; for(int d=0;d<ND;d++){xd[d]=-1;ya[d]=-1;}
+  long long b=nodes2; dfs2(0,Q/2); if(nodes2-b>1) leafSearched++;
+}
+static int rot(int x,int s){ int full=(1<<n)-1; return ((x<<s)|(x>>(n-s)))&full; }
+static int rev(int x){ int r=0; for(int i=0;i<n;i++) if(x>>i&1) r|=1<<((n-i)%n); return r; } // i -> -i mod n
+static int rep(int x){ int best=x; int y=x; for(int s=0;s<n;s++){ int a=rot(x,s), b=rot(rev(x),s); if(a<best)best=a; if(b<best)best=b; } (void)y; return best; }
+int main(int argc,char**argv){
+  n=atoi(argv[1]); T=atoi(argv[2]); NC=n*n; ND=n; int modM=1,modJ=0;
+  for(int i=3;i<argc;i++){ if(!strcmp(argv[i],"-m")) modM=atoi(argv[++i]); else if(!strcmp(argv[i],"-j")) modJ=atoi(argv[++i]); }
+  for(int d=0;d<n;d++){dLen[d]=0;aLen[d]=0;}
+  for(int i=0;i<n;i++)for(int j=0;j<n;j++){int c=i*n+j; cellD[c]=((i-j)%n+n)%n; cellA[c]=(i+j)%n;
+    dCells[cellD[c]][dLen[cellD[c]]++]=c; aCells[cellA[c]][aLen[cellA[c]]++]=c;}
+  int full=(1<<n)-1;
+  // dihedral orbit representatives of n-bit masks
+  int *reps=malloc(sizeof(int)*(1<<n)); int nr=0;
+  for(int x=0;x<=full;x++) if(rep(x)==x) reps[nr++]=x;
+  int *crep=malloc(sizeof(int)*nr); for(int i=0;i<nr;i++) crep[i]=rep(~reps[i]&full);   // rep of the complement
+  clock_t t0=clock(); long long pairs=0;
+  for(int a=0;a<nr&&!found;a++) if(a%modM==modJ) for(int b=0;b<nr&&!found;b++){
+    int R=reps[a],C=reps[b], pr=__builtin_popcount(R), pc=__builtin_popcount(C);
+    if(pr*pc<T || (n-pr)*(n-pc)<T) continue;
+    long long me=((long long)R<<n)|C;
+    long long o1=((long long)C<<n)|R;  // swap: (rep C, rep R) = (C, R) since both are reps
+    int nR=crep[a], nC=crep[b];
+    long long o2=((long long)nR<<n)|nC, o3=((long long)nC<<n)|nR;
+    if(o1<me||o2<me||o3<me) continue;
+    pairs++; stage2(R,C);
+  }
+  double el=(double)(clock()-t0)/CLOCKS_PER_SEC;
+  if(modM>1) printf("part %d of %d\n",modJ,modM);
+  printf("torus n=%d T=%d %s reps=%d pairs=%lld leaves=%lld searched=%lld nodes2=%lld flows=%lld time=%.2fs\n",
+         n,T,found?"FEASIBLE":"INFEASIBLE",nr,pairs,leaves,leafSearched,nodes2,flows,el);
+  if(found){ // print and recheck the board directly (torus attacks)
+    char b[MAXN][MAXN+1]; int W=0,B=0;
+    for(int i=0;i<n;i++){for(int j=0;j<n;j++){int c=i*n+j,ri=solR>>i&1,cj=solC>>j&1,xv=solx[cellD[c]],yv=soly[cellA[c]];
+      char ch='.'; if(ri&&cj&&xv&&yv){ch='W';W++;} else if(!ri&&!cj&&!xv&&!yv){ch='B';B++;} b[i][j]=ch;} b[i][n]=0;}
+    int bad=0; for(int p=0;p<NC;p++)for(int q=0;q<NC;q++) if(b[p/n][p%n]=='W'&&b[q/n][q%n]=='B'){int i=p/n,j=p%n,k=q/n,l=q%n;
+      if(i==k||j==l||((i-j-k+l)%n+n)%n==0||((i+j-k-l)%n+n)%n==0) bad++;}
+    printf("W=%d B=%d torus-attacks=%d %s\n",W,B,bad,bad?"BAD":"OK"); for(int i=0;i<n;i++) printf("  %s\n",b[i]);
+    if(bad) return 3; }
+  return 0;
+}

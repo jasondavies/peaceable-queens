@@ -1,0 +1,20 @@
+torus n=18 T=42 FEASIBLE reps=7685 pairs=2037606 leaves=2037606 searched=0 nodes2=2037606 flows=4673919 time=16.05s
+W=42 B=45 torus-attacks=0 OK
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  .B.B.B.B.B.B.B.B.B
+  ..............B.B.
+  .B.B.B.B.B.B.B.B.B
+  ..............B.B.
+  .B.B.B.B.B.B.B.B.B
+  ..............B.B.

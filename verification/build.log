@@ -1,0 +1,13 @@
+gcc pq2: rc=0 
+gcc pqenum: rc=0 
+gcc pqt: rc=0 
+cargo: rc=0 Finished release [optimized] target(s) in 0.01s
+drat-trim 2e3b2dc0ecf938addbd779d42877b6ed69d9a985 (tarball SHA-256 a75e5a2072fa5a5493ee8504067661c6b452d45a32f889ac5b2c9470c227b58c)
+
+[gate] ok   pq2 compiled from code/pq2.c
+[gate] ok   pqenum compiled from code/pqenum.c
+[gate] ok   pqt compiled from code/pqt.c
+[gate] ok   pqv (Rust) built from code/verifier/
+[gate] ok   drat-trim built (tarball SHA-256 checked)
+[gate] ok   code/pq2.c is the source used for the recorded runs
+[gate] ok   code/verifier/src/main.rs is the source used for the slice runs

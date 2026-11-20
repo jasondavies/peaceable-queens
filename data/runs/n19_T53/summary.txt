@@ -1,0 +1,9 @@
+n=19 T=53 K=4
+cubes=4708 completed=4708 missing=0
+results: {'UNSAT': 4708, 'FOUND': 0}
+totals: {'n1': 31381085823, 'leaves': 14324893730, 'searched': 0, 'n2': 14324893730, 'flows': 23359307267, 'time': 181507.89400000052}
+VERDICT: INFEASIBLE
+sha256 pq2 binary 645c1485e4cac5f20bdccbde13f087ef688b1f4ff04b9585cac485e5599cf4db
+sha256 pq2.c 56beca6e60805d4a50446ac315bbeaedfa8b65980ce489550db5fd210d2dfa63
+sha256 cubes.txt 3f65e0f74316e8dd515af64612e866c5d4b738d81a360f239918cf9a26ed9353
+sha256 cubes.sorted.log 355679cb0c2a26cc4f31b29f6fe580a22ddc392bf7ec3f76f1256e5f6faf32e8

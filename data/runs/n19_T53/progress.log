@@ -1,0 +1,23 @@
+Thu Nov 19 21:21:31 2026 start: 4708 cubes, 0 done, 4708 to do, workers=6
+Thu Nov 19 21:23:12 2026 start: 4708 cubes, 36 done, 4672 to do, workers=5
+Thu Nov 19 21:26:25 2026 50/4672 cubes, elapsed 193s, eta 17874s
+Thu Nov 19 21:31:03 2026 100/4672 cubes, elapsed 471s, eta 21512s
+Thu Nov 19 21:36:32 2026 150/4672 cubes, elapsed 800s, eta 24120s
+Thu Nov 19 21:40:14 2026 200/4672 cubes, elapsed 1022s, eta 22857s
+Thu Nov 19 21:44:36 2026 250/4672 cubes, elapsed 1284s, eta 22714s
+Thu Nov 19 21:48:53 2026 300/4672 cubes, elapsed 1541s, eta 22455s
+Thu Nov 19 21:54:57 2026 350/4672 cubes, elapsed 1905s, eta 23518s
+Thu Nov 19 22:01:26 2026 400/4672 cubes, elapsed 2294s, eta 24497s
+Thu Nov 19 22:06:25 2026 450/4672 cubes, elapsed 2593s, eta 24325s
+Thu Nov 19 22:11:42 2026 500/4672 cubes, elapsed 2910s, eta 24278s
+Thu Nov 19 22:17:09 2026 550/4672 cubes, elapsed 3237s, eta 24261s
+Thu Nov 19 22:21:42 2026 600/4672 cubes, elapsed 3510s, eta 23822s
+Thu Nov 19 22:25:18 2026 650/4672 cubes, elapsed 3726s, eta 23054s
+Thu Nov 19 22:29:06 2026 700/4672 cubes, elapsed 3954s, eta 22435s
+Thu Nov 19 22:34:30 2026 750/4672 cubes, elapsed 4278s, eta 22371s
+Thu Nov 19 22:38:31 2026 800/4672 cubes, elapsed 4519s, eta 21873s
+Thu Nov 19 22:42:27 2026 850/4672 cubes, elapsed 4755s, eta 21380s
+Thu Nov 19 22:48:12 2026 900/4672 cubes, elapsed 5100s, eta 21376s
+Thu Nov 19 22:48:45 2026 start: 4708 cubes, 938 done, 3770 to do, workers=5
+Thu Nov 19 23:26:43 2026 start: 4708 cubes, 4708 done, 0 to do, workers=1
+Thu Nov 19 23:26:43 2026 finished; see summary.txt

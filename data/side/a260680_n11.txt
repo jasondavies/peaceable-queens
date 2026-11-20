@@ -1,0 +1,1 @@
+n=11 a=17 labellings=4528 distinct cell-boards=4360 inequivalent configurations=696 non-peaceful=0

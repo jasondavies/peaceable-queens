@@ -1,0 +1,36 @@
+--- old/main.rs
++++ code/verifier/src/main.rs
+@@ -10,7 +10,7 @@
+ //  * lambda = p/1000 with its own search; any (R,C) not pruned is searched by a plain DFS over the
+ //    diagonal/antidiagonal labels with only the counting bound (no min cut at all).
+ // Multi-threaded over R (std::thread only).
+-// usage: pqv n T [threads] [--nosym] [--sample k seed]   (sample: test only k random canonical (R,C))
++// usage: pqv n T [threads] [--nosym] [--nobound] [--part j m] [--sample k seed]   (sample: test only k random canonical (R,C))
+ use std::env;
+ use std::sync::atomic::{AtomicU64, AtomicBool, Ordering};
+ use std::sync::Arc;
+@@ -184,6 +184,8 @@
+     let nosym = args.iter().any(|a| a == "--nosym");
+     let nobound = args.iter().any(|a| a == "--nobound");
+     let mut sample: Option<(u64, u64)> = None;
++    // --part j m : only the rows-masks r with r % m == j (a slice of the full search; the slices j = 0..m-1 partition it)
++    let part: Option<(u32, u32)> = match args.iter().position(|a| a == "--part") { Some(i) => Some((args[i + 1].parse().unwrap(), args[i + 2].parse().unwrap())), None => None };
+     let minprod: i64 = match args.iter().position(|a| a == "--minprod") { Some(i) => args[i + 1].parse().unwrap(), None => 0 };
+     if let Some(i) = args.iter().position(|a| a == "--sample") { sample = Some((args[i + 1].parse().unwrap(), args[i + 2].parse().unwrap())); }
+     let inst = Arc::new(Inst { n, t });
+@@ -234,6 +236,7 @@
+             let n = inst.n; let t = inst.t;
+             let mut r = th as u32;
+             while r <= full {
++                if let Some((pj, pm)) = part { if r % pm != pj { r += threads as u32; continue; } }
+                 let pr = r.count_ones() as i64;
+                 for c in 0..=full {
+                     let pc = c.count_ones() as i64;
+@@ -255,6 +258,7 @@
+         }));
+     }
+     for h in hs { h.join().unwrap(); }
++    if let Some((pj, pm)) = part { println!("part {} of {} (rows masks r with r % {} == {})", pj, pm, pm, pj); }
+     println!("pqv n={} T={} {} leaves={} pruned={} searched={}", n, t,
+              if found.load(Ordering::Relaxed) { "FEASIBLE" } else { "INFEASIBLE" },
+              leaves.load(Ordering::Relaxed), pruned.load(Ordering::Relaxed), searched.load(Ordering::Relaxed));

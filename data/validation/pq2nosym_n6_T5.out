@@ -1,0 +1,11 @@
+n=6 T=5 K=-1 FEASIBLE nodes1=413 leaves=110 leafSearched=10 nodes2=145 flows=417 cubes=0 time=0.00s
+solution check: W=5 B=5 OK
+labelling 0011100010110001100100000000011110
+  B..B..
+  BB....
+  ....W.
+  ....WW
+  ..W..W
+  B.....
+
+EXIT 0 wall 0.0s

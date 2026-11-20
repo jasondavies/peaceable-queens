@@ -1,0 +1,6 @@
+FOUND (dfs) R=1000 C=1100
+FOUND (dfs) R=0100 C=1100
+FOUND (dfs) R=1100 C=1100
+pqv n=4 T=2 FEASIBLE leaves=3 pruned=0 searched=3
+
+EXIT 0 wall 0.0s

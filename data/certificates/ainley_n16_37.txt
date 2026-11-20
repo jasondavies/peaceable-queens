@@ -1,0 +1,17 @@
+# OEIS A250000, Example "Board 2: n=16, 37-queen arrangement" (Selcoe 2015; Ainley 1977 construction)
+. . . . W W W W . . . . . . . .
+. . . . W W W W . . . . . . . W
+. . . . W W W W . . . . . . W W
+. . . . W W W W . . . . . W W W
+. . . . . W W . . . . . W W W W
+. . . . . . . . . . . . W W W W
+. . . . . . . . . . . . W W W .
+. . . . . . . . . . . . W W . .
+. . . B . . . . . . . . . . . .
+. . B B . . . . . . . . . . . .
+. B B B . . . . . . . . . . . .
+B B B B . . . . . . B B . . . .
+B B B B . . . . . B B B . . . .
+B B B . . . . . B B B B . . . .
+B B . . . . . . B B B B . . . .
+B . . . . . . . B B B B . . . .

@@ -1,0 +1,10 @@
+Fri Nov 20 02:04:04 2026 start: 4708 cubes, 4356 done, 352 to do, workers=6
+Fri Nov 20 02:19:19 2026 50/352 cubes, elapsed 915s, eta 5528s
+Fri Nov 20 02:39:42 2026 100/352 cubes, elapsed 2138s, eta 5387s
+Fri Nov 20 02:58:47 2026 150/352 cubes, elapsed 3283s, eta 4421s
+Fri Nov 20 03:16:01 2026 200/352 cubes, elapsed 4317s, eta 3281s
+Fri Nov 20 03:36:22 2026 250/352 cubes, elapsed 5538s, eta 2259s
+Fri Nov 20 03:58:31 2026 300/352 cubes, elapsed 6867s, eta 1190s
+Fri Nov 20 04:19:06 2026 350/352 cubes, elapsed 8101s, eta 46s
+Fri Nov 20 04:19:58 2026 352/352 cubes, elapsed 8154s, eta 0s
+Fri Nov 20 04:19:58 2026 finished; see summary.txt

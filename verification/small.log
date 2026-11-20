@@ -1,0 +1,494 @@
+$ pq2 1 1
+n=1 T=1 K=-1 INFEASIBLE nodes1=3 leaves=0 leafSearched=0 nodes2=0 flows=0 cubes=0 time=0.00s
+$ pqv 1 1 1
+pqv n=1 T=1 INFEASIBLE leaves=0 pruned=0 searched=0
+$ pq2 1 1 -nosym
+n=1 T=1 K=-1 INFEASIBLE nodes1=3 leaves=0 leafSearched=0 nodes2=0 flows=0 cubes=0 time=0.00s
+$ pqv 1 1 1 --nobound
+pqv n=1 T=1 INFEASIBLE leaves=0 pruned=0 searched=0
+$ pq2 2 1
+n=2 T=1 K=-1 INFEASIBLE nodes1=12 leaves=1 leafSearched=0 nodes2=1 flows=1 cubes=0 time=0.00s
+$ pqv 2 1 1
+pqv n=2 T=1 INFEASIBLE leaves=1 pruned=1 searched=0
+$ pq2 2 1 -nosym
+n=2 T=1 K=-1 INFEASIBLE nodes1=19 leaves=4 leafSearched=0 nodes2=4 flows=4 cubes=0 time=0.00s
+$ pqv 2 1 1 --nobound
+pqv n=2 T=1 INFEASIBLE leaves=1 pruned=0 searched=1
+$ pq2 3 1
+n=3 T=1 K=-1 FEASIBLE nodes1=12 leaves=2 leafSearched=0 nodes2=2 flows=5 cubes=0 time=0.00s
+solution check: W=1 B=2 OK
+labelling 0100010100000010
+  B..
+  ..W
+  B..
+$ pqv 3 1 1
+FOUND (bound completion) R=100 C=100
+pqv n=3 T=1 FEASIBLE leaves=1 pruned=0 searched=0
+$ pq2 3 1 -nosym
+n=3 T=1 K=-1 FEASIBLE nodes1=13 leaves=2 leafSearched=0 nodes2=2 flows=5 cubes=0 time=0.00s
+solution check: W=1 B=2 OK
+labelling 0100010100000010
+  B..
+  ..W
+  B..
+$ pqv 3 1 1 --nobound
+FOUND (dfs) R=100 C=100
+pqv n=3 T=1 FEASIBLE leaves=1 pruned=0 searched=1
+$ pq2 3 2
+n=3 T=2 K=-1 INFEASIBLE nodes1=30 leaves=3 leafSearched=0 nodes2=3 flows=3 cubes=0 time=0.00s
+$ pqv 3 2 1
+pqv n=3 T=2 INFEASIBLE leaves=3 pruned=3 searched=0
+$ pq2 3 2 -nosym
+n=3 T=2 K=-1 INFEASIBLE nodes1=95 leaves=18 leafSearched=0 nodes2=18 flows=18 cubes=0 time=0.00s
+$ pqv 3 2 1 --nobound
+pqv n=3 T=2 INFEASIBLE leaves=3 pruned=0 searched=3
+$ pq2 4 2
+n=4 T=2 K=-1 FEASIBLE nodes1=19 leaves=2 leafSearched=1 nodes2=3 flows=11 cubes=0 time=0.00s
+solution check: W=2 B=2 OK
+labelling 0110011000010000010100
+  ...B
+  .W..
+  ..W.
+  B...
+$ pqv 4 2 1
+FOUND (bound completion) R=1000 C=1100
+pqv n=4 T=2 FEASIBLE leaves=1 pruned=0 searched=0
+$ pq2 4 2 -nosym
+n=4 T=2 K=-1 FEASIBLE nodes1=25 leaves=5 leafSearched=1 nodes2=6 flows=17 cubes=0 time=0.00s
+solution check: W=2 B=2 OK
+labelling 0110011000010000010100
+  ...B
+  .W..
+  ..W.
+  B...
+$ pqv 4 2 1 --nobound
+FOUND (dfs) R=1000 C=1100
+pqv n=4 T=2 FEASIBLE leaves=1 pruned=0 searched=1
+$ pq2 4 3
+n=4 T=3 K=-1 INFEASIBLE nodes1=78 leaves=10 leafSearched=0 nodes2=10 flows=10 cubes=0 time=0.00s
+$ pqv 4 3 1
+pqv n=4 T=3 INFEASIBLE leaves=10 pruned=10 searched=0
+$ pq2 4 3 -nosym
+n=4 T=3 K=-1 INFEASIBLE nodes1=355 leaves=68 leafSearched=0 nodes2=68 flows=68 cubes=0 time=0.00s
+$ pqv 4 3 1 --nobound
+pqv n=4 T=3 INFEASIBLE leaves=10 pruned=0 searched=10
+$ pq2 5 4
+n=5 T=4 K=-1 FEASIBLE nodes1=32 leaves=6 leafSearched=0 nodes2=6 flows=12 cubes=0 time=0.00s
+solution check: W=4 B=4 OK
+labelling 0111001110000101000000101000
+  B...B
+  ..W..
+  .W.W.
+  ..W..
+  B...B
+$ pqv 5 4 1
+FOUND (bound completion) R=10100 C=10100
+pqv n=5 T=4 FEASIBLE leaves=19 pruned=18 searched=0
+$ pq2 5 4 -nosym
+n=5 T=4 K=-1 FEASIBLE nodes1=71 leaves=16 leafSearched=0 nodes2=16 flows=30 cubes=0 time=0.00s
+solution check: W=4 B=4 OK
+labelling 0111001110000101000000101000
+  B...B
+  ..W..
+  .W.W.
+  ..W..
+  B...B
+$ pqv 5 4 1 --nobound
+FOUND (dfs) R=10100 C=10100
+pqv n=5 T=4 FEASIBLE leaves=19 pruned=0 searched=19
+$ pq2 5 5
+n=5 T=5 K=-1 INFEASIBLE nodes1=170 leaves=21 leafSearched=0 nodes2=21 flows=21 cubes=0 time=0.00s
+$ pqv 5 5 1
+pqv n=5 T=5 INFEASIBLE leaves=21 pruned=21 searched=0
+$ pq2 5 5 -nosym
+n=5 T=5 K=-1 INFEASIBLE nodes1=1187 leaves=200 leafSearched=0 nodes2=200 flows=200 cubes=0 time=0.00s
+$ pqv 5 5 1 --nobound
+pqv n=5 T=5 INFEASIBLE leaves=21 pruned=0 searched=21
+$ pq2 6 5
+n=6 T=5 K=-1 FEASIBLE nodes1=202 leaves=42 leafSearched=3 nodes2=57 flows=178 cubes=0 time=0.00s
+solution check: W=5 B=5 OK
+labelling 0011100010110001100100000000011110
+  B..B..
+  BB....
+  ....W.
+  ....WW
+  ..W..W
+  B.....
+$ pqv 6 5 1
+FOUND (dfs) R=110000 C=110010
+pqv n=6 T=5 FEASIBLE leaves=11 pruned=10 searched=1
+$ pq2 6 5 -nosym
+n=6 T=5 K=-1 FEASIBLE nodes1=413 leaves=110 leafSearched=10 nodes2=145 flows=417 cubes=0 time=0.00s
+solution check: W=5 B=5 OK
+labelling 0011100010110001100100000000011110
+  B..B..
+  BB....
+  ....W.
+  ....WW
+  ..W..W
+  B.....
+$ pqv 6 5 1 --nobound
+FOUND (dfs) R=110000 C=110010
+pqv n=6 T=5 FEASIBLE leaves=11 pruned=0 searched=11
+$ pq2 6 6
+n=6 T=6 K=-1 INFEASIBLE nodes1=651 leaves=169 leafSearched=0 nodes2=169 flows=259 cubes=0 time=0.00s
+$ pqv 6 6 1
+pqv n=6 T=6 INFEASIBLE leaves=169 pruned=169 searched=0
+$ pq2 6 6 -nosym
+n=6 T=6 K=-1 INFEASIBLE nodes1=6227 leaves=2050 leafSearched=0 nodes2=2050 flows=3250 cubes=0 time=0.00s
+$ pqv 6 6 1 --nobound
+pqv n=6 T=6 INFEASIBLE leaves=169 pruned=0 searched=169
+$ pq2 7 7
+n=7 T=7 K=-1 FEASIBLE nodes1=147 leaves=28 leafSearched=0 nodes2=28 flows=56 cubes=0 time=0.00s
+solution check: W=7 B=7 OK
+labelling 0011010001111000010101110000000010111000
+  B.....B
+  .B.....
+  ...W.W.
+  ..W.W..
+  B.....B
+  ..WWW..
+  B.....B
+$ pqv 7 7 1
+FOUND (dfs) R=1110000 C=1100100
+pqv n=7 T=7 FEASIBLE leaves=96 pruned=94 searched=2
+$ pq2 7 7 -nosym
+n=7 T=7 K=-1 FEASIBLE nodes1=278 leaves=52 leafSearched=0 nodes2=52 flows=105 cubes=0 time=0.00s
+solution check: W=7 B=7 OK
+labelling 0011010001111000010101110000000010111000
+  B.....B
+  .B.....
+  ...W.W.
+  ..W.W..
+  B.....B
+  ..WWW..
+  B.....B
+$ pqv 7 7 1 --nobound
+FOUND (dfs) R=1110000 C=1100100
+pqv n=7 T=7 FEASIBLE leaves=96 pruned=0 searched=96
+$ pq2 7 8
+n=7 T=8 K=-1 INFEASIBLE nodes1=2224 leaves=686 leafSearched=0 nodes2=686 flows=885 cubes=0 time=0.00s
+$ pqv 7 8 1
+pqv n=7 T=8 INFEASIBLE leaves=686 pruned=686 searched=0
+$ pq2 7 8 -nosym
+n=7 T=8 K=-1 INFEASIBLE nodes1=25875 leaves=8722 leafSearched=0 nodes2=8722 flows=11292 cubes=0 time=0.01s
+$ pqv 7 8 1 --nobound
+pqv n=7 T=8 INFEASIBLE leaves=686 pruned=0 searched=686
+$ pq2 8 9
+n=8 T=9 K=-1 FEASIBLE nodes1=4258 leaves=1432 leafSearched=4 nodes2=1453 flows=3146 cubes=0 time=0.01s
+solution check: W=9 B=9 OK
+labelling 0110011000001111011101110000000000000101101110
+  ...B....
+  .....W.W
+  ....W.WW
+  BBB.....
+  BB.B....
+  ......WW
+  ......WW
+  B..B....
+$ pqv 8 9 1
+FOUND (bound completion) R=11100000 C=11100100
+pqv n=8 T=9 FEASIBLE leaves=149 pruned=148 searched=0
+$ pq2 8 9 -nosym
+n=8 T=9 K=-1 FEASIBLE nodes1=11263 leaves=4045 leafSearched=11 nodes2=4088 flows=8858 cubes=0 time=0.02s
+solution check: W=9 B=9 OK
+labelling 0110011000001111011101110000000000000101101110
+  ...B....
+  .....W.W
+  ....W.WW
+  BBB.....
+  BB.B....
+  ......WW
+  ......WW
+  B..B....
+$ pqv 8 9 1 --nobound
+FOUND (dfs) R=11100000 C=11100100
+pqv n=8 T=9 FEASIBLE leaves=149 pruned=0 searched=149
+$ pq2 8 10
+n=8 T=10 K=-1 INFEASIBLE nodes1=7978 leaves=2450 leafSearched=0 nodes2=2450 flows=3535 cubes=0 time=0.01s
+$ pqv 8 10 1
+pqv n=8 T=10 INFEASIBLE leaves=2450 pruned=2450 searched=0
+$ pq2 8 10 -nosym
+n=8 T=10 K=-1 INFEASIBLE nodes1=101639 leaves=34692 leafSearched=0 nodes2=34692 flows=50660 cubes=0 time=0.07s
+$ pqv 8 10 1 --nobound
+pqv n=8 T=10 INFEASIBLE leaves=2450 pruned=0 searched=2450
+$ pq2 9 12
+n=9 T=12 K=-1 FEASIBLE nodes1=3668 leaves=1249 leafSearched=2 nodes2=1253 flows=2431 cubes=0 time=0.00s
+solution check: W=12 B=12 OK
+labelling 0101110100101111100001010101010000000000101010101000
+  B.B.....B
+  ....W.W..
+  B.B.....B
+  ....W.W..
+  .W.W.W.W.
+  ....W.W..
+  B.B.....B
+  ....W.W..
+  B.B.....B
+$ pqv 9 12 1
+FOUND (bound completion) R=101010000 C=101010100
+pqv n=9 T=12 FEASIBLE leaves=1701 pruned=1700 searched=0
+$ pq2 9 12 -nosym
+n=9 T=12 K=-1 FEASIBLE nodes1=22380 leaves=7958 leafSearched=2 nodes2=7962 flows=15368 cubes=0 time=0.03s
+solution check: W=12 B=12 OK
+labelling 0101110100101111100001010101010000000000101010101000
+  B.B.....B
+  ....W.W..
+  B.B.....B
+  ....W.W..
+  .W.W.W.W.
+  ....W.W..
+  B.B.....B
+  ....W.W..
+  B.B.....B
+$ pqv 9 12 1 --nobound
+FOUND (dfs) R=101010000 C=101010100
+pqv n=9 T=12 FEASIBLE leaves=1701 pruned=0 searched=1701
+$ pq2 9 13
+n=9 T=13 K=-1 INFEASIBLE nodes1=27513 leaves=8526 leafSearched=0 nodes2=8526 flows=8580 cubes=0 time=0.01s
+$ pqv 9 13 1
+pqv n=9 T=13 INFEASIBLE leaves=8526 pruned=8526 searched=0
+$ pq2 9 13 -nosym
+n=9 T=13 K=-1 INFEASIBLE nodes1=381159 leaves=122544 leafSearched=0 nodes2=122544 flows=123308 cubes=0 time=0.22s
+$ pqv 9 13 1 --nobound
+pqv n=9 T=13 INFEASIBLE leaves=8526 pruned=0 searched=8526
+$ pq2 10 14
+n=10 T=14 K=-1 FEASIBLE nodes1=41154 leaves=14846 leafSearched=1 nodes2=14848 flows=30276 cubes=0 time=0.06s
+solution check: W=14 B=15 OK
+labelling 0011000110000001111100111101110100000000000000010111011110
+  ...B......
+  B...B.....
+  ......W.WW
+  .....W.WWW
+  BB.B......
+  BBB.B.....
+  BB.B......
+  .....W.WWW
+  ......W.WW
+  B...B.....
+$ pqv 10 14 1
+FOUND (dfs) R=1111000000 C=1110011000
+pqv n=10 T=14 FEASIBLE leaves=1791 pruned=1790 searched=1
+$ pq2 10 14 -nosym
+n=10 T=14 K=-1 FEASIBLE nodes1=133586 leaves=50189 leafSearched=1 nodes2=50191 flows=103182 cubes=0 time=0.23s
+solution check: W=14 B=15 OK
+labelling 0011000110000001111100111101110100000000000000010111011110
+  ...B......
+  B...B.....
+  ......W.WW
+  .....W.WWW
+  BB.B......
+  BBB.B.....
+  BB.B......
+  .....W.WWW
+  ......W.WW
+  B...B.....
+$ pqv 10 14 1 --nobound
+FOUND (dfs) R=1111000000 C=1110011000
+pqv n=10 T=14 FEASIBLE leaves=1791 pruned=0 searched=1791
+$ pq2 10 15
+n=10 T=15 K=-1 INFEASIBLE nodes1=119966 leaves=46481 leafSearched=0 nodes2=46481 flows=87890 cubes=0 time=0.20s
+$ pqv 10 15 1
+pqv n=10 T=15 INFEASIBLE leaves=46481 pruned=46481 searched=0
+$ pq2 10 15 -nosym
+n=10 T=15 K=-1 INFEASIBLE nodes1=1764543 leaves=706194 leafSearched=0 nodes2=706194 flows=1339090 cubes=0 time=3.06s
+$ pqv 10 15 1 --nobound
+pqv n=10 T=15 INFEASIBLE leaves=46481 pruned=0 searched=46481
+$ pq2 11 17
+n=11 T=17 K=-1 FEASIBLE nodes1=21611 leaves=7017 leafSearched=0 nodes2=7017 flows=14513 cubes=0 time=0.04s
+solution check: W=18 B=17 OK
+labelling 0001111101000011111010000001110101011100000000000010101011100000
+  B.B.....B.B
+  .B.........
+  B.B.....B.B
+  ....W.W....
+  ...W.W.W.W.
+  ....W.W..W.
+  ...W.W.W.W.
+  ....W.W....
+  B.B.....B.B
+  ....WWW....
+  B.B.....B.B
+$ pqv 11 17 1
+FOUND (bound completion) R=11110000000 C=11110000100
+pqv n=11 T=17 FEASIBLE leaves=2216 pruned=2215 searched=0
+$ pq2 11 18
+n=11 T=18 K=-1 INFEASIBLE nodes1=474872 leaves=189337 leafSearched=0 nodes2=189337 flows=307100 cubes=0 time=0.84s
+$ pqv 11 18 1
+pqv n=11 T=18 INFEASIBLE leaves=189337 pruned=189337 searched=0
+$ pq2 12 21
+n=12 T=21 K=-1 FEASIBLE nodes1=1721852 leaves=682934 leafSearched=1 nodes2=682935 flows=1255327 cubes=0 time=3.61s
+solution check: W=21 B=21 OK
+labelling 0001111000110000001111110001111100010111000000000000000000011111111101
+  .BBB........
+  B.BBB.......
+  .B.BBB......
+  .........WWW
+  ........WWWW
+  .........WWW
+  ......W...WW
+  BBB.........
+  BBBB........
+  BBB.........
+  ......WWW.W.
+  .......WWW.W
+$ pqv 12 21 1
+FOUND (dfs) R=111111000000 C=111001110000
+pqv n=12 T=21 FEASIBLE leaves=42768 pruned=42767 searched=1
+$ pq2 12 22
+n=12 T=22 K=-1 INFEASIBLE nodes1=1766972 leaves=688447 leafSearched=0 nodes2=688447 flows=887721 cubes=0 time=2.30s
+$ pqv 12 22 1
+pqv n=12 T=22 INFEASIBLE leaves=688447 pruned=688447 searched=0
+$ pq2 13 24
+n=13 T=24 K=-1 FEASIBLE nodes1=37745 leaves=12269 leafSearched=0 nodes2=12269 flows=25387 cubes=0 time=0.08s
+solution check: W=25 B=24 OK
+labelling 0010101010100001010101010000001010101010101010100000000101010101010101010000
+  .B.B.B.B.B.B.
+  B...........B
+  ..W.W.W.W.W..
+  B...........B
+  ..W.W.W.W.W..
+  B...........B
+  ..W.W.W.W.W..
+  B...........B
+  ..W.W.W.W.W..
+  B...........B
+  ..W.W.W.W.W..
+  B...........B
+  .B.B.B.B.B.B.
+$ pqv 13 24 1
+FOUND (dfs) R=1111100000000 C=1111000111000
+pqv n=13 T=24 FEASIBLE leaves=26529 pruned=26528 searched=1
+$ pq2 13 25
+n=13 T=25 K=-1 INFEASIBLE nodes1=7273332 leaves=2994131 leafSearched=0 nodes2=2994131 flows=4097466 cubes=0 time=12.08s
+$ pqv 13 25 1
+pqv n=13 T=25 INFEASIBLE leaves=2994131 pruned=2994131 searched=0
+[gate] ok   Burnside script: action and brute-force self-checks
+[gate] ok   pq2 n=1 T=1 INFEASIBLE
+[gate] ok   pqv n=1 T=1 INFEASIBLE
+[gate] ok   pq2nosym n=1 T=1 INFEASIBLE
+[gate] ok   pqvnobound n=1 T=1 INFEASIBLE
+[gate] ok   pq2 n=2 T=1 INFEASIBLE
+[gate] ok   pqv n=2 T=1 INFEASIBLE
+[gate] ok   pq2nosym n=2 T=1 INFEASIBLE
+[gate] ok   pqvnobound n=2 T=1 INFEASIBLE
+[gate] ok   pq2 n=3 T=1 FEASIBLE
+[gate] ok   pqv n=3 T=1 FEASIBLE
+[gate] ok   pq2nosym n=3 T=1 FEASIBLE
+[gate] ok   pqvnobound n=3 T=1 FEASIBLE
+[gate] ok   pq2 witness n=3 has 1+1 queens, no attack
+[gate] ok   pq2 n=3 T=2 INFEASIBLE
+[gate] ok   pqv n=3 T=2 INFEASIBLE
+[gate] ok   pq2nosym n=3 T=2 INFEASIBLE
+[gate] ok   pqvnobound n=3 T=2 INFEASIBLE
+[gate] ok   n=3 T=2 orbit counts pq2=3 pqv=3 Burnside=3
+[gate] ok   n=3 orbit count matches claims.json
+[gate] ok   n=3 no diagonal search needed
+[gate] ok   pq2 n=4 T=2 FEASIBLE
+[gate] ok   pqv n=4 T=2 FEASIBLE
+[gate] ok   pq2nosym n=4 T=2 FEASIBLE
+[gate] ok   pqvnobound n=4 T=2 FEASIBLE
+[gate] ok   pq2 witness n=4 has 2+2 queens, no attack
+[gate] ok   pq2 n=4 T=3 INFEASIBLE
+[gate] ok   pqv n=4 T=3 INFEASIBLE
+[gate] ok   pq2nosym n=4 T=3 INFEASIBLE
+[gate] ok   pqvnobound n=4 T=3 INFEASIBLE
+[gate] ok   n=4 T=3 orbit counts pq2=10 pqv=10 Burnside=10
+[gate] ok   n=4 orbit count matches claims.json
+[gate] ok   n=4 no diagonal search needed
+[gate] ok   pq2 n=5 T=4 FEASIBLE
+[gate] ok   pqv n=5 T=4 FEASIBLE
+[gate] ok   pq2nosym n=5 T=4 FEASIBLE
+[gate] ok   pqvnobound n=5 T=4 FEASIBLE
+[gate] ok   pq2 witness n=5 has 4+4 queens, no attack
+[gate] ok   pq2 n=5 T=5 INFEASIBLE
+[gate] ok   pqv n=5 T=5 INFEASIBLE
+[gate] ok   pq2nosym n=5 T=5 INFEASIBLE
+[gate] ok   pqvnobound n=5 T=5 INFEASIBLE
+[gate] ok   n=5 T=5 orbit counts pq2=21 pqv=21 Burnside=21
+[gate] ok   n=5 orbit count matches claims.json
+[gate] ok   n=5 no diagonal search needed
+[gate] ok   pq2 n=6 T=5 FEASIBLE
+[gate] ok   pqv n=6 T=5 FEASIBLE
+[gate] ok   pq2nosym n=6 T=5 FEASIBLE
+[gate] ok   pqvnobound n=6 T=5 FEASIBLE
+[gate] ok   pq2 witness n=6 has 5+5 queens, no attack
+[gate] ok   pq2 n=6 T=6 INFEASIBLE
+[gate] ok   pqv n=6 T=6 INFEASIBLE
+[gate] ok   pq2nosym n=6 T=6 INFEASIBLE
+[gate] ok   pqvnobound n=6 T=6 INFEASIBLE
+[gate] ok   n=6 T=6 orbit counts pq2=169 pqv=169 Burnside=169
+[gate] ok   n=6 orbit count matches claims.json
+[gate] ok   n=6 no diagonal search needed
+[gate] ok   pq2 n=7 T=7 FEASIBLE
+[gate] ok   pqv n=7 T=7 FEASIBLE
+[gate] ok   pq2nosym n=7 T=7 FEASIBLE
+[gate] ok   pqvnobound n=7 T=7 FEASIBLE
+[gate] ok   pq2 witness n=7 has 7+7 queens, no attack
+[gate] ok   pq2 n=7 T=8 INFEASIBLE
+[gate] ok   pqv n=7 T=8 INFEASIBLE
+[gate] ok   pq2nosym n=7 T=8 INFEASIBLE
+[gate] ok   pqvnobound n=7 T=8 INFEASIBLE
+[gate] ok   n=7 T=8 orbit counts pq2=686 pqv=686 Burnside=686
+[gate] ok   n=7 orbit count matches claims.json
+[gate] ok   n=7 no diagonal search needed
+[gate] ok   pq2 n=8 T=9 FEASIBLE
+[gate] ok   pqv n=8 T=9 FEASIBLE
+[gate] ok   pq2nosym n=8 T=9 FEASIBLE
+[gate] ok   pqvnobound n=8 T=9 FEASIBLE
+[gate] ok   pq2 witness n=8 has 9+9 queens, no attack
+[gate] ok   pq2 n=8 T=10 INFEASIBLE
+[gate] ok   pqv n=8 T=10 INFEASIBLE
+[gate] ok   pq2nosym n=8 T=10 INFEASIBLE
+[gate] ok   pqvnobound n=8 T=10 INFEASIBLE
+[gate] ok   n=8 T=10 orbit counts pq2=2450 pqv=2450 Burnside=2450
+[gate] ok   n=8 orbit count matches claims.json
+[gate] ok   n=8 no diagonal search needed
+[gate] ok   pq2 n=9 T=12 FEASIBLE
+[gate] ok   pqv n=9 T=12 FEASIBLE
+[gate] ok   pq2nosym n=9 T=12 FEASIBLE
+[gate] ok   pqvnobound n=9 T=12 FEASIBLE
+[gate] ok   pq2 witness n=9 has 12+12 queens, no attack
+[gate] ok   pq2 n=9 T=13 INFEASIBLE
+[gate] ok   pqv n=9 T=13 INFEASIBLE
+[gate] ok   pq2nosym n=9 T=13 INFEASIBLE
+[gate] ok   pqvnobound n=9 T=13 INFEASIBLE
+[gate] ok   n=9 T=13 orbit counts pq2=8526 pqv=8526 Burnside=8526
+[gate] ok   n=9 orbit count matches claims.json
+[gate] ok   n=9 no diagonal search needed
+[gate] ok   pq2 n=10 T=14 FEASIBLE
+[gate] ok   pqv n=10 T=14 FEASIBLE
+[gate] ok   pq2nosym n=10 T=14 FEASIBLE
+[gate] ok   pqvnobound n=10 T=14 FEASIBLE
+[gate] ok   pq2 witness n=10 has 14+14 queens, no attack
+[gate] ok   pq2 n=10 T=15 INFEASIBLE
+[gate] ok   pqv n=10 T=15 INFEASIBLE
+[gate] ok   pq2nosym n=10 T=15 INFEASIBLE
+[gate] ok   pqvnobound n=10 T=15 INFEASIBLE
+[gate] ok   n=10 T=15 orbit counts pq2=46481 pqv=46481 Burnside=46481
+[gate] ok   n=10 orbit count matches claims.json
+[gate] ok   n=10 no diagonal search needed
+[gate] ok   pq2 n=11 T=17 FEASIBLE
+[gate] ok   pqv n=11 T=17 FEASIBLE
+[gate] ok   pq2 witness n=11 has 17+17 queens, no attack
+[gate] ok   pq2 n=11 T=18 INFEASIBLE
+[gate] ok   pqv n=11 T=18 INFEASIBLE
+[gate] ok   n=11 T=18 orbit counts pq2=189337 pqv=189337 Burnside=189337
+[gate] ok   n=11 orbit count matches claims.json
+[gate] ok   n=11 no diagonal search needed
+[gate] ok   pq2 n=12 T=21 FEASIBLE
+[gate] ok   pqv n=12 T=21 FEASIBLE
+[gate] ok   pq2 witness n=12 has 21+21 queens, no attack
+[gate] ok   pq2 n=12 T=22 INFEASIBLE
+[gate] ok   pqv n=12 T=22 INFEASIBLE
+[gate] ok   n=12 T=22 orbit counts pq2=688447 pqv=688447 Burnside=688447
+[gate] ok   n=12 orbit count matches claims.json
+[gate] ok   n=12 no diagonal search needed
+[gate] ok   pq2 n=13 T=24 FEASIBLE
+[gate] ok   pqv n=13 T=24 FEASIBLE
+[gate] ok   pq2 witness n=13 has 24+24 queens, no attack
+[gate] ok   pq2 n=13 T=25 INFEASIBLE
+[gate] ok   pqv n=13 T=25 INFEASIBLE
+[gate] ok   n=13 T=25 orbit counts pq2=2994131 pqv=2994131 Burnside=2994131
+[gate] ok   n=13 orbit count matches claims.json
+[gate] ok   n=13 no diagonal search needed

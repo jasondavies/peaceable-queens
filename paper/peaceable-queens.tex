@@ -1,0 +1,490 @@
+\pdfoutput=1
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array}
+\input{claims}
+\usepackage[margin=1in]{geometry}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\emergencystretch=3em
+\newcommand{\W}{\mathsf W}
+\newcommand{\B}{\mathsf B}
+
+\title{Peaceable queens on boards of size 16 to 20}
+\author{Jason Davies\thanks{\href{mailto:jason@jasondavies.com}{\nolinkurl{jason@jasondavies.com}}}}
+\date{\clDate}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+Let $a(n)$ be the largest $m$ such that $m$ white and $m$ black queens can be placed on an $n\times n$
+board with no queen attacking a queen of the other colour (OEIS A250000). The values $a(n)$ for $n\le15$
+were known. We prove $a(16)=\claSixteen$, $a(17)=\claSeventeen$, $a(18)=\claEighteen$,
+$a(19)=\claNineteen$ and $a(20)=\claTwenty$. In each case $a(n)=\lfloor7n^2/48\rfloor$, so the constructions that Ainley gave in
+1977 are optimal on these boards. The proof is computer-assisted. We label each of the $6n-2$ lines of
+the board white or black, which turns the problem into maximising the smaller of two cell counts. For
+fixed rows and columns we bound that by Lagrangian duality, and each Lagrangian subproblem is a minimum
+cut on the $4n-2$ diagonals. With symmetry breaking, the search for $n=20$ meets $\clLeavesTwentySci$
+row/column labellings up to symmetry. A single family of minimum cuts prunes every one of them. That
+search took $\clCpuHTwenty$ CPU hours, mostly on cloud machines. A second implementation repeats the
+whole search for $n\le17$ and $\clPqvFracEighteen\%$ of it for $n=18$. Orbit counts by Burnside's lemma
+confirm that every search is complete, and exact LP certificates and SAT proofs checked by
+\texttt{drat-trim} give further checks. As side results we find that $\clEnumSixteen$ inequivalent
+optimal configurations exist for $n=16$ (OEIS A260680) and that the $20\times20$ torus admits
+$\clTorusTwenty$ queens of each colour but not more (A279405).
+\end{abstract}
+
+\noindent\textbf{AI transparency statement.} The results, the computer-assisted proofs, the code and this
+manuscript were produced by artificial intelligence. The human author initiated the broader research and
+directed the AI systems, but did not write the text and has not checked the arguments. Details are given
+at the end of the paper.
+
+\section{Introduction}
+
+Two queens of different colours \emph{attack} each other if they share a row, a column or a diagonal and
+no queen stands between them. The \emph{peaceable queens} problem asks for $a(n)$, the largest $m$ such
+that $m$ white and $m$ black queens can be placed on an $n\times n$ board with no white queen attacking a
+black queen. It is Problem~C1 of Ainley's \emph{Mathematical Puzzles}~\cite{Ainley}. Bosch posed it again
+in 1999 and solved small cases by integer programming~\cite{Bosch1,Bosch2}, and it is sequence A250000 of
+the OEIS~\cite{OEIS}.
+
+Ainley gave constructions for every $n\le30$ and a general construction of asymptotic density $7/48$.
+His values agree with $\lfloor7n^2/48\rfloor$ for $14\le n\le30$ except at $n=27$, where a board with
+$106$ queens of each colour is now known; for every other $n$ with $16\le n\le30$ his values are still
+the best known~\cite{OEIS}. The exact values
+$a(1),\dots,a(15)=0,0,1,2,4,5,7,9,12,14,17,21,24,28,32$ were obtained with several methods. Smith, Petrie
+and Gent~\cite{SPG} used constraint programming with symmetry breaking, and Prestwich and
+Beck~\cite{PB} obtained $a(12)$ and $a(13)$. In 2014 Pratt confirmed $a(1),\dots,a(13)$ by integer
+programming and gave upper bounds such as $a(16)\le64$ and $a(19)\le90$. Tabatabai found $a(14)$ and
+$a(15)$ by integer programming in 2018 (all three in~\cite{OEIS}). The problem is also an exercise in
+Knuth's volume on satisfiability~\cite{Knuth}.
+
+Since $\lfloor 7n^2/48\rfloor$ matches every known value except $n=5$ and $n=9$ (where $a(n)$ is one
+larger), it has been asked whether Ainley's construction is optimal. Yao and Zeilberger~\cite{YZ}
+studied the problem numerically and symbolically, and Clinch, Drescher, Huynh and Saffidine~\cite{CDHS}
+record their conjecture that it is. Clinch et al.\ also proved $a(n)\le0.1716\,n^2$ for large $n$,
+improving the trivial bound $n^2/4$, and they noted that only the first fifteen terms were known. Kane
+studied the asymptotics~\cite{Kane}.
+
+\begin{theorem}\label{thm:main}
+$a(16)=\claSixteen$, $a(17)=\claSeventeen$, $a(18)=\claEighteen$, $a(19)=\claNineteen$ and
+$a(20)=\claTwenty$.
+\end{theorem}
+
+The lower bounds come from known constructions. For $n=16$ we use the Ainley arrangement shown in the
+OEIS entry (Figure~\ref{fig:16}). For $n=17,\dots,20$ we use the boards in Kamenetsky's file of best known
+solutions~\cite{OEIS}. We checked each of them directly for attacks. The content of
+Theorem~\ref{thm:main} is the upper bounds: no placement has $\clTSixteen$, $\clTSeventeen$, $\clTEighteen$, $\clTNineteen$ or
+$\clTTwenty$ queens of each colour, respectively.
+
+\begin{figure}[htbp]
+\centering
+{\small\ttfamily
+\begin{tabular}{l}
+. . . . W W W W . . . . . . . .\\
+. . . . W W W W . . . . . . . W\\
+. . . . W W W W . . . . . . W W\\
+. . . . W W W W . . . . . W W W\\
+. . . . . W W . . . . . W W W W\\
+. . . . . . . . . . . . W W W W\\
+. . . . . . . . . . . . W W W .\\
+. . . . . . . . . . . . W W . .\\
+. . . B . . . . . . . . . . . .\\
+. . B B . . . . . . . . . . . .\\
+. B B B . . . . . . . . . . . .\\
+B B B B . . . . . . B B . . . .\\
+B B B B . . . . . B B B . . . .\\
+B B B . . . . . B B B B . . . .\\
+B B . . . . . . B B B B . . . .\\
+B . . . . . . . B B B B . . . .
+\end{tabular}}
+\caption{An Ainley-type arrangement of $37$ white and $37$ black queens on the $16\times16$ board, as
+reproduced in~\cite{OEIS}.}\label{fig:16}
+\end{figure}
+
+\section{Line labellings}
+
+The board has $n$ rows, $n$ columns, $2n-1$ diagonals ($i-j$ constant) and $2n-1$ antidiagonals
+($i+j$ constant), so $6n-2$ \emph{lines} in all. Every cell lies on exactly four lines, and distinct
+cells have distinct (diagonal, antidiagonal) pairs. A \emph{labelling} $x$ assigns $\W$ or $\B$ to each
+line. A cell is a \emph{$\W$-cell} of $x$ if all four of its lines are labelled $\W$, and a
+\emph{$\B$-cell} if all four are labelled $\B$. Let $W(x)$ and $B(x)$ be the numbers of $\W$-cells and
+$\B$-cells. No cell is both.
+
+\begin{lemma}\label{lem:label}
+$a(n)=\max_x\min\{W(x),B(x)\}$.
+\end{lemma}
+
+\begin{proof}
+Take a peaceable placement with $m$ queens of each colour. Suppose some line contains queens of both
+colours. Walking along it, we meet two consecutive queens of different colours, with no queen between
+them, and these two attack each other. So every line contains queens of at most one colour. Label a line
+by the colour of its queens, and label empty lines arbitrarily. Then every white queen stands on a
+$\W$-cell and every black queen on a $\B$-cell, so $\min\{W,B\}\ge m$. Conversely, given $x$, put
+$m=\min\{W,B\}$ white queens on $\W$-cells and $m$ black queens on $\B$-cells. A line containing queens of
+both colours would carry both labels, which is impossible. So no white queen shares a line with a black
+queen, and in particular none attacks one.
+\end{proof}
+
+The proof shows that it does not matter whether ``attack'' allows blocking. So the question is whether
+some labelling has $W\ge T$ and $B\ge T$, where $T=\lfloor7n^2/48\rfloor+1$.
+
+\section{The bound}
+
+Let $R$ and $C$ be the sets of rows and columns labelled $\W$. Every $\W$-cell lies in $R\times C$ and
+every $\B$-cell in $R^c\times C^c$. This gives the \emph{count bound}: if some rows and columns are
+labelled, then $W\le r_{\W} c_{\W}$, where $r_{\W}$ and $c_{\W}$ are the numbers of rows and columns not
+labelled $\B$. The same bound with the colours exchanged holds for $B$. Once $(R,C)$ is fixed, call the
+cells of $R\times C$ \emph{$\W$-candidates} and those of $R^c\times C^c$ \emph{$\B$-candidates}. Write
+$x_d,y_e\in\{0,1\}$ for the labels of diagonal $d$ and antidiagonal $e$, with $1$ meaning $\W$. A
+$\W$-candidate on $d$ and $e$ is a $\W$-cell if and only if $x_d=y_e=1$. A $\B$-candidate is a $\B$-cell
+if and only if $x_d=y_e=0$.
+
+\begin{lemma}[Lagrangian bound]\label{lem:lag}
+For any set $X$ of labellings and any $\lambda\in[0,1]$,
+\[\max_{x\in X}\min\{W(x),B(x)\}\le \max_{x\in X}\{\lambda W(x)+(1-\lambda)B(x)\}.\]
+\end{lemma}
+
+\begin{proof}
+$\min\{W,B\}\le\lambda W+(1-\lambda)B$ holds for each $x$.
+\end{proof}
+
+\begin{lemma}[Min-cut evaluation]\label{lem:cut}
+Fix $(R,C)$, integers $0\le p\le Q$ and any partial labelling of the diagonals and antidiagonals. There
+is a network $N_p$, on a source $s$, a sink $t$ and one node for each unlabelled diagonal or
+antidiagonal, and a constant $G$, such that each completion $x$ satisfies
+$pW(x)+(Q-p)B(x)=G-\operatorname{cap}(S_x)$, where $S_x$ is the $s$--$t$ cut whose source side
+consists of $s$ and the lines labelled $\W$ by $x$. Hence
+$U_p:=\max_x\{pW+(Q-p)B\}=G-\operatorname{mincut}(N_p)$.
+\end{lemma}
+
+\begin{proof}
+For $0/1$ variables,
+\begin{align*}
+p\,xy&=p-p\,[x=0]-p\,[x=1,y=0],\\
+(Q-p)(1-x)(1-y)&=(Q-p)-(Q-p)\,[x=1]-(Q-p)\,[x=0,y=1].
+\end{align*}
+With the source side meaning $\W$, the four bracketed indicators are exactly the costs of the arcs
+$s\to x$, $x\to y$, $x\to t$ and $y\to x$, each of capacity $p$ or $Q-p$, in the cut $S_x$. We sum these
+identities over the $\W$-candidates (with $x=x_d$, $y=y_e$) and the $\B$-candidates. If a line is
+already labelled, we substitute its value. The term then becomes a constant (its gain, or $0$) or a
+single arc at the other line. Every node has arcs from $s$ and to $t$, and exactly one of these two is
+cut. So we may subtract the smaller of the two capacities from both and from $G$. Distinct completions
+give distinct cuts, and every cut arises from a completion, so the maximum over completions is
+$G$ minus the minimum cut.
+\end{proof}
+
+Equivalently, $pW+(Q-p)B$ is a supermodular pseudo-Boolean function of the free lines in which every
+term involves at most two variables. Such functions are maximised by minimum cuts
+\cite{Hammer,KZ}. Without the row/column stage every cell would couple four lines, and the same
+function would be a maximum-weight closure~\cite{Picard}. The program uses $Q=256$.
+
+\begin{corollary}[soundness needs only a feasible flow]\label{cor:sound}
+If $f$ is the value of any feasible $s$--$t$ flow in $N_p$ and $G-f<QT$, then no completion has
+$W\ge T$ and $B\ge T$.
+\end{corollary}
+
+\begin{proof}
+Any feasible flow has value at most the capacity of every cut, so for every completion $x$ we have
+$pW+(Q-p)B=G-\operatorname{cap}(S_x)\le G-f<QT$. By Lemma~\ref{lem:lag} with $\lambda=p/Q$,
+$\min\{W,B\}<T$.
+\end{proof}
+
+So the correctness of the pruning does not depend on the max-flow routine finding an optimal flow or on
+how $p$ is chosen. These only affect how much is pruned. The program picks $p$ by bisection: $U_p$ is
+convex in $p$, and $W(x^*)-B(x^*)$ is a subgradient at the optimal completion $x^*$. The completion
+$x^*$ is itself a labelling, and if $\min\{W(x^*),B(x^*)\}\ge T$ the search has found a solution.
+
+\section{Symmetry and search}
+
+The group $G=D_4\times\{\text{colour swap}\}$ has order~$16$ and acts on labellings. A symmetry of the
+board maps the four lines of each cell to the four lines of the image cell, and the colour swap
+exchanges $W$ and $B$. So $\min\{W,B\}$ and the conditions $W,B\ge T$ are $G$-invariant. The row and
+column lines are enumerated in groups $\{\text{row }e,\text{ row }n-1-e,\text{ column }e,\text{ column
+}n-1-e\}$ for $e=0,1,\dots$; when $n$ is odd the last group is $\{\text{row }m,\text{ column }m\}$ with
+$m=(n-1)/2$. Each group is mapped onto itself by every element of $G$.
+
+\begin{lemma}\label{lem:sym}
+Order the row and column lines group by group. It suffices to search the labellings whose row/column part
+is lexicographically minimal in its $G$-orbit. Moreover, at the end of every group the search may
+discard any prefix that is not lexicographically $\le$ each of its $16$ images.
+\end{lemma}
+
+\begin{proof}
+Let $S$ be the set of row and column lines. It is $G$-invariant, so $G$ acts on labellings of $S$. Each
+orbit of labellings contains one whose restriction to $S$ is lexicographically minimal among the
+restrictions of its images, and that labelling has the same value of $\min\{W,B\}$. Let $P$ be a union of
+initial groups. It is $G$-invariant, so the restriction of $g\cdot x$ to $P$ depends only on the
+restriction of $x$ to $P$. The order lists $P$ first, so lexicographic comparison of whole sequences
+compares their restrictions to $P$ first. If $x|_S\le(g\cdot x)|_S$ then $x|_P\le(g\cdot x)|_P$. So
+the lex-minimal representative survives every prefix test.
+\end{proof}
+
+The test at the end of the last group keeps a labelling of $S$ only if it is the lex-minimum of its
+orbit, so at most one labelling per orbit survives. Lemma~\ref{lem:sym} says that exactly one does. We
+also check this numerically. By Burnside's lemma we count the orbits of pairs $(R,C)$ that pass the
+count bound, and this number must equal the number of leaves of the search (Section~\ref{sec:ver}).
+
+The search has two stages. Stage~1 is a depth-first search over row and column labels with the pruning
+of Lemma~\ref{lem:sym} and the count bound. At each complete $(R,C)$, Stage~2 evaluates
+Lemma~\ref{lem:cut} with all diagonals free. If no $p$ prunes, it branches on the diagonals and
+antidiagonals and recomputes the bound at every node. For $n\ge16$ the work is split into \emph{cubes}:
+the canonical prefixes of the first four groups (sixteen lines). There are $\clCubes$ of them for each
+$n=16,\dots,20$. Each cube is solved by a separate process and its result is logged together with its
+node and flow counts.
+
+\section{Computation}
+
+\begin{table}[!ht]
+\centering
+\begin{tabular}{rrrrrr}
+\toprule
+$n$ & $a(n)$ & $T$ & $(R,C)$ orbits & diagonal searches & CPU time\\\midrule
+\clRunRows
+\bottomrule
+\end{tabular}
+\caption{Searches proving that no labelling has $W,B\ge T$, with $T=a(n)+1$. The fourth column counts the
+$(R,C)$ orbits that pass the count bound; each was pruned by Corollary~\ref{cor:sound} at the root, so
+the fifth column, which counts the orbits whose diagonals had to be searched, is $0$ throughout. Times are
+total CPU times, on a shared local machine (at most $\clWorkersMax$ processes at a time) and, for
+$n=19,20$, mostly on cloud containers. For $n\le15$
+the same program also finds a placement with $a(n)$ queens of each colour.}
+\label{tab:runs}
+\end{table}
+
+Table~\ref{tab:runs} lists the runs. For $n=20$ and $T=\clTTwenty$ the $\clCubes$ cubes contain
+$\clLeavesTwenty$ orbits of $(R,C)$ that pass the count bound. The root bound pruned all of them,
+using $\clFlowsTwentySci$ maximum-flow computations, so no diagonal search was needed. For $n=19$ and
+$n=20$ most cubes were run on rented cloud containers (Modal), with the same source code compiled there
+by gcc~12.2; there a cube takes about $1.3$ times as long as on the local machine. Every line returned
+from the cloud was checked (cube number, prefix and format) before it was logged, and random cubes were
+rerun locally with identical results. From $n=15$ on, the number of orbits grows by a factor between
+$\clGrowthMin$ and $\clGrowthMax$ per unit increase of $n$, and the running time roughly in proportion. The same program reproduces every known value $a(n)$, $n\le15$: it finds a placement
+with $a(n)$ queens of each colour, and it proves that $a(n)+1$ is impossible.
+
+\section{Verification}\label{sec:ver}
+
+We checked the computation in the following ways. The first two use different code but the same method;
+the others avoid parts of the method.
+
+\paragraph{A second implementation.} It is written in Rust, separately from the first program (in C).
+It differs in four ways:
+\begin{itemize}
+\item it enumerates pairs of bitmasks $(R,C)$ and keeps a pair if its integer code is minimal among its
+$16$ images, a different canonical form;
+\item it evaluates the Lagrangian bound on the generic closure network, with one auxiliary node per
+candidate cell;
+\item it solves that network with FIFO push--relabel~\cite{GT}, with $\lambda=p/1000$;
+\item it searches any unpruned $(R,C)$ by plain depth-first search that uses only counting bounds.
+\end{itemize}
+Its pruning is sound by the analogue of Corollary~\ref{cor:sound}. For $n=16$ and $n=17$ it repeated the
+whole search. It reported infeasibility, and its orbit counts ($\clLeavesSixteen$ and
+$\clLeavesSeventeen$) agree exactly with those of the first program. For $n=18$ we ran it on slices:
+slice $j$ of $m=199$ consists of the canonical pairs with $R\equiv j\pmod{199}$, where bit $i$ of $R$ is
+row $i$, and the slices $j=0,\dots,198$ partition the search. So far $\clPqvPartsEighteen$ slices
+($\clPqvLeavesEighteen$ orbits, $\clPqvFracEighteen\%$ of the total) have been run, and all were pruned.
+The second implementation was not run for $n=19$ and $n=20$.
+
+\paragraph{Orbit counts by Burnside's lemma.} A short independent script counts, for every $n\le20$, the
+$G$-orbits of pairs $(R,C)$ with $|R||C|\ge T$ and $|R^c||C^c|\ge T$. It uses Burnside's lemma and the
+action of $G$ on pairs (reversals, transposition and complementation). The script checks the action
+against the cell maps and checks the orbit counts against brute-force enumeration for $n\le8$. For
+$n=16,\dots,20$ the counts are $\clLeavesSixteen$, $\clLeavesSeventeen$, $\clLeavesEighteen$,
+$\clLeavesNineteen$ and $\clLeavesTwenty$. They agree with the total numbers of leaves over all cubes of the first program, and
+for $n\le15$ with the first program and the second implementation. So the cubes together visit exactly one
+pair from each orbit, and none is missing.
+
+\paragraph{Exact LP certificates.} For fixed $(R,C)$, the LP relaxation
+\begin{align*}
+\max\ s\quad\text{s.t.}\quad &s\le\textstyle\sum_{\W\text{-cand}}z_c,\quad s\le\sum_{\B\text{-cand}}u_c,\\
+&z_c\le x_d,\ z_c\le y_e\quad\text{for each $\W$-candidate $c$},\\
+&u_c\le1-x_d,\ u_c\le1-y_e\quad\text{for each $\B$-candidate $c$},
+\end{align*}
+with all variables in $[0,1]$,
+bounds $\max\min\{W,B\}$ over the diagonal labels. This uses neither supermodularity nor minimum cuts.
+We solve it in floating point with HiGHS~\cite{HiGHS} through SciPy~\cite{SciPy}, round the dual
+multipliers to rationals and repair them to a feasible dual solution. Its objective, evaluated in exact
+rational arithmetic, is then a valid upper bound by weak duality. For each $n=16,\dots,19$ we certified
+$\clLpUniform$ uniformly random pairs $(R,C)$ passing the count bound and $\clLpBalanced$ random
+``balanced'' pairs (both products $\ge T+n$). We also certified the pair $(R,C)$ of the best known board
+(rows and columns holding a white queen are labelled $\W$) and all pairs within Hamming distance~$2$ of
+it, from $\clLpNbSixteen$ pairs for $n=16$ to $\clLpNbNineteen$ for $n=19$. Every
+certified bound was below $T$. The largest bounds for $n=16,\dots,19$ were
+$\clLpMaxSixteen$, $\clLpMaxSeventeen$, $\clLpMaxEighteen$ and $\clLpMaxNineteen$, against
+$T=\clTSixteen,\clTSeventeen,\clTEighteen,\clTNineteen$.
+
+\paragraph{SAT with checked proofs.} We used two encodings, each with sequential-counter cardinality
+constraints, and the Glucose solver through PySAT~\cite{PySAT}. The first encodes placements directly by
+cell variables, with a conflict clause for every pair of cells sharing a line, so it does not use
+Lemma~\ref{lem:label}. The second is the line-labelling encoding. Every unsatisfiability claim was checked
+with \texttt{drat-trim}~\cite{DRAT}. Both encodings confirm $a(n)$ for $n\le\clSatN$. In addition,
+random canonical $(R,C)$ for $n=16$ were checked by SAT: $\clSatUniform$ uniform and $\clSatBalanced$
+balanced ones (both products at least $56$). We also checked $\clSatCubesTwelve$ random cubes for $n=12$,
+$T=22$, and $\clSatCubesThirteen$ for $n=13$, $T=25$, in which the first $12$ row and column labels are
+fixed. All were unsatisfiable with verified proofs. These checks
+do not depend on Lemmas~\ref{lem:lag}--\ref{lem:sym}.
+
+\paragraph{The definition itself.} A depth-first search over sets of white queens finds $a(n)$ for
+$n\le\clBruteN$ directly from the definition, using only $f(S)\ge T$, where $f(S)$ is the number of
+cells sharing no line with the white set~$S$. A search over all $3^{n^2}$ placements with the blocking
+rule of chess gives the same values for $n\le4$. A direct CP-SAT model~\cite{ORTools} of placements gives
+the same values for $n\le\clCpsatN$.
+
+\paragraph{Unit tests and replays.} The min-cut evaluation of Lemma~\ref{lem:cut} agrees with brute-force
+maximisation over all completions on $\clSelftestTrials$ random instances with $3\le n\le8$, including partially
+labelled diagonals. The same holds for the second implementation's network on random instances with
+$n\le6$. Switching off the symmetry breaking gives identical answers for $n\le\clNosymN$, and so does
+switching off the min-cut bound in the second implementation (plain search). Random cubes of every run were rerun
+and gave log lines identical to the recorded ones, apart from the time.
+
+\paragraph{Placements.} Every placement that we report was checked directly for attacks.
+
+\paragraph{Review.} An AI referee, run separately from the sessions that designed the method and wrote the
+programs, read the proofs
+of Lemmas~\ref{lem:label}--\ref{lem:sym} and both programs adversarially. It wrote the Burnside, LP,
+brute-force and CP-SAT checks above. It found no error affecting the results. Its minor corrections (a
+misstated number of fixed lines for the $n=13$ SAT cubes in an earlier draft, Corollary~\ref{cor:sound}
+as the precise statement of what the pruning needs, and the Burnside test of completeness) are
+incorporated.
+
+\paragraph{What has to be trusted.} The upper bounds rest on Lemmas~\ref{lem:label}--\ref{lem:sym} and
+on the first program. Table~\ref{tab:cover} lists what checked each value. For $n\le17$ a second,
+separately written program repeats the whole search with the same result; for $n=18$ it repeats part of
+it. For $n=19$ and $n=20$ only the first program covers the whole search. There the Burnside counts
+confirm that it visits every orbit; a sample of the cubes computed in the cloud was rerun locally with
+identical results; and the exact LP certificates and SAT proofs on samples check the bound without
+Lemmas~\ref{lem:lag}--\ref{lem:sym}. A self-contained proof certificate would give a value of $p$ and a
+feasible flow for each of the $\clLeavesTwentySci$ orbits for $n=20$. That would take hundreds of
+gigabytes. Instead each cube is logged with its counts, and any cube can be rerun in seconds to minutes.
+
+\begin{table}[!ht]
+\centering\small
+\begin{tabular}{l>{\raggedright}p{2.1cm}>{\raggedright}p{3.4cm}>{\raggedright\arraybackslash}p{7.2cm}}
+\toprule
+$n$ & first program & second implementation & other checks\\\midrule
+$\le15$ & complete & complete & definition search ($n\le\clBruteN$), CP-SAT ($n\le\clCpsatN$), SAT+DRAT ($n\le\clSatN$)\\
+16 & complete & complete & Burnside; SAT+DRAT on \clSatSixteenLeaves{} leaves; LP; replays\\
+17 & complete & complete & Burnside; LP certificates; replays\\
+18 & complete & $\clPqvFracEighteen\%$ (\clPqvPartsEighteen{} of 199 slices) & Burnside; LP certificates; replays\\
+19 & complete & --- & Burnside; LP certificates; \clReplayNineteen{} cloud cubes rerun locally\\
+20 & complete & --- & Burnside; \clReplayTwenty{} cloud cubes rerun locally\\
+\bottomrule
+\end{tabular}
+\caption{What checked each upper bound. ``Burnside'' means that the number of orbits visited equals the
+Burnside count; ``LP'' the exact LP certificates on sampled $(R,C)$; ``replays'' reruns of random cubes
+with identical log lines.}
+\label{tab:cover}
+\end{table}
+
+\section{Related sequences}
+
+The same method gives side results on two related sequences. Each was computed by a single implementation only, and each
+reproduces all the known terms of its sequence.
+\begin{itemize}
+\item \emph{Counting optimal configurations (A260680).} Two solutions are equivalent if they differ by an
+element of $G$. We enumerate, without symmetry breaking, all labellings with $\min\{W,B\}\ge a(n)$. We
+expand each into its placements and count orbits under $G$. This reproduces the known terms
+$1,1,1,10,3,35,19,71,18,380$ for $n\le10$ and gives $\clEnumEleven$, $\clEnumTwelve$, $\clEnumThirteen$,
+$\clEnumFourteen$ and $\clEnumFifteen$ for $n=11,\dots,15$. For $n=16$ the enumeration, split into
+$\clEnumCubesSixteen$ cubes, finds $\clEnumLabSixteen$ labellings with $\min\{W,B\}\ge37$, all with
+different cell sets, and $\clEnumSixteen$ inequivalent optimal configurations. Since
+$\clEnumLabSixteen=16\cdot\clEnumSixteen$, no optimal configuration for $n=16$ is fixed by a nontrivial
+element of~$G$. The split version reproduces the values for $n=10,12,13,14$ first.
+\item \emph{The torus (A279405).} On the $n\times n$ torus the lines are the rows, the columns and the
+diagonals $i\pm j\bmod n$. The same method, with the subgroup of symmetries generated by translations,
+the reflections $i\mapsto-i$ and $j\mapsto-j$, transposition and the colour swap, reproduces the known
+values for $4\le n\le14$, $n=16$ and $n=18$, each at $a(n)$ and $a(n)+1$. For $n=20$ it gives $\clTorusTwenty$: a placement with
+$\clTorusTwenty$ of each colour exists, and $\clTorusTwentyT$ is impossible ($\clTorusPairs$ orbits, of
+which $\clTorusSearched$ needed a diagonal search, in $\clTorusMinutes$ CPU minutes). The repository version of the program, which can split the search into
+parts and caches the representatives of complements, reproduces all these values and the $n=20$ counts
+exactly. The value for $n=19$ is still
+unknown. Odd tori are harder for the method, because the root bound fails for many orbits.
+\end{itemize}
+
+\paragraph{Availability.} The code, logs and verification scripts are in the accompanying
+repository\footnote{\url{https://github.com/jasondavies/peaceable-queens}.}. The script
+\texttt{scripts/verify.py} rebuilds the programs and checks every number quoted here. By default this
+takes a few minutes. Its \texttt{-{}-full} option reruns the complete search for any $n$. The cloud runs used
+the dispatcher in \texttt{code/modal/}, whose returned results are logged in the same format as the local
+runs.
+
+\section*{Declaration of AI-generated research and authorship}
+This manuscript is the product of an AI-driven research process. The human author initiated a broader
+investigation of open problems in the OEIS, and AI systems worked on this problem within it. AI systems
+produced all of the following: the method, the proofs, the code, the computations and their checks, and
+the organisation and writing of the text. The system was Claude Opus~5.5 (Anthropic), used through
+Claude Code. The human author directed the AI systems but wrote no part of the
+manuscript; he also started some of the cloud computations, using commands prepared by the AI system.
+
+The computational claims are reproduced by \texttt{scripts/verify.py}. At the time of writing, the
+mathematics and the code have been checked only by AI systems and by computer verification. These checks
+include an adversarial review of the proofs and of both search programs by an independent AI referee,
+who also wrote the Burnside, LP-certificate, brute-force and CP-SAT checks of Section~\ref{sec:ver}. No
+independent human expert has reviewed the work. The human author has not read this manuscript or checked
+its arguments. The author takes responsibility for the accuracy of this disclosure.
+
+\raggedright
+\begin{thebibliography}{99}
+\bibitem{Ainley} S.~Ainley, \emph{Mathematical Puzzles}, G.~Bell \& Sons, London, 1977.
+\bibitem{Bosch1} R.~A.~Bosch, \emph{Peaceably coexisting armies of queens}, Optima (Mathematical
+Programming Society Newsletter) \textbf{62} (1999).
+\bibitem{Bosch2} R.~A.~Bosch, \emph{Armies of queens, revisited}, Optima (Mathematical Programming Society
+Newsletter) \textbf{64} (2000), 15.
+\bibitem{CDHS} K.~Clinch, M.~Drescher, T.~Huynh, A.~Saffidine, \emph{Constructions, bounds, and algorithms
+for peaceable queens}, in: Proceedings of the Symposium on Algorithm Engineering and Experiments
+(ALENEX 2025), SIAM, 2025, 160--167.
+\href{https://doi.org/10.1137/1.9781611978339.13}{doi:10.1137/1.9781611978339.13}; arXiv:2406.06974,
+\href{https://doi.org/10.48550/arXiv.2406.06974}{doi:10.48550/arXiv.2406.06974}.
+\bibitem{GT} A.~V.~Goldberg, R.~E.~Tarjan, \emph{A new approach to the maximum-flow problem}, J.\ ACM
+\textbf{35} (1988), 921--940. \href{https://doi.org/10.1145/48014.61051}{doi:10.1145/48014.61051}.
+\bibitem{Hammer} P.~L.~Ivănescu (Hammer), \emph{Some network flow problems solved with pseudo-Boolean
+programming}, Oper.\ Res.\ \textbf{13} (1965), 388--399.
+\href{https://doi.org/10.1287/opre.13.3.388}{doi:10.1287/opre.13.3.388}.
+\bibitem{HiGHS} Q.~Huangfu, J.~A.~J.~Hall, \emph{Parallelizing the dual revised simplex method}, Math.\
+Program.\ Comput.\ \textbf{10} (2018), 119--142.
+\href{https://doi.org/10.1007/s12532-017-0130-5}{doi:10.1007/s12532-017-0130-5}.
+\bibitem{PySAT} A.~Ignatiev, A.~Morgado, J.~Marques-Silva, \emph{PySAT: a Python toolkit for prototyping
+with SAT oracles}, in: SAT 2018, Lecture Notes in Comput.\ Sci.\ \textbf{10929}, Springer, 2018,
+428--437. \href{https://doi.org/10.1007/978-3-319-94144-8_26}{doi:10.1007/978-3-319-94144-8\_26}.
+\bibitem{Kane} D.~M.~Kane, \emph{Asymptotic results for the queen packing problem}, preprint (2017),
+arXiv:1703.04538. \href{https://doi.org/10.48550/arXiv.1703.04538}{doi:10.48550/arXiv.1703.04538}.
+\bibitem{Knuth} D.~E.~Knuth, \emph{The Art of Computer Programming, Volume~4, Fascicle~6:
+Satisfiability}, Addison-Wesley, 2015, p.~180, exercise~488, and pp.~282--283.
+\bibitem{KZ} V.~Kolmogorov, R.~Zabih, \emph{What energy functions can be minimized via graph cuts?},
+IEEE Trans.\ Pattern Anal.\ Mach.\ Intell.\ \textbf{26} (2004), 147--159.
+\href{https://doi.org/10.1109/TPAMI.2004.1262177}{doi:10.1109/TPAMI.2004.1262177}.
+\bibitem{OEIS} OEIS Foundation Inc., \emph{The On-Line Encyclopedia of Integer Sequences}, sequences
+A250000 (revision~375, including the comments, the extensions, and D.~Kamenetsky's file of best known
+solutions for $12\le n\le30$), A260680 and A279405, \url{https://oeis.org}.
+\bibitem{ORTools} L.~Perron, F.~Didier, \emph{CP-SAT}, OR-Tools version~9.15, Google,
+\url{https://developers.google.com/optimization}.
+\bibitem{Picard} J.-C.~Picard, \emph{Maximal closure of a graph and applications to combinatorial
+problems}, Management Sci.\ \textbf{22} (1976), 1268--1272.
+\href{https://doi.org/10.1287/mnsc.22.11.1268}{doi:10.1287/mnsc.22.11.1268}.
+\bibitem{PB} S.~Prestwich, J.~C.~Beck, \emph{Exploiting dominance in three symmetric problems}, in:
+Proceedings of the Fourth International Workshop on Symmetry and Constraint Satisfaction Problems
+(SymCon'04), 2004, 63--70.
+\bibitem{SciPy} P.~Virtanen et al., \emph{SciPy 1.0: fundamental algorithms for scientific computing in
+Python}, Nature Methods \textbf{17} (2020), 261--272.
+\href{https://doi.org/10.1038/s41592-019-0686-2}{doi:10.1038/s41592-019-0686-2}.
+\bibitem{SPG} B.~M.~Smith, K.~E.~Petrie, I.~P.~Gent, \emph{Models and symmetry breaking for `peaceable
+armies of queens'}, in: CPAIOR 2004, Lecture Notes in Comput.\ Sci.\ \textbf{3011}, Springer, 2004,
+271--286. \href{https://doi.org/10.1007/978-3-540-24664-0_19}{doi:10.1007/978-3-540-24664-0\_19}.
+\bibitem{DRAT} N.~Wetzler, M.~J.~H.~Heule, W.~A.~Hunt, \emph{DRAT-trim: efficient checking and trimming
+using expressive clausal proofs}, in: SAT 2014, Lecture Notes in Comput.\ Sci.\ \textbf{8561}, Springer,
+2014, 422--429. \href{https://doi.org/10.1007/978-3-319-09284-3_31}{doi:10.1007/978-3-319-09284-3\_31}.
+\bibitem{YZ} Y.~Yao, D.~Zeilberger, \emph{Numerical and symbolic studies of the peaceable queens
+problem}, Exp.\ Math.\ \textbf{31} (2022), 269--279; arXiv:1902.05886.
+\href{https://doi.org/10.1080/10586458.2019.1616338}{doi:10.1080/10586458.2019.1616338}.
+\end{thebibliography}
+\end{document}

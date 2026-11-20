@@ -1,0 +1,4 @@
+FOUND (bound completion) R=101010000 C=101010100
+pqv n=9 T=12 FEASIBLE leaves=1544 pruned=1543 searched=0
+
+EXIT 0 wall 0.0s

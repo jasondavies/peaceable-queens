@@ -1,0 +1,67 @@
+queens 2 1 UNSAT VERIFIED
+lines 2 1 UNSAT VERIFIED
+queens 3 1 SAT None
+lines 3 1 SAT None
+queens 3 2 UNSAT VERIFIED
+lines 3 2 UNSAT VERIFIED
+queens 4 2 SAT None
+lines 4 2 SAT None
+queens 4 3 UNSAT VERIFIED
+lines 4 3 UNSAT VERIFIED
+queens 5 4 SAT None
+lines 5 4 SAT None
+queens 5 5 UNSAT VERIFIED
+lines 5 5 UNSAT VERIFIED
+queens 6 5 SAT None
+lines 6 5 SAT None
+queens 6 6 UNSAT VERIFIED
+lines 6 6 UNSAT VERIFIED
+queens 7 7 SAT None
+lines 7 7 SAT None
+queens 7 8 UNSAT VERIFIED
+lines 7 8 UNSAT VERIFIED
+leaf 16 38 0100011101110000 1000001010101100 UNSAT VERIFIED
+leaf 16 38 0100101111111100 1000111100111010 UNSAT VERIFIED
+leaf 16 38 1101111011011000 1101100000000001 UNSAT VERIFIED
+leaf 16 38 0111011010111100 1001101001011010 UNSAT VERIFIED
+leaf 16 38 0100110101110100 1000001011110110 UNSAT VERIFIED
+leaf 16 38 1100100011101000 0101100110110100 UNSAT VERIFIED
+leaf 16 38 1011010010101100 0111011010110010 UNSAT VERIFIED
+leaf 16 38 1111000001100000 0010101010111000 UNSAT VERIFIED
+leaf 16 38 0101000110101000 1101000111011010 UNSAT VERIFIED
+leaf 16 38 0111001010101100 1010011111010001 UNSAT VERIFIED
+[gate] ok   SAT queens n=2 T=1: UNSAT VERIFIED
+[gate] ok   SAT lines n=2 T=1: UNSAT VERIFIED
+[gate] ok   SAT queens n=3 T=1: SAT
+[gate] ok   SAT lines n=3 T=1: SAT
+[gate] ok   SAT queens n=3 T=2: UNSAT VERIFIED
+[gate] ok   SAT lines n=3 T=2: UNSAT VERIFIED
+[gate] ok   SAT queens n=4 T=2: SAT
+[gate] ok   SAT lines n=4 T=2: SAT
+[gate] ok   SAT queens n=4 T=3: UNSAT VERIFIED
+[gate] ok   SAT lines n=4 T=3: UNSAT VERIFIED
+[gate] ok   SAT queens n=5 T=4: SAT
+[gate] ok   SAT lines n=5 T=4: SAT
+[gate] ok   SAT queens n=5 T=5: UNSAT VERIFIED
+[gate] ok   SAT lines n=5 T=5: UNSAT VERIFIED
+[gate] ok   SAT queens n=6 T=5: SAT
+[gate] ok   SAT lines n=6 T=5: SAT
+[gate] ok   SAT queens n=6 T=6: UNSAT VERIFIED
+[gate] ok   SAT lines n=6 T=6: UNSAT VERIFIED
+[gate] ok   SAT queens n=7 T=7: SAT
+[gate] ok   SAT lines n=7 T=7: SAT
+[gate] ok   SAT queens n=7 T=8: UNSAT VERIFIED
+[gate] ok   SAT lines n=7 T=8: UNSAT VERIFIED
+[gate] ok   n=16 leaf R=0100011101110000 C=1000001010101100 UNSAT, proof verified
+[gate] ok   n=16 leaf R=0100101111111100 C=1000111100111010 UNSAT, proof verified
+[gate] ok   n=16 leaf R=1101111011011000 C=1101100000000001 UNSAT, proof verified
+[gate] ok   n=16 leaf R=0111011010111100 C=1001101001011010 UNSAT, proof verified
+[gate] ok   n=16 leaf R=0100110101110100 C=1000001011110110 UNSAT, proof verified
+[gate] ok   n=16 leaf R=1100100011101000 C=0101100110110100 UNSAT, proof verified
+[gate] ok   n=16 leaf R=1011010010101100 C=0111011010110010 UNSAT, proof verified
+[gate] ok   n=16 leaf R=1111000001100000 C=0010101010111000 UNSAT, proof verified
+[gate] ok   n=16 leaf R=0101000110101000 C=1101000111011010 UNSAT, proof verified
+[gate] ok   n=16 leaf R=0111001010101100 C=1010011111010001 UNSAT, proof verified
+[gate] ok   recorded SAT samples: 200 uniform + 200 balanced n=16 leaves, 8 n=12 and 3 n=13 cubes with 12 lines fixed
+[gate] ok   n=16 SAT leaves: 400 in all
+[gate] ok   recorded SAT samples: 411 checks, all UNSAT with verified proofs

@@ -1,0 +1,20 @@
+n=15 T=32 K=-1 FEASIBLE nodes1=13261928 leaves=5555821 leafSearched=3 nodes2=5555848 flows=9567522 cubes=0 time=41.56s
+solution check: W=32 B=32 OK
+labelling 0101011111010100101011111010100000000111010101010111000000000000001110101010101110000000
+  B.B.B.....B.B.B
+  ......WWW......
+  B.B.B.....B.B.B
+  ......W.W......
+  B.B.........B.B
+  ......W.W......
+  .W.W.W.W.W.W.W.
+  .W....W.W....W.
+  .W.W.W.W.W.W.W.
+  ......W.W......
+  B.B.........B.B
+  ......W.W......
+  B.B.B.....B.B.B
+  ......WWW......
+  B.B.B.....B.B.B
+
+EXIT 0 wall 41.6s

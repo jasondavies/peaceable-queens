@@ -1,0 +1,14 @@
+n=9 T=12 K=-1 FEASIBLE nodes1=22380 leaves=7958 leafSearched=2 nodes2=7962 flows=15368 cubes=0 time=0.03s
+solution check: W=12 B=12 OK
+labelling 0101110100101111100001010101010000000000101010101000
+  B.B.....B
+  ....W.W..
+  B.B.....B
+  ....W.W..
+  .W.W.W.W.
+  ....W.W..
+  B.B.....B
+  ....W.W..
+  B.B.....B
+
+EXIT 0 wall 0.0s

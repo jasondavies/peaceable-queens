@@ -1,0 +1,3 @@
+n=15 T=33 K=-1 INFEASIBLE nodes1=118483479 leaves=51084014 leafSearched=0 nodes2=51084014 flows=73960888 cubes=0 time=303.07s
+
+EXIT 0 wall 303.3s

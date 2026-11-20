@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "Please cite the accompanying paper when using this work, and identify the commit used for computational results."
+type: software
+title: "Peaceable queens on boards of size 16 to 19"
+authors:
+  - family-names: "Davies"
+    given-names: "Jason"
+license: Apache-2.0
+repository-code: "https://github.com/jasondavies/peaceable-queens"
+preferred-citation:
+  type: unpublished
+  title: "Peaceable queens on boards of size 16 to 19"
+  authors:
+    - family-names: "Davies"
+      given-names: "Jason"
+  year: 2026
+  notes: "Preprint draft."

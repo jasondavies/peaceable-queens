@@ -1,0 +1,54 @@
+n 1 a(n) = 0
+n 2 a(n) = 0
+n 3 a(n) = 1
+n 4 a(n) = 2
+n 5 a(n) = 4
+n 6 a(n) = 5
+n 7 a(n) = 7
+n 1 blocking a(n) = 0
+n 2 blocking a(n) = 0
+n 3 blocking a(n) = 1
+n 4 blocking a(n) = 2
+{"line_sharing": {"1": 0, "2": 0, "3": 1, "4": 2, "5": 4, "6": 5, "7": 7}, "blocking": {"1": 0, "2": 0, "3": 1, "4": 2}}
+
+1 {'a': 0, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.0, 'ok': True}
+2 {'a': 0, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.0, 'ok': True}
+3 {'a': 1, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.0, 'ok': True}
+4 {'a': 2, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.0, 'ok': True}
+5 {'a': 4, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.01, 'ok': True}
+6 {'a': 5, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.1, 'ok': True}
+{"1": {"a": 0, "at_a": "FEASIBLE", "at_a_plus_1": "INFEASIBLE", "seconds": 0.0, "ok": true}, "2": {"a": 0, "at_a": "FEASIBLE", "at_a_plus_1": "INFEASIBLE", "seconds": 0.0, "ok": true}, "3": {"a": 1, "at_a": "FEASIBLE", "at_a_plus_1": "INFEASIBLE", "seconds": 0.0, "ok": true}, "4": {"a": 2, "at_a": "FEASIBLE", "at_a_plus_1": "INFEASIBLE", "seconds": 0.0, "ok": true}, "5": {"a": 4, "at_a": "FEASIBLE", "at_a_plus_1": "INFEASIBLE", "seconds": 0.01, "ok": true}, "6": {"a": 5, "at_a": "FEASIBLE", "at_a_plus_1": "INFEASIBLE", "seconds": 0.1, "ok": true}}
+
+[gate] ok   definition search: a(1..7) = OEIS
+[gate] ok   all placements with the blocking rule, n <= 4
+[gate] ok   direct CP-SAT model: a(1..6) = OEIS
+[gate] ok   Burnside orbit count n=16 equals the recorded leaf total 204573866
+[gate] ok   Burnside orbit count n=17 equals the recorded leaf total 817258210
+[gate] ok   Burnside orbit count n=18 equals the recorded leaf total 3562197100
+[gate] ok   Burnside orbit count n=19 equals the recorded leaf total 14324893730
+[gate] ok   Burnside orbit count n=20 equals the recorded leaf total 57257809825
+[gate] ok   recorded LP random n=16: 2000 of 2000 certified < 38
+[gate] ok   rerun LP random n=16 (10 pairs): all certified < 38
+[gate] ok   recorded LP balanced n=16: 2000 of 2000 certified < 38
+[gate] ok   rerun LP balanced n=16 (10 pairs): all certified < 38
+[gate] ok   recorded LP board neighbourhood n=16: 529 pairs certified
+[gate] ok   largest certified LP bound n=16 is 37.5000 < 38
+[gate] ok   recorded LP random n=17: 2000 of 2000 certified < 43
+[gate] ok   rerun LP random n=17 (10 pairs): all certified < 43
+[gate] ok   recorded LP balanced n=17: 2000 of 2000 certified < 43
+[gate] ok   rerun LP balanced n=17 (10 pairs): all certified < 43
+[gate] ok   recorded LP board neighbourhood n=17: 596 pairs certified
+[gate] ok   largest certified LP bound n=17 is 42.1111 < 43
+[gate] ok   recorded LP random n=18: 2000 of 2000 certified < 48
+[gate] ok   rerun LP random n=18 (10 pairs): all certified < 48
+[gate] ok   recorded LP balanced n=18: 2000 of 2000 certified < 48
+[gate] ok   rerun LP balanced n=18 (10 pairs): all certified < 48
+[gate] ok   recorded LP board neighbourhood n=18: 667 pairs certified
+[gate] ok   largest certified LP bound n=18 is 47.5000 < 48
+[gate] ok   recorded LP random n=19: 2000 of 2000 certified < 53
+[gate] ok   rerun LP random n=19 (10 pairs): all certified < 53
+[gate] ok   recorded LP balanced n=19: 2000 of 2000 certified < 53
+[gate] ok   rerun LP balanced n=19 (10 pairs): all certified < 53
+[gate] ok   recorded LP board neighbourhood n=19: 742 pairs certified
+[gate] ok   largest certified LP bound n=19 is 52.5556 < 53
+[gate] ok   neighbourhood sizes quoted in the paper

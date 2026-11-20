@@ -1,0 +1,183 @@
+{
+ "_comment": "code/referee/lp_leaves.py: random n T 2000 1000+n; balanced n T 2000 2000+n; board n T data/certificates/kamenetsky_best_known_12-30.txt",
+ "random_16": {
+  "mode": "random",
+  "n": 16,
+  "T": 38,
+  "checked": 2000,
+  "count_test_excluded": 0,
+  "certified_below_T": 2000,
+  "max_certified_bound": "1124430435/33554432",
+  "max_certified_bound_float": 33.51063832640648,
+  "max_at": [
+   "0100000100010111",
+   "1010101010001010",
+   33.51063829787234
+  ]
+ },
+ "balanced_16": {
+  "mode": "balanced",
+  "n": 16,
+  "T": 38,
+  "checked": 2000,
+  "count_test_excluded": 0,
+  "certified_below_T": 2000,
+  "max_certified_bound": "18661632913/536870912",
+  "max_certified_bound_float": 34.760000022128224,
+  "max_at": [
+   "0100000011111111",
+   "1111110000110000",
+   34.760000000000005
+  ]
+ },
+ "board_16": {
+  "mode": "board",
+  "n": 16,
+  "T": 38,
+  "checked": 529,
+  "count_test_excluded": 0,
+  "certified_below_T": 529,
+  "max_certified_bound": "75/2",
+  "max_certified_bound_float": 37.5,
+  "max_at": [
+   "0000000011111111",
+   "0000111100001111",
+   37.5
+  ]
+ },
+ "random_17": {
+  "mode": "random",
+  "n": 17,
+  "T": 43,
+  "checked": 2000,
+  "count_test_excluded": 0,
+  "certified_below_T": 2000,
+  "max_certified_bound": "20797912297/536870912",
+  "max_certified_bound_float": 38.73913045413792,
+  "max_at": [
+   "10100110001100101",
+   "10011010100010101",
+   38.73913043478261
+  ]
+ },
+ "balanced_17": {
+  "mode": "balanced",
+  "n": 17,
+  "T": 43,
+  "checked": 2000,
+  "count_test_excluded": 0,
+  "certified_below_T": 2000,
+  "max_certified_bound": "40928511883/1073741824",
+  "max_certified_bound_float": 38.11764706205577,
+  "max_at": [
+   "11100110101010000",
+   "10000111001010101",
+   38.11764705882353
+  ]
+ },
+ "board_17": {
+  "mode": "board",
+  "n": 17,
+  "T": 43,
+  "checked": 596,
+  "count_test_excluded": 0,
+  "certified_below_T": 596,
+  "max_certified_bound": "2826028829/67108864",
+  "max_certified_bound_float": 42.111111119389534,
+  "max_at": [
+   "11110000011110000",
+   "11111111000000000",
+   42.11111111111111
+  ]
+ },
+ "random_18": {
+  "mode": "random",
+  "n": 18,
+  "T": 48,
+  "checked": 2000,
+  "count_test_excluded": 0,
+  "certified_below_T": 2000,
+  "max_certified_bound": "42",
+  "max_certified_bound_float": 42.0,
+  "max_at": [
+   "010101111100010100",
+   "000000011110101111",
+   42.0
+  ]
+ },
+ "balanced_18": {
+  "mode": "balanced",
+  "n": 18,
+  "T": 48,
+  "checked": 2000,
+  "count_test_excluded": 0,
+  "certified_below_T": 2000,
+  "max_certified_bound": "44792266965/1073741824",
+  "max_certified_bound_float": 41.716049392707646,
+  "max_at": [
+   "011111100000101001",
+   "111111110010001000",
+   41.716049382716044
+  ]
+ },
+ "board_18": {
+  "mode": "board",
+  "n": 18,
+  "T": 48,
+  "checked": 667,
+  "count_test_excluded": 0,
+  "certified_below_T": 667,
+  "max_certified_bound": "95/2",
+  "max_certified_bound_float": 47.5,
+  "max_at": [
+   "000001111100001111",
+   "111111111000000000",
+   47.5
+  ]
+ },
+ "random_19": {
+  "mode": "random",
+  "n": 19,
+  "T": 53,
+  "checked": 2000,
+  "count_test_excluded": 0,
+  "certified_below_T": 2000,
+  "max_certified_bound": "50712136795/1073741824",
+  "max_certified_bound_float": 47.22935780417174,
+  "max_at": [
+   "1011010101011110010",
+   "1001000101010101110",
+   47.22935779816514
+  ]
+ },
+ "balanced_19": {
+  "mode": "balanced",
+  "n": 19,
+  "T": 53,
+  "checked": 2000,
+  "count_test_excluded": 0,
+  "certified_below_T": 2000,
+  "max_certified_bound": "25964188085/536870912",
+  "max_certified_bound_float": 48.36206899024546,
+  "max_at": [
+   "1000101110001010100",
+   "1010001100100011101",
+   48.36206896551724
+  ]
+ },
+ "board_19": {
+  "mode": "board",
+  "n": 19,
+  "T": 53,
+  "checked": 742,
+  "count_test_excluded": 0,
+  "certified_below_T": 742,
+  "max_certified_bound": "56431098097/1073741824",
+  "max_certified_bound_float": 52.55555556807667,
+  "max_at": [
+   "1111111111000000000",
+   "0000011111000011111",
+   52.55555555555555
+  ]
+ }
+}

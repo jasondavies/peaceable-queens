@@ -1,0 +1,8 @@
+$ python3 code/referee/cpsat_direct.py 1:0 2:0 3:1 4:2 5:4 6:5 7:7 8:9   (n = 8 stopped after 10 minutes without an answer)
+1 {'a': 0, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.0, 'ok': True}
+2 {'a': 0, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.0, 'ok': True}
+3 {'a': 1, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.0, 'ok': True}
+4 {'a': 2, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.0, 'ok': True}
+5 {'a': 4, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.01, 'ok': True}
+6 {'a': 5, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 0.14, 'ok': True}
+7 {'a': 7, 'at_a': 'FEASIBLE', 'at_a_plus_1': 'INFEASIBLE', 'seconds': 3.91, 'ok': True}

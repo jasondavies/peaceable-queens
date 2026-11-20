@@ -1,0 +1,516 @@
+code/pqt.c (with -m/-j parts and cached complement representatives) via code/run_torus.py; one line per finished part
+n4_T2 part 0 6 torus n=4 T=2 INFEASIBLE reps=6 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+n4_T2 part 3 6 torus n=4 T=2 INFEASIBLE reps=6 pairs=1 leaves=1 searched=1 nodes2=3 flows=12 time=0.00s
+n4_T2 part 2 6 torus n=4 T=2 FEASIBLE reps=6 pairs=1 leaves=1 searched=1 nodes2=2 flows=9 time=0.00s
+n4_T2 part 1 6 torus n=4 T=2 FEASIBLE reps=6 pairs=2 leaves=2 searched=0 nodes2=2 flows=4 time=0.00s
+n4_T2 part 5 6 torus n=4 T=2 INFEASIBLE reps=6 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+n4_T2 part 4 6 torus n=4 T=2 INFEASIBLE reps=6 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+part 1 of 6
+torus n=4 T=2 FEASIBLE reps=6 pairs=2 leaves=2 searched=0 nodes2=2 flows=4 time=0.00s
+W=2 B=2 torus-attacks=0 OK
+  W.W.
+  ....
+  .B.B
+  ....
+part 2 of 6
+torus n=4 T=2 FEASIBLE reps=6 pairs=1 leaves=1 searched=1 nodes2=2 flows=9 time=0.00s
+W=2 B=2 torus-attacks=0 OK
+  W...
+  .W..
+  ...B
+  ..B.
+n4_T3 part 2 6 torus n=4 T=3 INFEASIBLE reps=6 pairs=2 leaves=2 searched=0 nodes2=2 flows=2 time=0.00s
+n4_T3 part 1 6 torus n=4 T=3 INFEASIBLE reps=6 pairs=1 leaves=1 searched=0 nodes2=1 flows=1 time=0.00s
+n4_T3 part 0 6 torus n=4 T=3 INFEASIBLE reps=6 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+n4_T3 part 3 6 torus n=4 T=3 INFEASIBLE reps=6 pairs=1 leaves=1 searched=0 nodes2=1 flows=1 time=0.00s
+n4_T3 part 4 6 torus n=4 T=3 INFEASIBLE reps=6 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+n4_T3 part 5 6 torus n=4 T=3 INFEASIBLE reps=6 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+n5_T2 part 0 6 torus n=5 T=2 INFEASIBLE reps=8 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+n5_T2 part 2 6 torus n=5 T=2 FEASIBLE reps=8 pairs=1 leaves=1 searched=1 nodes2=2 flows=11 time=0.00s
+n5_T2 part 1 6 torus n=5 T=2 FEASIBLE reps=8 pairs=1 leaves=1 searched=0 nodes2=1 flows=3 time=0.00s
+n5_T2 part 3 6 torus n=5 T=2 FEASIBLE reps=8 pairs=1 leaves=1 searched=1 nodes2=2 flows=11 time=0.00s
+n5_T2 part 4 6 torus n=5 T=2 INFEASIBLE reps=8 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+n5_T2 part 5 6 torus n=5 T=2 INFEASIBLE reps=8 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+part 1 of 6
+torus n=5 T=2 FEASIBLE reps=8 pairs=1 leaves=1 searched=0 nodes2=1 flows=3 time=0.00s
+W=2 B=2 torus-attacks=0 OK
+  WW...
+  ...B.
+  .....
+  .....
+  ...B.
+part 2 of 6
+torus n=5 T=2 FEASIBLE reps=8 pairs=1 leaves=1 searched=1 nodes2=2 flows=11 time=0.00s
+W=2 B=2 torus-attacks=0 OK
+  .W...
+  W....
+  ..B..
+  .....
+  ....B
+part 3 of 6
+torus n=5 T=2 FEASIBLE reps=8 pairs=1 leaves=1 searched=1 nodes2=2 flows=11 time=0.00s
+W=2 B=2 torus-attacks=0 OK
+  ..W..
+  .....
+  W....
+  ...B.
+  ....B
+n5_T3 part 1 6 torus n=5 T=3 INFEASIBLE reps=8 pairs=3 leaves=3 searched=0 nodes2=3 flows=5 time=0.00s
+n5_T3 part 2 6 torus n=5 T=3 INFEASIBLE reps=8 pairs=4 leaves=4 searched=3 nodes2=10 flows=45 time=0.00s
+n5_T3 part 0 6 torus n=5 T=3 INFEASIBLE reps=8 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+n5_T3 part 3 6 torus n=5 T=3 INFEASIBLE reps=8 pairs=2 leaves=2 searched=1 nodes2=4 flows=20 time=0.00s
+n5_T3 part 5 6 torus n=5 T=3 INFEASIBLE reps=8 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+n5_T3 part 4 6 torus n=5 T=3 INFEASIBLE reps=8 pairs=0 leaves=0 searched=0 nodes2=0 flows=0 time=0.00s
+n6_T4 part 1 6 torus n=6 T=4 INFEASIBLE reps=13 pairs=4 leaves=4 searched=0 nodes2=4 flows=7 time=0.00s
+n6_T4 part 0 6 torus n=6 T=4 FEASIBLE reps=13 pairs=1 leaves=1 searched=1 nodes2=2 flows=9 time=0.00s
+n6_T4 part 2 6 torus n=6 T=4 FEASIBLE reps=13 pairs=6 leaves=6 searched=3 nodes2=19 flows=83 time=0.00s
+n6_T4 part 3 6 torus n=6 T=4 FEASIBLE reps=13 pairs=1 leaves=1 searched=0 nodes2=1 flows=2 time=0.00s
+part 0 of 6
+torus n=6 T=4 FEASIBLE reps=13 pairs=1 leaves=1 searched=1 nodes2=2 flows=9 time=0.00s
+W=5 B=4 torus-attacks=0 OK
+  W.....
+  .W.W..
+  .....B
+  .W.W..
+  .....B
+  ..B.B.
+part 2 of 6
+torus n=6 T=4 FEASIBLE reps=13 pairs=6 leaves=6 searched=3 nodes2=19 flows=83 time=0.00s
+W=4 B=4 torus-attacks=0 OK
+  W.W...
+  .W.W..
+  .....B
+  ....B.
+  .....B
+  ....B.
+part 3 of 6
+torus n=6 T=4 FEASIBLE reps=13 pairs=1 leaves=1 searched=0 nodes2=1 flows=2 time=0.00s
+W=4 B=6 torus-attacks=0 OK
+  W.W...
+  ....B.
+  W.W...
+  ....B.
+  .B.B.B
+  ....B.
+n6_T5 part 0 6 torus n=6 T=5 INFEASIBLE reps=13 pairs=2 leaves=2 searched=0 nodes2=2 flows=2 time=0.00s
+n6_T5 part 3 6 torus n=6 T=5 INFEASIBLE reps=13 pairs=5 leaves=5 searched=0 nodes2=5 flows=9 time=0.00s
+n6_T5 part 1 6 torus n=6 T=5 INFEASIBLE reps=13 pairs=1 leaves=1 searched=0 nodes2=1 flows=1 time=0.00s
+n6_T5 part 2 6 torus n=6 T=5 INFEASIBLE reps=13 pairs=7 leaves=7 searched=0 nodes2=7 flows=10 time=0.00s
+n6_T5 part 4 6 torus n=6 T=5 INFEASIBLE reps=13 pairs=4 leaves=4 searched=0 nodes2=4 flows=5 time=0.00s
+n6_T5 part 5 6 torus n=6 T=5 INFEASIBLE reps=13 pairs=3 leaves=3 searched=0 nodes2=3 flows=5 time=0.00s
+n7_T4 part 1 6 torus n=7 T=4 INFEASIBLE reps=18 pairs=8 leaves=8 searched=0 nodes2=8 flows=19 time=0.00s
+n7_T4 part 0 6 torus n=7 T=4 FEASIBLE reps=18 pairs=1 leaves=1 searched=1 nodes2=12 flows=76 time=0.00s
+n7_T4 part 3 6 torus n=7 T=4 FEASIBLE reps=18 pairs=1 leaves=1 searched=0 nodes2=1 flows=3 time=0.00s
+n7_T4 part 2 6 torus n=7 T=4 FEASIBLE reps=18 pairs=1 leaves=1 searched=0 nodes2=1 flows=3 time=0.00s
+part 0 of 6
+torus n=7 T=4 FEASIBLE reps=18 pairs=1 leaves=1 searched=1 nodes2=12 flows=76 time=0.00s
+W=4 B=4 torus-attacks=0 OK
+  .W.....
+  W..W...
+  .....B.
+  .W.....
+  .......
+  ..B..B.
+  ......B
+part 2 of 6
+torus n=7 T=4 FEASIBLE reps=18 pairs=1 leaves=1 searched=0 nodes2=1 flows=3 time=0.00s
+W=4 B=4 torus-attacks=0 OK
+  WW.....
+  WW.....
+  ....B..
+  .......
+  ..B...B
+  .......
+  ....B..
+part 3 of 6
+torus n=7 T=4 FEASIBLE reps=18 pairs=1 leaves=1 searched=0 nodes2=1 flows=3 time=0.00s
+W=4 B=4 torus-attacks=0 OK
+  W.W....
+  ....BB.
+  W.W....
+  .......
+  .B.....
+  .B.....
+  .......
+n7_T5 part 1 6 torus n=7 T=5 INFEASIBLE reps=18 pairs=4 leaves=4 searched=0 nodes2=4 flows=7 time=0.00s
+n7_T5 part 2 6 torus n=7 T=5 INFEASIBLE reps=18 pairs=15 leaves=15 searched=12 nodes2=65 flows=363 time=0.00s
+n7_T5 part 0 6 torus n=7 T=5 INFEASIBLE reps=18 pairs=6 leaves=6 searched=6 nodes2=58 flows=344 time=0.00s
+n7_T5 part 3 6 torus n=7 T=5 INFEASIBLE reps=18 pairs=12 leaves=12 searched=9 nodes2=46 flows=261 time=0.00s
+n7_T5 part 5 6 torus n=7 T=5 INFEASIBLE reps=18 pairs=7 leaves=7 searched=5 nodes2=19 flows=102 time=0.00s
+n7_T5 part 4 6 torus n=7 T=5 INFEASIBLE reps=18 pairs=10 leaves=10 searched=9 nodes2=96 flows=562 time=0.00s
+n8_T8 part 0 6 torus n=8 T=8 FEASIBLE reps=30 pairs=14 leaves=14 searched=0 nodes2=14 flows=34 time=0.00s
+n8_T8 part 3 6 torus n=8 T=8 FEASIBLE reps=30 pairs=11 leaves=11 searched=0 nodes2=11 flows=22 time=0.00s
+n8_T8 part 2 6 torus n=8 T=8 FEASIBLE reps=30 pairs=25 leaves=25 searched=0 nodes2=25 flows=46 time=0.00s
+n8_T8 part 1 6 torus n=8 T=8 FEASIBLE reps=30 pairs=1 leaves=1 searched=1 nodes2=2 flows=9 time=0.00s
+n8_T8 part 4 6 torus n=8 T=8 FEASIBLE reps=30 pairs=16 leaves=16 searched=0 nodes2=16 flows=37 time=0.00s
+part 0 of 6
+torus n=8 T=8 FEASIBLE reps=30 pairs=14 leaves=14 searched=0 nodes2=14 flows=34 time=0.00s
+W=8 B=8 torus-attacks=0 OK
+  ........
+  W.W.W.W.
+  ........
+  W.W.W.W.
+  ........
+  .B.B.B.B
+  ........
+  .B.B.B.B
+part 1 of 6
+torus n=8 T=8 FEASIBLE reps=30 pairs=1 leaves=1 searched=1 nodes2=2 flows=9 time=0.00s
+W=8 B=8 torus-attacks=0 OK
+  W.W.....
+  .W.W....
+  W.W.....
+  .W.W....
+  .....B.B
+  ....B.B.
+  .....B.B
+  ....B.B.
+part 2 of 6
+torus n=8 T=8 FEASIBLE reps=30 pairs=25 leaves=25 searched=0 nodes2=25 flows=46 time=0.00s
+W=8 B=8 torus-attacks=0 OK
+  W.W.W.W.
+  ........
+  .B.B.B.B
+  ........
+  W.W.W.W.
+  ........
+  .B.B.B.B
+  ........
+part 3 of 6
+torus n=8 T=8 FEASIBLE reps=30 pairs=11 leaves=11 searched=0 nodes2=11 flows=22 time=0.00s
+W=8 B=8 torus-attacks=0 OK
+  W.W.W.W.
+  ........
+  W.W.W.W.
+  ........
+  .B.B.B.B
+  ........
+  .B.B.B.B
+  ........
+part 4 of 6
+torus n=8 T=8 FEASIBLE reps=30 pairs=16 leaves=16 searched=0 nodes2=16 flows=37 time=0.00s
+W=8 B=8 torus-attacks=0 OK
+  W.W.W.W.
+  ........
+  W.W.W.W.
+  ........
+  .B.B.B.B
+  ........
+  .B.B.B.B
+  ........
+n8_T9 part 1 6 torus n=8 T=9 INFEASIBLE reps=30 pairs=12 leaves=12 searched=0 nodes2=12 flows=18 time=0.00s
+n8_T9 part 0 6 torus n=8 T=9 INFEASIBLE reps=30 pairs=25 leaves=25 searched=0 nodes2=25 flows=50 time=0.00s
+n8_T9 part 2 6 torus n=8 T=9 INFEASIBLE reps=30 pairs=19 leaves=19 searched=0 nodes2=19 flows=36 time=0.00s
+n8_T9 part 3 6 torus n=8 T=9 INFEASIBLE reps=30 pairs=21 leaves=21 searched=0 nodes2=21 flows=43 time=0.00s
+n8_T9 part 4 6 torus n=8 T=9 INFEASIBLE reps=30 pairs=36 leaves=36 searched=0 nodes2=36 flows=76 time=0.00s
+n8_T9 part 5 6 torus n=8 T=9 INFEASIBLE reps=30 pairs=16 leaves=16 searched=0 nodes2=16 flows=22 time=0.00s
+n9_T7 part 0 6 torus n=9 T=7 FEASIBLE reps=46 pairs=2 leaves=2 searched=2 nodes2=28 flows=156 time=0.00s
+n9_T7 part 5 6 torus n=9 T=7 FEASIBLE reps=46 pairs=29 leaves=29 searched=23 nodes2=220 flows=1243 time=0.00s
+part 0 of 6
+torus n=9 T=7 FEASIBLE reps=46 pairs=2 leaves=2 searched=2 nodes2=28 flows=156 time=0.00s
+W=7 B=7 torus-attacks=0 OK
+  .WWW.....
+  ..WW.....
+  ......BB.
+  WW.......
+  ....B....
+  ....B....
+  .........
+  .......B.
+  .......BB
+part 5 of 6
+torus n=9 T=7 FEASIBLE reps=46 pairs=29 leaves=29 searched=23 nodes2=220 flows=1243 time=0.00s
+W=7 B=7 torus-attacks=0 OK
+  ..W......
+  .W.......
+  WW..W....
+  ......BB.
+  ..W.W....
+  ........B
+  ...B...B.
+  ...B.....
+  .....B...
+n9_T8 part 2 6 torus n=9 T=8 INFEASIBLE reps=46 pairs=89 leaves=89 searched=31 nodes2=635 flows=3554 time=0.01s
+n9_T8 part 3 6 torus n=9 T=8 INFEASIBLE reps=46 pairs=78 leaves=78 searched=41 nodes2=628 flows=3545 time=0.01s
+n9_T8 part 1 6 torus n=9 T=8 INFEASIBLE reps=46 pairs=33 leaves=33 searched=30 nodes2=851 flows=5193 time=0.01s
+n9_T8 part 5 6 torus n=9 T=8 INFEASIBLE reps=46 pairs=74 leaves=74 searched=47 nodes2=1144 flows=6752 time=0.01s
+n9_T8 part 4 6 torus n=9 T=8 INFEASIBLE reps=46 pairs=78 leaves=78 searched=65 nodes2=1202 flows=7167 time=0.01s
+n9_T8 part 0 6 torus n=9 T=8 INFEASIBLE reps=46 pairs=73 leaves=73 searched=66 nodes2=1475 flows=8782 time=0.01s
+n10_T12 part 1 6 torus n=10 T=12 FEASIBLE reps=78 pairs=15 leaves=15 searched=4 nodes2=34 flows=149 time=0.00s
+n10_T12 part 2 6 torus n=10 T=12 FEASIBLE reps=78 pairs=71 leaves=71 searched=1 nodes2=72 flows=141 time=0.00s
+part 1 of 6
+torus n=10 T=12 FEASIBLE reps=78 pairs=15 leaves=15 searched=4 nodes2=34 flows=149 time=0.00s
+W=12 B=12 torus-attacks=0 OK
+  W.W.W.....
+  .W.W.W....
+  W.W.W.....
+  .W.W.W....
+  .......B.B
+  ......B.B.
+  .......B.B
+  ......B.B.
+  .......B.B
+  ......B.B.
+part 2 of 6
+torus n=10 T=12 FEASIBLE reps=78 pairs=71 leaves=71 searched=1 nodes2=72 flows=141 time=0.00s
+W=13 B=12 torus-attacks=0 OK
+  W.W.......
+  .W.W.W....
+  W.W.......
+  .W.W.W....
+  .......B.B
+  .W.W.W....
+  .......B.B
+  ....B.B.B.
+  .......B.B
+  ....B.B.B.
+n10_T13 part 2 6 torus n=10 T=13 INFEASIBLE reps=78 pairs=101 leaves=101 searched=0 nodes2=101 flows=173 time=0.00s
+n10_T13 part 0 6 torus n=10 T=13 INFEASIBLE reps=78 pairs=204 leaves=204 searched=1 nodes2=206 flows=464 time=0.00s
+n10_T13 part 1 6 torus n=10 T=13 INFEASIBLE reps=78 pairs=199 leaves=199 searched=2 nodes2=211 flows=490 time=0.00s
+n10_T13 part 3 6 torus n=10 T=13 INFEASIBLE reps=78 pairs=171 leaves=171 searched=0 nodes2=171 flows=350 time=0.00s
+n10_T13 part 5 6 torus n=10 T=13 INFEASIBLE reps=78 pairs=109 leaves=109 searched=0 nodes2=109 flows=222 time=0.00s
+n10_T13 part 4 6 torus n=10 T=13 INFEASIBLE reps=78 pairs=188 leaves=188 searched=1 nodes2=190 flows=415 time=0.00s
+n11_T10 part 4 6 torus n=11 T=10 FEASIBLE reps=126 pairs=7 leaves=7 searched=6 nodes2=61 flows=361 time=0.00s
+part 4 of 6
+torus n=11 T=10 FEASIBLE reps=126 pairs=7 leaves=7 searched=6 nodes2=61 flows=361 time=0.00s
+W=10 B=10 torus-attacks=0 OK
+  W.WW.W.....
+  ..WW.......
+  W.WW.W.....
+  .......B.B.
+  ........B..
+  .B..B......
+  ...........
+  ...........
+  .B..B......
+  ........B..
+  .......B.B.
+n11_T11 part 0 6 torus n=11 T=11 INFEASIBLE reps=126 pairs=518 leaves=518 searched=472 nodes2=52998 flows=334431 time=0.50s
+n11_T11 part 4 6 torus n=11 T=11 INFEASIBLE reps=126 pairs=580 leaves=580 searched=519 nodes2=56752 flows=357896 time=0.59s
+n11_T11 part 3 6 torus n=11 T=11 INFEASIBLE reps=126 pairs=595 leaves=595 searched=482 nodes2=57271 flows=360815 time=0.62s
+n11_T11 part 2 6 torus n=11 T=11 INFEASIBLE reps=126 pairs=569 leaves=569 searched=401 nodes2=71569 flows=450171 time=0.68s
+n11_T11 part 1 6 torus n=11 T=11 INFEASIBLE reps=126 pairs=621 leaves=621 searched=584 nodes2=69021 flows=434745 time=0.78s
+n11_T11 part 5 6 torus n=11 T=11 INFEASIBLE reps=126 pairs=549 leaves=549 searched=479 nodes2=70257 flows=442603 time=0.80s
+n12_T18 part 4 6 torus n=12 T=18 FEASIBLE reps=224 pairs=240 leaves=240 searched=0 nodes2=240 flows=511 time=0.00s
+n12_T18 part 2 6 torus n=12 T=18 FEASIBLE reps=224 pairs=201 leaves=201 searched=0 nodes2=201 flows=566 time=0.00s
+part 2 of 6
+torus n=12 T=18 FEASIBLE reps=224 pairs=201 leaves=201 searched=0 nodes2=201 flows=566 time=0.00s
+W=18 B=18 torus-attacks=0 OK
+  ............
+  W.W.W.W.W.W.
+  ............
+  W.W.W.W.W.W.
+  ............
+  W.W.W.W.W.W.
+  ............
+  .B.B.B.B.B.B
+  ............
+  .B.B.B.B.B.B
+  ............
+  .B.B.B.B.B.B
+part 4 of 6
+torus n=12 T=18 FEASIBLE reps=224 pairs=240 leaves=240 searched=0 nodes2=240 flows=511 time=0.00s
+W=18 B=18 torus-attacks=0 OK
+  W.W.W.W.W.W.
+  ............
+  W.W.W.W.W.W.
+  ............
+  W.W.W.W.W.W.
+  ............
+  .B.B.B.B.B.B
+  ............
+  .B.B.B.B.B.B
+  ............
+  .B.B.B.B.B.B
+  ............
+n12_T19 part 2 6 torus n=12 T=19 INFEASIBLE reps=224 pairs=1239 leaves=1239 searched=6 nodes2=1285 flows=2778 time=0.00s
+n12_T19 part 0 6 torus n=12 T=19 INFEASIBLE reps=224 pairs=1483 leaves=1483 searched=0 nodes2=1483 flows=3074 time=0.00s
+n12_T19 part 4 6 torus n=12 T=19 INFEASIBLE reps=224 pairs=1614 leaves=1614 searched=0 nodes2=1614 flows=3282 time=0.00s
+n12_T19 part 1 6 torus n=12 T=19 INFEASIBLE reps=224 pairs=1562 leaves=1562 searched=0 nodes2=1562 flows=3360 time=0.01s
+n12_T19 part 5 6 torus n=12 T=19 INFEASIBLE reps=224 pairs=1566 leaves=1566 searched=0 nodes2=1566 flows=3253 time=0.01s
+n12_T19 part 3 6 torus n=12 T=19 INFEASIBLE reps=224 pairs=1660 leaves=1660 searched=2 nodes2=1680 flows=3508 time=0.01s
+n13_T16 part 4 6 torus n=13 T=16 FEASIBLE reps=380 pairs=1852 leaves=1852 searched=1127 nodes2=96219 flows=622717 time=1.67s
+part 4 of 6
+torus n=13 T=16 FEASIBLE reps=380 pairs=1852 leaves=1852 searched=1127 nodes2=96219 flows=622717 time=1.67s
+W=16 B=16 torus-attacks=0 OK
+  W....W.......
+  .W..W...W.W..
+  ......B.....B
+  ..WW....W.W..
+  ......B.....B
+  .W..W...W.W..
+  W....W.......
+  .........B...
+  ......B..B..B
+  .......B...B.
+  .......B...B.
+  ......B..B..B
+  .........B...
+n13_T17 part 3 6 torus n=13 T=17 INFEASIBLE reps=380 pairs=5106 leaves=5106 searched=3925 nodes2=174658 flows=1105871 time=2.69s
+n13_T17 part 4 6 torus n=13 T=17 INFEASIBLE reps=380 pairs=5604 leaves=5604 searched=4111 nodes2=182484 flows=1159481 time=2.72s
+n13_T17 part 0 6 torus n=13 T=17 INFEASIBLE reps=380 pairs=4949 leaves=4949 searched=4206 nodes2=191985 flows=1221839 time=3.19s
+n13_T17 part 2 6 torus n=13 T=17 INFEASIBLE reps=380 pairs=5101 leaves=5101 searched=4143 nodes2=184713 flows=1175431 time=3.23s
+n13_T17 part 1 6 torus n=13 T=17 INFEASIBLE reps=380 pairs=5405 leaves=5405 searched=4602 nodes2=224973 flows=1435563 time=3.48s
+n13_T17 part 5 6 torus n=13 T=17 INFEASIBLE reps=380 pairs=5433 leaves=5433 searched=4780 nodes2=237933 flows=1521660 time=3.70s
+n14_T25 part 2 6 torus n=14 T=25 FEASIBLE reps=687 pairs=6123 leaves=6123 searched=6 nodes2=6167 flows=15632 time=0.03s
+part 2 of 6
+torus n=14 T=25 FEASIBLE reps=687 pairs=6123 leaves=6123 searched=6 nodes2=6167 flows=15632 time=0.03s
+W=25 B=26 torus-attacks=0 OK
+  W.W.W.W...W...
+  ..............
+  W.W.W.W...W...
+  ........B...B.
+  W.W.W.W...W...
+  ........B...B.
+  W.W.W.W...W...
+  ........B...B.
+  W.W.W.W...W...
+  ........B...B.
+  .B.B.B.B.B.B.B
+  ........B...B.
+  .B.B.B.B.B.B.B
+  ........B...B.
+n14_T26 part 5 6 torus n=14 T=26 INFEASIBLE reps=687 pairs=14829 leaves=14829 searched=1 nodes2=14831 flows=35920 time=0.06s
+n14_T26 part 0 6 torus n=14 T=26 INFEASIBLE reps=687 pairs=15400 leaves=15400 searched=0 nodes2=15400 flows=37001 time=0.06s
+n14_T26 part 3 6 torus n=14 T=26 INFEASIBLE reps=687 pairs=15043 leaves=15043 searched=4 nodes2=15067 flows=36917 time=0.07s
+n14_T26 part 4 6 torus n=14 T=26 INFEASIBLE reps=687 pairs=14761 leaves=14761 searched=0 nodes2=14761 flows=36572 time=0.07s
+n14_T26 part 1 6 torus n=14 T=26 INFEASIBLE reps=687 pairs=15643 leaves=15643 searched=2 nodes2=15655 flows=38313 time=0.07s
+n14_T26 part 2 6 torus n=14 T=26 INFEASIBLE reps=687 pairs=14656 leaves=14656 searched=0 nodes2=14656 flows=36482 time=0.07s
+n16_T32 part 3 6 torus n=16 T=32 FEASIBLE reps=2250 pairs=4331 leaves=4331 searched=0 nodes2=4331 flows=7887 time=0.02s
+part 3 of 6
+torus n=16 T=32 FEASIBLE reps=2250 pairs=4331 leaves=4331 searched=0 nodes2=4331 flows=7887 time=0.02s
+W=32 B=32 torus-attacks=0 OK
+  W.W.W.W.W.W.W.W.
+  ................
+  W.W.W.W.W.W.W.W.
+  ................
+  W.W.W.W.W.W.W.W.
+  ................
+  W.W.W.W.W.W.W.W.
+  ................
+  .B.B.B.B.B.B.B.B
+  ................
+  .B.B.B.B.B.B.B.B
+  ................
+  .B.B.B.B.B.B.B.B
+  ................
+  .B.B.B.B.B.B.B.B
+  ................
+n16_T33 part 5 6 torus n=16 T=33 INFEASIBLE reps=2250 pairs=171460 leaves=171460 searched=33 nodes2=171654 flows=446103 time=0.97s
+n16_T33 part 4 6 torus n=16 T=33 INFEASIBLE reps=2250 pairs=180162 leaves=180162 searched=91 nodes2=180790 flows=475113 time=0.99s
+n16_T33 part 0 6 torus n=16 T=33 INFEASIBLE reps=2250 pairs=173395 leaves=173395 searched=39 nodes2=173631 flows=451588 time=1.12s
+n16_T33 part 3 6 torus n=16 T=33 INFEASIBLE reps=2250 pairs=171796 leaves=171796 searched=8 nodes2=171904 flows=449116 time=1.12s
+n16_T33 part 2 6 torus n=16 T=33 INFEASIBLE reps=2250 pairs=177648 leaves=177648 searched=68 nodes2=178002 flows=465532 time=1.18s
+n16_T33 part 1 6 torus n=16 T=33 INFEASIBLE reps=2250 pairs=185578 leaves=185578 searched=99 nodes2=186936 flows=490927 time=1.21s
+n18_T42 part 1 6 torus n=18 T=42 FEASIBLE reps=7685 pairs=351213 leaves=351213 searched=0 nodes2=351213 flows=816767 time=1.96s
+part 1 of 6
+torus n=18 T=42 FEASIBLE reps=7685 pairs=351213 leaves=351213 searched=0 nodes2=351213 flows=816767 time=1.96s
+W=42 B=43 torus-attacks=0 OK
+  W.W.W.W.W.W.W.....
+  ..................
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  W.W.W.W.W.W.W.....
+  ..............B.B.
+  .B.B.B.B.B.B.B.B.B
+  ..............B.B.
+  .B.B.B.B.B.B.B.B.B
+  ..............B.B.
+  .B.B.B.B.B.B.B.B.B
+  ..............B.B.
+n18_T43 part 0 6 torus n=18 T=43 INFEASIBLE reps=7685 pairs=2015699 leaves=2015699 searched=50 nodes2=2015883 flows=4960696 time=12.58s
+n18_T43 part 1 6 torus n=18 T=43 INFEASIBLE reps=7685 pairs=2101297 leaves=2101297 searched=28 nodes2=2101381 flows=5215307 time=13.05s
+n18_T43 part 4 6 torus n=18 T=43 INFEASIBLE reps=7685 pairs=2100103 leaves=2100103 searched=7 nodes2=2100125 flows=5228013 time=14.88s
+n18_T43 part 5 6 torus n=18 T=43 INFEASIBLE reps=7685 pairs=2070983 leaves=2070983 searched=31 nodes2=2071101 flows=5140102 time=15.07s
+n18_T43 part 3 6 torus n=18 T=43 INFEASIBLE reps=7685 pairs=2100542 leaves=2100542 searched=8 nodes2=2100558 flows=5235335 time=15.23s
+n18_T43 part 2 6 torus n=18 T=43 INFEASIBLE reps=7685 pairs=2103716 leaves=2103716 searched=9 nodes2=2103742 flows=5251563 time=15.26s
+n20_T51 part 3 60 torus n=20 T=51 FEASIBLE reps=27012 pairs=1721116 leaves=1721116 searched=17 nodes2=1721236 flows=4508491 time=13.67s
+part 3 of 60
+torus n=20 T=51 FEASIBLE reps=27012 pairs=1721116 leaves=1721116 searched=17 nodes2=1721236 flows=4508491 time=13.67s
+W=51 B=51 torus-attacks=0 OK
+  W.W.W.W...W.W.W.....
+  ........B.......B.B.
+  W.W.W.W...W.W.W.....
+  ........B.......B.B.
+  W.W.W.W...W.W.W.....
+  ........B.......B.B.
+  W.W.W.W...W.W.W.....
+  .W..................
+  W.W.W.W...W.W.W.....
+  .W..................
+  ...B.B.B.B.B.B.B.B.B
+  ........B.......B.B.
+  W.W.W.W...W.W.W.....
+  ........B.......B.B.
+  W.W.W.W...W.W.W.....
+  ........B.......B.B.
+  ...B.B.B.B.B.B.B.B.B
+  ........B.......B.B.
+  ...B.B.B.B.B.B.B.B.B
+  ........B.......B.B.
+n20_T52 part 3 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2723802 leaves=2723802 searched=103 nodes2=2724236 flows=7373040 time=20.98s
+n20_T52 part 1 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2861447 leaves=2861447 searched=67 nodes2=2861767 flows=7696143 time=21.13s
+n20_T52 part 5 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2598599 leaves=2598599 searched=247 nodes2=2599859 flows=7002922 time=21.61s
+n20_T52 part 4 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2730159 leaves=2730159 searched=41 nodes2=2730339 flows=7376559 time=23.03s
+n20_T52 part 0 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2806357 leaves=2806357 searched=40 nodes2=2806537 flows=7559578 time=23.20s
+n20_T52 part 2 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2770192 leaves=2770192 searched=74 nodes2=2770838 flows=7442144 time=23.34s
+n20_T52 part 6 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2740425 leaves=2740425 searched=400 nodes2=2742691 flows=7366746 time=22.38s
+n20_T52 part 10 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2771740 leaves=2771740 searched=29 nodes2=2771854 flows=7454603 time=21.36s
+n20_T52 part 7 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2733299 leaves=2733299 searched=139 nodes2=2733965 flows=7322578 time=23.79s
+n20_T52 part 11 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2830080 leaves=2830080 searched=132 nodes2=2830666 flows=7617716 time=21.43s
+n20_T52 part 8 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2746492 leaves=2746492 searched=80 nodes2=2746752 flows=7390817 time=23.59s
+n20_T52 part 9 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2787157 leaves=2787157 searched=109 nodes2=2787535 flows=7496595 time=22.74s
+n20_T52 part 15 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2742826 leaves=2742826 searched=34 nodes2=2742970 flows=7395424 time=20.58s
+n20_T52 part 13 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2684274 leaves=2684274 searched=50 nodes2=2684558 flows=7214474 time=21.37s
+n20_T52 part 16 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2766773 leaves=2766773 searched=74 nodes2=2767023 flows=7447457 time=20.90s
+n20_T52 part 14 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2767060 leaves=2767060 searched=58 nodes2=2767292 flows=7471507 time=21.52s
+n20_T52 part 17 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2886993 leaves=2886993 searched=117 nodes2=2887519 flows=7828357 time=23.05s
+n20_T52 part 12 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2764239 leaves=2764239 searched=73 nodes2=2764507 flows=7480550 time=25.67s
+n20_T52 part 19 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2743150 leaves=2743150 searched=104 nodes2=2743518 flows=7457415 time=20.54s
+n20_T52 part 21 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2675198 leaves=2675198 searched=75 nodes2=2675480 flows=7245413 time=20.43s
+n20_T52 part 18 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2875073 leaves=2875073 searched=60 nodes2=2875313 flows=7835452 time=21.51s
+n20_T52 part 20 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2729319 leaves=2729319 searched=67 nodes2=2730005 flows=7400475 time=20.89s
+n20_T52 part 23 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2715976 leaves=2715976 searched=84 nodes2=2716378 flows=7379907 time=20.80s
+n20_T52 part 22 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2696291 leaves=2696291 searched=61 nodes2=2696523 flows=7276679 time=24.32s
+n20_T52 part 24 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2630547 leaves=2630547 searched=110 nodes2=2631371 flows=7043582 time=19.18s
+n20_T52 part 25 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2673572 leaves=2673572 searched=45 nodes2=2673758 flows=7188831 time=21.87s
+n20_T52 part 28 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2760515 leaves=2760515 searched=71 nodes2=2760855 flows=7498556 time=22.17s
+n20_T52 part 27 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2765232 leaves=2765232 searched=34 nodes2=2765322 flows=7501128 time=25.71s
+n20_T52 part 26 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2783138 leaves=2783138 searched=51 nodes2=2783374 flows=7582426 time=25.79s
+n20_T52 part 29 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2716318 leaves=2716318 searched=75 nodes2=2716644 flows=7418778 time=21.28s
+n20_T52 part 30 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2776590 leaves=2776590 searched=54 nodes2=2776766 flows=7597502 time=21.25s
+n20_T52 part 31 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2686935 leaves=2686935 searched=63 nodes2=2687287 flows=7253472 time=19.73s
+n20_T52 part 34 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2644992 leaves=2644992 searched=80 nodes2=2645496 flows=7222756 time=20.70s
+n20_T52 part 32 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2665751 leaves=2665751 searched=170 nodes2=2666507 flows=7259254 time=21.76s
+n20_T52 part 35 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2799614 leaves=2799614 searched=43 nodes2=2799734 flows=7597687 time=20.73s
+n20_T52 part 33 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2691376 leaves=2691376 searched=93 nodes2=2692100 flows=7268701 time=22.61s
+n20_T52 part 36 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2666337 leaves=2666337 searched=56 nodes2=2666587 flows=7252506 time=20.41s
+n20_T52 part 37 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2648156 leaves=2648156 searched=30 nodes2=2648304 flows=7202128 time=22.85s
+n20_T52 part 38 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2664960 leaves=2664960 searched=19 nodes2=2665028 flows=7235228 time=20.49s
+n20_T52 part 39 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2690347 leaves=2690347 searched=60 nodes2=2690633 flows=7206407 time=24.51s
+n20_T52 part 40 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2778319 leaves=2778319 searched=34 nodes2=2778417 flows=7527873 time=25.07s
+n20_T52 part 41 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2860152 leaves=2860152 searched=47 nodes2=2860762 flows=7733315 time=26.08s
+n20_T52 part 42 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2840829 leaves=2840829 searched=64 nodes2=2841065 flows=7718358 time=20.78s
+n20_T52 part 43 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2767361 leaves=2767361 searched=70 nodes2=2767937 flows=7506681 time=20.07s
+n20_T52 part 44 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2746217 leaves=2746217 searched=169 nodes2=2747417 flows=7556130 time=22.72s
+n20_T52 part 45 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2674708 leaves=2674708 searched=101 nodes2=2675142 flows=7284065 time=20.14s
+n20_T52 part 46 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2738502 leaves=2738502 searched=52 nodes2=2738718 flows=7505054 time=19.95s
+n20_T52 part 47 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2697195 leaves=2697195 searched=101 nodes2=2697641 flows=7348205 time=20.97s
+n20_T52 part 48 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2702683 leaves=2702683 searched=49 nodes2=2702845 flows=7345152 time=19.43s
+n20_T52 part 49 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2703208 leaves=2703208 searched=109 nodes2=2703612 flows=7372146 time=19.40s
+n20_T52 part 50 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2653749 leaves=2653749 searched=24 nodes2=2653801 flows=7233659 time=19.20s
+n20_T52 part 51 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2708325 leaves=2708325 searched=38 nodes2=2708737 flows=7424124 time=19.77s
+n20_T52 part 52 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2657089 leaves=2657089 searched=98 nodes2=2657631 flows=7236826 time=19.33s
+n20_T52 part 53 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2628938 leaves=2628938 searched=38 nodes2=2629066 flows=7094285 time=19.88s
+n20_T52 part 54 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2636601 leaves=2636601 searched=66 nodes2=2637089 flows=7066266 time=21.10s
+n20_T52 part 55 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2749486 leaves=2749486 searched=148 nodes2=2750126 flows=7401448 time=22.46s
+n20_T52 part 56 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2591270 leaves=2591270 searched=36 nodes2=2591424 flows=6925344 time=21.31s
+n20_T52 part 57 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2634768 leaves=2634768 searched=20 nodes2=2634854 flows=7154561 time=19.61s
+n20_T52 part 58 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2815719 leaves=2815719 searched=16 nodes2=2815753 flows=7600930 time=19.94s
+n20_T52 part 59 60 torus n=20 T=52 INFEASIBLE reps=27012 pairs=2668476 leaves=2668476 searched=23 nodes2=2668570 flows=7165730 time=20.52s

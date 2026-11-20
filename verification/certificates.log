@@ -1,0 +1,34 @@
+
+[gate] ok   Ainley board n=16: 37 + 37, no attack
+[gate] ok   all 20 boards of the best-known file (n = 12..30, two for n = 13) are peaceable
+[gate] ok   best-known board n=12 has min(W,B) = 21 = a(n)
+[gate] ok   best-known board n=13 has min(W,B) = 24 = a(n)
+[gate] ok   best-known board n=14 has min(W,B) = 28 = a(n)
+[gate] ok   best-known board n=15 has min(W,B) = 32 = a(n)
+[gate] ok   best-known board n=16 has min(W,B) = 37 = a(n)
+[gate] ok   best-known board n=17 has min(W,B) = 42 = a(n)
+[gate] ok   best-known board n=18 has min(W,B) = 47 = a(n)
+[gate] ok   best-known board n=19 has min(W,B) = 52 = a(n)
+[gate] ok   best-known board n=20 has min(W,B) = 58 = a(n)
+[gate] ok   best-known boards equal Ainley's values for 16 <= n <= 30 except n = 27 (106 vs 105)
+[gate] ok   Ainley's values equal floor(7n^2/48) for 14 <= n <= 30 except n = 27
+[gate] ok   a(1) = floor(7n^2/48)
+[gate] ok   a(2) = floor(7n^2/48)
+[gate] ok   a(3) = floor(7n^2/48)
+[gate] ok   a(4) = floor(7n^2/48)
+[gate] ok   a(5) = floor(7n^2/48) + 1
+[gate] ok   a(6) = floor(7n^2/48)
+[gate] ok   a(7) = floor(7n^2/48)
+[gate] ok   a(8) = floor(7n^2/48)
+[gate] ok   a(9) = floor(7n^2/48) + 1
+[gate] ok   a(10) = floor(7n^2/48)
+[gate] ok   a(11) = floor(7n^2/48)
+[gate] ok   a(12) = floor(7n^2/48)
+[gate] ok   a(13) = floor(7n^2/48)
+[gate] ok   a(14) = floor(7n^2/48)
+[gate] ok   a(15) = floor(7n^2/48)
+[gate] ok   a(16) = floor(7n^2/48)
+[gate] ok   a(17) = floor(7n^2/48)
+[gate] ok   a(18) = floor(7n^2/48)
+[gate] ok   a(19) = floor(7n^2/48)
+[gate] ok   a(20) = floor(7n^2/48)

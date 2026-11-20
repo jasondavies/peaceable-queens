@@ -1,0 +1,4 @@
+FOUND (dfs) R=11111100000000 C=11110001110000
+pqv n=14 T=28 FEASIBLE leaves=228749 pruned=228748 searched=1
+
+EXIT 0 wall 1.2s
