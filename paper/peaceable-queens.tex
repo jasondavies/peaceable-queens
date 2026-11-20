@@ -28,26 +28,32 @@
 \maketitle
 \begin{abstract}
 Let $a(n)$ be the largest $m$ such that $m$ white and $m$ black queens can be placed on an $n\times n$
-board with no queen attacking a queen of the other colour (OEIS A250000). The values $a(n)$ for $n\le15$
-were known. We prove $a(16)=\claSixteen$, $a(17)=\claSeventeen$, $a(18)=\claEighteen$,
-$a(19)=\claNineteen$ and $a(20)=\claTwenty$. In each case $a(n)=\lfloor7n^2/48\rfloor$, so the constructions that Ainley gave in
-1977 are optimal on these boards. The proof is computer-assisted. We label each of the $6n-2$ lines of
-the board white or black, which turns the problem into maximising the smaller of two cell counts. For
-fixed rows and columns we bound that by Lagrangian duality, and each Lagrangian subproblem is a minimum
-cut on the $4n-2$ diagonals. With symmetry breaking, the search for $n=20$ meets $\clLeavesTwentySci$
-row/column labellings up to symmetry. A single family of minimum cuts prunes every one of them. That
-search took $\clCpuHTwenty$ CPU hours, mostly on cloud machines. A second, separately written
-implementation repeats the whole search for every $n\le18$. Orbit counts by Burnside's lemma
-confirm that every search is complete, and exact LP certificates and SAT proofs checked by
-\texttt{drat-trim} give further checks. As side results we find that $\clEnumSixteen$ and $\clEnumSeventeen$
-inequivalent optimal configurations exist for $n=16$ and $n=17$ (OEIS A260680) and that the $20\times20$ and $22\times22$ tori
-admit $\clTorusTwenty$ and $\clTorusTwentyTwo$ queens of each colour but not more (A279405).
+board with no queen attacking a queen of the other colour (OEIS A250000). The refereed literature and
+the OEIS gave $a(n)$ for $n\le15$, and in 2026 Arevalo determined $a(16)$, $a(17)$ and $a(18)$ in an
+unrefereed, AI-assisted computational note. We prove $a(19)=\claNineteen$ and $a(20)=\claTwenty$, which
+were open, and we confirm $a(16)=\claSixteen$, $a(17)=\claSeventeen$ and $a(18)=\claEighteen$
+independently, with two separately written programs. In each case $a(n)=\lfloor7n^2/48\rfloor$, so the
+constructions that Ainley gave in 1977 are optimal on these boards. The proof is computer-assisted. As in
+earlier work, we label each of the $6n-2$ lines of the board white or black, which turns the problem into
+maximising the smaller of two cell counts. Our new ingredient is the bound: for fixed rows and columns we
+bound that quantity by Lagrangian duality, and each Lagrangian subproblem is a minimum cut on the $4n-2$
+diagonals. With symmetry breaking, the search for $n=20$ meets $\clLeavesTwentySci$ row/column labellings
+up to symmetry, and a single family of minimum cuts prunes every one of them. That search took
+$\clCpuHTwenty$ CPU hours, mostly on cloud machines. A second implementation repeats the whole search for
+every $n\le18$. Orbit counts by Burnside's lemma confirm that every search is complete, and exact LP
+certificates and SAT proofs checked by \texttt{drat-trim} give further checks. As side results we find
+$\clEnumSixteen$ and $\clEnumSeventeen$ inequivalent optimal configurations for $n=16$ and $n=17$ (OEIS
+A260680), and we confirm by computation that the $20\times20$ and $22\times22$ tori admit
+$\clTorusTwenty$ and $\clTorusTwentyTwo$ queens of each colour but not more (A279405), values that also
+follow from Harries's exact formula for even tori.
 \end{abstract}
 
 \noindent\textbf{AI transparency statement.} The results, the computer-assisted proofs, the code and this
 manuscript were produced by artificial intelligence. The human author initiated the broader research and
-directed the AI systems, but did not write the text and has not checked the arguments. Details are given
-at the end of the paper.
+directed the AI systems, but did not write the text and has not checked the arguments. The AI system's
+first literature search missed the work of Arevalo and of Harries discussed below, and an earlier version
+of this paper, and our edit of OEIS A250000, presented $a(16)$--$a(18)$ as new. Details are given at the
+end of the paper.
 
 \section{Introduction}
 
@@ -59,12 +65,12 @@ in 1999 and solved small cases by integer programming~\cite{Bosch1,Bosch2}, and 
 the OEIS~\cite{OEIS}.
 
 Ainley gave constructions for every $n\le30$ and a general construction of asymptotic density $7/48$.
-His values agree with $\lfloor7n^2/48\rfloor$ for $14\le n\le30$ except at $n=27$, where a board with
-$106$ queens of each colour is now known; for every other $n$ with $16\le n\le30$ his values are still
-the best known~\cite{OEIS}. The exact values
+Ainley's values agree with $\lfloor7n^2/48\rfloor$ for $14\le n\le30$ except at $n=27$, where a board
+with $106$ queens of each colour is now known; for every other $n$ with $16\le n\le30$ Ainley's values are
+still the best known~\cite{OEIS}. The exact values
 $a(1),\dots,a(15)=0,0,1,2,4,5,7,9,12,14,17,21,24,28,32$ were obtained with several methods. Smith, Petrie
-and Gent~\cite{SPG} used constraint programming with symmetry breaking, and Prestwich and
-Beck~\cite{PB} obtained $a(12)$ and $a(13)$. In 2014 Pratt confirmed $a(1),\dots,a(13)$ by integer
+and Gent~\cite{SPG} used constraint programming with symmetry breaking (see also~\cite{Petrie}), and
+Prestwich and Beck~\cite{PB} obtained $a(12)$ and $a(13)$. In 2014 Pratt confirmed $a(1),\dots,a(13)$ by integer
 programming and gave upper bounds such as $a(16)\le64$ and $a(19)\le90$. Tabatabai found $a(14)$ and
 $a(15)$ by integer programming in 2018 (all three in~\cite{OEIS}). The problem is also an exercise in
 Knuth's volume on satisfiability~\cite{Knuth}.
@@ -73,8 +79,30 @@ Since $\lfloor 7n^2/48\rfloor$ matches every known value except $n=5$ and $n=9$ 
 larger), it has been asked whether Ainley's construction is optimal. Yao and Zeilberger~\cite{YZ}
 studied the problem numerically and symbolically, and Clinch, Drescher, Huynh and Saffidine~\cite{CDHS}
 record their conjecture that it is. Clinch et al.\ also proved $a(n)\le0.1716\,n^2$ for large $n$,
-improving the trivial bound $n^2/4$, and they noted that only the first fifteen terms were known. Kane
+improving the bound $n^2/4$ of van Bommel and MacEachern~\cite{vBM}, and they noted that only the first
+fifteen terms were known. Kane
 studied the asymptotics~\cite{Kane}.
+
+\paragraph{Prior and concurrent work.} Describing a placement by labels on lines is not new. Smith,
+Petrie and Gent~\cite[\S5]{SPG} used binary line variables (a line has no white queen, or no black
+queen) and remarked that one could search on the $6n$ line variables alone. Prestwich and Beck~\cite{PB}
+wrote an integer program with $0/1$ line variables, and the upper bounds of Clinch et al.~\cite{CDHS}
+use the regions cut out by the lines that meet one army. Arevalo~\cite{Arevalo} states the line-labelling
+reformulation of Lemma~\ref{lem:label} below, with a proof (Lemma~1 of~\cite{Arevalo}). With a search that also
+takes rows and columns before diagonals, the product bound $m\le|R||C|$, a bound for each diagonal family
+on its own, and the group $D_4\times\{\text{colour swap}\}$, Arevalo determined $a(16)=37$, $a(17)=42$ and $a(18)=47$
+in August and September 2026. The note is AI-assisted and unrefereed; its runs for $n=17$ and $18$ use a
+single engine, and its DRUP proofs go up to $n=7$. It lists $a(19)$ as future work, and it asks, as an open
+question, for a joint bound over both diagonal families. Our minimum-cut Lagrangian bound
+(Lemmas~\ref{lem:lag} and~\ref{lem:cut}) is such a joint bound; we have not found it elsewhere. On the
+torus, Harries~\cite{Harries} proved an exact formula $t(2q)=H(2q)$ for even orders, with a Lean proof of
+the main theorem, using a line-colouring equivalence (Lemma~6 of~\cite{Harries}) and a partially dualized
+Lagrangian. The formula gives the torus values for $n=20$ and $22$ in Section~\ref{sec:related}, and
+Harries also found
+$t(15)=20$ and $t(17)=28$. Thus our new results are $a(19)$ and $a(20)$, the counts A260680$(11..17)$ and
+the minimum-cut bound; for $a(16)$--$a(18)$ and the torus our computations are independent confirmations.
+An earlier version of this paper, and our edit of OEIS A250000, presented $a(16)$--$a(18)$ as new, because
+the AI system's first literature search missed Arevalo's note.
 
 \begin{theorem}\label{thm:main}
 $a(16)=\claSixteen$, $a(17)=\claSeventeen$, $a(18)=\claEighteen$, $a(19)=\claNineteen$ and
@@ -83,8 +111,9 @@ $a(20)=\claTwenty$.
 
 The lower bounds come from known constructions. For $n=16$ we use the Ainley arrangement shown in the
 OEIS entry (Figure~\ref{fig:16}). For $n=17,\dots,20$ we use the boards in Kamenetsky's file of best known
-solutions~\cite{OEIS}. We checked each of them directly for attacks. The content of
-Theorem~\ref{thm:main} is the upper bounds: no placement has $\clTSixteen$, $\clTSeventeen$, $\clTEighteen$, $\clTNineteen$ or
+solutions~\cite{OEIS}. We checked each of them directly for attacks. The new content of
+Theorem~\ref{thm:main} is the upper bounds for $n=19$ and $20$; for $n=16,17,18$ the upper bounds confirm
+Arevalo's~\cite{Arevalo}. The upper bounds say that no placement has $\clTSixteen$, $\clTSeventeen$, $\clTEighteen$, $\clTNineteen$ or
 $\clTTwenty$ queens of each colour, respectively.
 
 \begin{figure}[htbp]
@@ -136,7 +165,9 @@ both colours would carry both labels, which is impossible. So no white queen sha
 queen, and in particular none attacks one.
 \end{proof}
 
-The proof shows that it does not matter whether ``attack'' allows blocking. So the question is whether
+This reformulation is known: it is Lemma~1 of Arevalo~\cite{Arevalo}, its torus form is Lemma~6 of
+Harries~\cite{Harries}, and binary line variables go back to~\cite{SPG,PB}. The proof shows that it does
+not matter whether ``attack'' allows blocking. So the question is whether
 some labelling has $W\ge T$ and $B\ge T$, where $T=\lfloor7n^2/48\rfloor+1$.
 
 \section{The bound}
@@ -184,7 +215,9 @@ give distinct cuts, and every cut arises from a completion, so the maximum over 
 $G$ minus the minimum cut.
 \end{proof}
 
-Equivalently, $pW+(Q-p)B$ is a supermodular pseudo-Boolean function of the free lines in which every
+This bound couples the two diagonal families, which a bound for each family separately does not
+(compare~\cite[\S7]{Arevalo}); we have not found it in the literature. Equivalently, $pW+(Q-p)B$ is a
+supermodular pseudo-Boolean function of the free lines in which every
 term involves at most two variables. Such functions are maximised by minimum cuts
 \cite{Hammer,KZ}. Without the row/column stage every cell would couple four lines, and the same
 function would be a maximum-weight closure~\cite{Picard}. The program uses $Q=256$.
@@ -404,10 +437,11 @@ with identical log lines.}
 \label{tab:cover}
 \end{table}
 
-\section{Related sequences}
+\section{Related sequences}\label{sec:related}
 
-The same method gives side results on two related sequences. Each was computed by a single implementation only, and each
-reproduces all the known terms of its sequence.
+The same method gives side results on two related sequences. Each was computed by a single
+implementation only, and each reproduces all the known terms of its sequence. The counts for A260680 are
+new as far as we know (the OEIS gives them up to $n=10$); the torus values confirm known ones.
 \begin{itemize}
 \item \emph{Counting optimal configurations (A260680).} Two solutions are equivalent if they differ by an
 element of $G$. We enumerate, without symmetry breaking, all labellings with $\min\{W,B\}\ge a(n)$. We
@@ -424,14 +458,17 @@ first.
 \item \emph{The torus (A279405).} On the $n\times n$ torus the lines are the rows, the columns and the
 diagonals $i\pm j\bmod n$. The same method, with the subgroup of symmetries generated by translations,
 the reflections $i\mapsto-i$ and $j\mapsto-j$, transposition and the colour swap, reproduces the known
-values for $4\le n\le14$, $n=16$ and $n=18$, each at $a(n)$ and $a(n)+1$. For $n=20$ it gives $\clTorusTwenty$: a placement with
+values for $4\le n\le14$, $n=16$ and $n=18$, each at $a(n)$ and $a(n)+1$. For $n=20$ it gives $\clTorusTwenty$, the value that Harries's formula $t(2q)=H(2q)$~\cite[Cor.~4]{Harries}
+already gives: a placement with
 $\clTorusTwenty$ of each colour exists, and $\clTorusTwentyT$ is impossible ($\clTorusPairs$ orbits, of
 which $\clTorusSearched$ needed a diagonal search, in $\clTorusMinutes$ CPU minutes). The repository version of the program, which can split the search into
 parts, caches the representatives of complements and uses unsigned masks, reproduces all these values and
-all the $n=20$ counters exactly. For $n=22$ it gives $\clTorusTwentyTwo$: it finds a placement with
+all the $n=20$ counters exactly. For $n=22$ it gives $\clTorusTwentyTwo=H(22)$~\cite[Table~1]{Harries}: it finds a placement with
 $\clTorusTwentyTwo$ white and $\clTorusTwentyTwoB$ black queens, which we checked directly for toroidal
 attacks, and it shows that $\clTorusTwentyTwoT$ of each colour is impossible ($\clTorusPairsTwentyTwo$
-orbits, of which $\clTorusSearchedTwentyTwo$ needed a diagonal search). The value for $n=19$ is still
+orbits, of which $\clTorusSearchedTwentyTwo$ needed a diagonal search). These two computations are
+therefore independent confirmations by a different method, not new values; Harries also determined
+$t(15)=20$ and $t(17)=28$. The value for $n=19$ is still
 unknown. Odd tori are harder for the method, because the root bound fails for many orbits.
 \end{itemize}
 
@@ -448,7 +485,11 @@ investigation of open problems in the OEIS, and AI systems worked on this proble
 produced all of the following: the method, the proofs, the code, the computations and their checks, and
 the organisation and writing of the text. The system was Claude Opus~5.5 (Anthropic), used through
 Claude Code. The human author directed the AI systems but wrote no part of the
-manuscript; he also started some of the cloud computations, using commands prepared by the AI system.
+manuscript; the human author also started some of the cloud computations, using commands prepared by
+the AI system.
+The AI system's first literature search missed the work of Arevalo~\cite{Arevalo} and of
+Harries~\cite{Harries}, which a later check found; this version credits it, and corrects the earlier
+version's claim that $a(16)$--$a(18)$ and the torus values for $n=20,22$ were new.
 
 The computational claims are reproduced by \texttt{scripts/verify.py}. At the time of writing, the
 mathematics and the code have been checked only by AI systems and by computer verification. These checks
@@ -462,6 +503,10 @@ its arguments. The author takes responsibility for the accuracy of this disclosu
 \raggedright
 \begin{thebibliography}{99}
 \bibitem{Ainley} S.~Ainley, \emph{Mathematical Puzzles}, G.~Bell \& Sons, London, 1977.
+\bibitem{Arevalo} F.~Arevalo, \emph{The sixteenth, seventeenth and eighteenth peaceable queens numbers: 37,
+42, 47}, computational research note (AI-assisted), August~17, 2026, updated September~3 and~7, 2026,
+\url{https://fabianarevalo.com/peaceable-queens}; code at
+\url{https://github.com/farev/Matematica/tree/main/conjectures/peaceable-queens}.
 \bibitem{Bosch1} R.~A.~Bosch, \emph{Peaceably coexisting armies of queens}, Optima (Mathematical
 Programming Society Newsletter) \textbf{62} (1999).
 \bibitem{Bosch2} R.~A.~Bosch, \emph{Armies of queens, revisited}, Optima (Mathematical Programming Society
@@ -473,6 +518,9 @@ for peaceable queens}, in: Proceedings of the Symposium on Algorithm Engineering
 \href{https://doi.org/10.48550/arXiv.2406.06974}{doi:10.48550/arXiv.2406.06974}.
 \bibitem{GT} A.~V.~Goldberg, R.~E.~Tarjan, \emph{A new approach to the maximum-flow problem}, J.\ ACM
 \textbf{35} (1988), 921--940. \href{https://doi.org/10.1145/48014.61051}{doi:10.1145/48014.61051}.
+\bibitem{Harries} J.~P.~Harries, \emph{Peaceable queens on even tori: an exact parity formula}, preprint,
+September~6, 2026 (first version July~27, 2026), with a Lean proof of the main theorem,
+\url{https://github.com/jphme/math-problems/tree/main/peaceable-queens-even-torus}.
 \bibitem{Hammer} P.~L.~Ivănescu (Hammer), \emph{Some network flow problems solved with pseudo-Boolean
 programming}, Oper.\ Res.\ \textbf{13} (1965), 388--399.
 \href{https://doi.org/10.1287/opre.13.3.388}{doi:10.1287/opre.13.3.388}.
@@ -490,10 +538,13 @@ Satisfiability}, Addison-Wesley, 2015, p.~180, exercise~488, and pp.~282--283.
 IEEE Trans.\ Pattern Anal.\ Mach.\ Intell.\ \textbf{26} (2004), 147--159.
 \href{https://doi.org/10.1109/TPAMI.2004.1262177}{doi:10.1109/TPAMI.2004.1262177}.
 \bibitem{OEIS} OEIS Foundation Inc., \emph{The On-Line Encyclopedia of Integer Sequences}, sequences
-A250000 (revision~375, including the comments, the extensions, and D.~Kamenetsky's file of best known
+A250000 (revision~379, including the comments, the extensions, and D.~Kamenetsky's file of best known
 solutions for $12\le n\le30$), A260680 and A279405, \url{https://oeis.org}.
 \bibitem{ORTools} L.~Perron, F.~Didier, \emph{CP-SAT}, OR-Tools version~9.15, Google,
 \url{https://developers.google.com/optimization}.
+\bibitem{Petrie} K.~E.~Petrie, \emph{Symmetry breaking in peaceably coexisting armies of queens}, in: CP 2002,
+Lecture Notes in Comput.\ Sci.\ \textbf{2470}, Springer, 2002, 763.
+\href{https://doi.org/10.1007/3-540-46135-3_61}{doi:10.1007/3-540-46135-3\_61}.
 \bibitem{Picard} J.-C.~Picard, \emph{Maximal closure of a graph and applications to combinatorial
 problems}, Management Sci.\ \textbf{22} (1976), 1268--1272.
 \href{https://doi.org/10.1287/mnsc.22.11.1268}{doi:10.1287/mnsc.22.11.1268}.
@@ -506,6 +557,8 @@ Python}, Nature Methods \textbf{17} (2020), 261--272.
 \bibitem{SPG} B.~M.~Smith, K.~E.~Petrie, I.~P.~Gent, \emph{Models and symmetry breaking for `peaceable
 armies of queens'}, in: CPAIOR 2004, Lecture Notes in Comput.\ Sci.\ \textbf{3011}, Springer, 2004,
 271--286. \href{https://doi.org/10.1007/978-3-540-24664-0_19}{doi:10.1007/978-3-540-24664-0\_19}.
+\bibitem{vBM} M.~F.~van Bommel, K.~T.~MacEachern, \emph{Armies of chess queens}, Math.\ Intelligencer
+\textbf{40}(2) (2018), 10--15. \href{https://doi.org/10.1007/s00283-017-9771-5}{doi:10.1007/s00283-017-9771-5}.
 \bibitem{DRAT} N.~Wetzler, M.~J.~H.~Heule, W.~A.~Hunt, \emph{DRAT-trim: efficient checking and trimming
 using expressive clausal proofs}, in: SAT 2014, Lecture Notes in Comput.\ Sci.\ \textbf{8561}, Springer,
 2014, 422--429. \href{https://doi.org/10.1007/978-3-319-09284-3_31}{doi:10.1007/978-3-319-09284-3\_31}.
