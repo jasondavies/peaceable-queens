@@ -17,6 +17,7 @@
 #include <string.h>
 #include <time.h>
 #include <stdint.h>
+#include <errno.h>
 
 #define MAXN 24
 #define MAXL (6*MAXN)
@@ -139,7 +140,7 @@ static int boundPrune(int*pHint){
     if(U<(long long)Q*T){ *pHint=p; return 1; }
     if(W>B) hi=p-1; else if(W<B) lo=p+1; else return 0;
     if(lo>hi) return 0;
-    p=(lo+hi)/2;
+    p=lo+(hi-lo)/2;
   }
   return 0;
 }
@@ -244,22 +245,35 @@ static int runSelftest(int iters){
   }
   printf("selftest n=%d iters=%d mismatches=%d\n",n,iters,bad); return bad?4:0;
 }
+// strict integer argument parsing: the whole string must be a decimal integer in [lo,hi]
+static long long argInt(const char*s,long long lo,long long hi,const char*what){
+  char*e; errno=0; long long v=strtoll(s,&e,10);
+  if(errno||e==s||*e||v<lo||v>hi){fprintf(stderr,"invalid %s '%s' (allowed %lld..%lld)\n",what,s,lo,hi); exit(1);}
+  return v;
+}
+static const char*nextArg(int*i,int argc,char**argv){ if(*i+1>=argc){fprintf(stderr,"missing value after %s\n",argv[*i]); exit(1);} return argv[++*i]; }
 int main(int argc,char**argv){
-  if(argc<3){fprintf(stderr,"usage\n");return 1;}
-  n=atoi(argv[1]);T=atoi(argv[2]); int K=-1;
+  if(argc<3){fprintf(stderr,"usage: n T [options]\n");return 1;}
+  n=(int)argInt(argv[1],1,MAXN,"n"); T=(int)argInt(argv[2],0,MAXN*MAXN,"T"); int K=-1, cubeGiven=0;
   for(int i=3;i<argc;i++){
-    if(!strcmp(argv[i],"-K")) K=atoi(argv[++i]);
+    if(!strcmp(argv[i],"-K")) K=(int)argInt(nextArg(&i,argc,argv),0,MAXN,"K");
     else if(!strcmp(argv[i],"-list")) listMode=1;
-    else if(!strcmp(argv[i],"-cube")) sscanf(argv[++i],"%lld:%lld",&cubeLo,&cubeHi);
-    else if(!strcmp(argv[i],"-m")) modM=atoi(argv[++i]);
-    else if(!strcmp(argv[i],"-j")) modJ=atoi(argv[++i]);
-    else if(!strcmp(argv[i],"-Q")) Q=atoi(argv[++i]);
+    else if(!strcmp(argv[i],"-cube")){ const char*v=nextArg(&i,argc,argv); char a[32],b[32];
+      if(strlen(v)>60||sscanf(v,"%31[0-9]:%31[0-9]",a,b)!=2){fprintf(stderr,"invalid -cube '%s' (want lo:hi)\n",v); exit(1);}
+      cubeLo=argInt(a,0,(1LL<<40),"cube lo"); cubeHi=argInt(b,1,(1LL<<40),"cube hi");
+      if(cubeLo>=cubeHi){fprintf(stderr,"invalid -cube: lo must be < hi\n"); exit(1);} cubeGiven=1; }
+    else if(!strcmp(argv[i],"-m")) modM=(int)argInt(nextArg(&i,argc,argv),1,1<<20,"-m");
+    else if(!strcmp(argv[i],"-j")) modJ=(int)argInt(nextArg(&i,argc,argv),0,1<<20,"-j");
+    else if(!strcmp(argv[i],"-Q")) Q=(int)argInt(nextArg(&i,argc,argv),1,65536,"-Q");   // keeps every capacity sum < 2^31
     else if(!strcmp(argv[i],"-v")) verbose=1;
     else if(!strcmp(argv[i],"-nosym")) useSym=0;
-    else if(!strcmp(argv[i],"-selftest")) selftest=atoi(argv[++i]);
-    else {fprintf(stderr,"bad opt\n");return 1;}
+    else if(!strcmp(argv[i],"-selftest")) selftest=(int)argInt(nextArg(&i,argc,argv),1,100000000,"-selftest");
+    else {fprintf(stderr,"bad option '%s'\n",argv[i]);return 1;}
   }
+  if(modJ>=modM){fprintf(stderr,"invalid partition: need 0 <= -j < -m\n"); return 1;}
   buildGeometry();
+  if(K>NG){fprintf(stderr,"invalid -K %d: only %d groups for n=%d\n",K,NG,n); return 1;}
+  if(cubeGiven&&K<0){fprintf(stderr,"-cube needs -K\n"); return 1;}
   for(int c=0;c<NC;c++){cellDA[c][0]=(c/n)-(c%n)+n-1; cellDA[c][1]=(c/n)+(c%n);}
   for(int d=0;d<ND;d++)for(int a=0;a<ND;a++)kind[d][a]=0;
   // stage-2 order: by length, diag then anti
@@ -271,6 +285,7 @@ int main(int argc,char**argv){
   dfs1(0);
   double el=(double)(clock()-t0)/CLOCKS_PER_SEC;
   if(listMode){ printf("cubes %lld\n",cubeId); return 0; }
+  if(cubeGiven&&!found&&cubeHi>cubeId){fprintf(stderr,"invalid -cube %lld:%lld: there are only %lld cubes\n",cubeLo,cubeHi,cubeId); return 1;}
   printf("n=%d T=%d K=%d %s nodes1=%lld leaves=%lld leafSearched=%lld nodes2=%lld flows=%lld cubes=%lld time=%.2fs\n",
          n,T,K,found?"FEASIBLE":"INFEASIBLE",nodes1,leaves,leafSearched,nodes2,flows,cubeId,el);
   if(found){ int W,B; int ok=verifySolution(&W,&B); printf("solution check: W=%d B=%d %s\nlabelling ",W,B,ok?"OK":"BAD");

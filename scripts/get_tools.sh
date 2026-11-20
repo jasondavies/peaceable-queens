@@ -16,7 +16,8 @@ if [ ! -x "$T/drat-trim" ]; then
   echo "$DT_SHA  $TB" | sha256sum -c --quiet - || { echo "SHA-256 mismatch for $TB" >&2; rm -f "$TB"; exit 1; }
   rm -rf "$T/drat-trim-src" && mkdir "$T/drat-trim-src"
   tar -xzf "$TB" -C "$T/drat-trim-src" --strip-components=1
-  (cd "$T/drat-trim-src" && gcc drat-trim.c -std=c99 -O2 -o drat-trim)
+  # -D_DEFAULT_SOURCE declares getc_unlocked under -std=c99 (GCC 14 makes implicit declarations an error)
+  (cd "$T/drat-trim-src" && gcc drat-trim.c -std=c99 -D_DEFAULT_SOURCE -O2 -o drat-trim)
   cp "$T/drat-trim-src/drat-trim" "$T/drat-trim"
 fi
 echo "drat-trim $DT_COMMIT (tarball SHA-256 $DT_SHA)"

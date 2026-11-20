@@ -17,7 +17,7 @@ n × n board with no queen attacking a queen of the other colour. The values a(1
   search is ever needed. The n = 20 search meets 5.7 × 10¹⁰ orbits.
 - **Side results, each from a single implementation.** They reproduce all the known terms of their sequences:
   - A260680 (inequivalent optimal configurations): 696, 4, 2155, 579, 2298, 26 for n = 11, …, 16;
-  - A279405 (torus): the value at n = 20 is 51.
+  - A279405 (torus): the values at n = 20 and n = 22 are 51 and 64.
 
 ## What was checked, for each n
 
@@ -26,9 +26,9 @@ n × n board with no queen attacking a queen of the other colour. The values a(1
 | ≤ 15 | complete; reproduces OEIS | complete; same verdicts and orbit counts | search from the definition (n ≤ 8), direct CP-SAT (n ≤ 7), SAT + drat-trim (n ≤ 8), no-symmetry and no-bound runs (n ≤ 11) |
 | 16 | complete | complete; identical orbit count | Burnside orbit count; 400 SAT + DRAT leaves; exact LP certificates on samples; cube replays |
 | 17 | complete | complete; identical orbit count | Burnside; LP certificates; cube replays |
-| 18 | complete | the slices stated in the paper (all pruned) | Burnside; LP certificates; cube replays |
+| 18 | complete | complete (199 slices, all pruned; same orbit count) | Burnside; LP certificates; cube replays |
 | 19 | complete | not run | Burnside; LP certificates; cloud cubes rerun locally |
-| 20 | complete | not run | Burnside; cloud cubes rerun locally |
+| 20 | complete | not run | Burnside; LP certificates; cloud cubes rerun locally |
 
 The paper's Section 6 and Table 2 give the exact numbers, and `claims.json` holds them. For n = 19 and 20 most cubes
 were run on Modal cloud containers with the dispatcher in `code/modal/` (the same `code/pq2.c`, compiled there with
@@ -67,25 +67,31 @@ box.
 
 The default run covers these steps.
 - **build:** compiles `code/pq2.c`, `code/pqenum.c` and `code/pqt.c` with `gcc -O3 -march=native`, builds the Rust
-  verifier and drat-trim, and checks that the sources are the ones recorded in the run logs.
+  verifier and drat-trim, and checks the sources against `data/provenance/` (the exact sources used for the
+  recorded runs; the current sources differ from them only by input validation and, for `pqt.c`, unsigned masks).
 - **unit:** the min-cut evaluation of both programs against brute force over all completions (18,000 + 1,220
   random instances).
+- **robust:** regression tests for the defects found by review: the drivers refuse a directory made for other
+  parameters (including the reviewer's repro, `run_cubes.py 8 10` then `8 9` in the same directory) or with
+  corrupted lines; every solver rejects out-of-range arguments; UBSan/ASan runs of the C programs are clean
+  (and catch the old defects in the pre-fix sources); the Rust verifier runs with overflow checks; a failed or
+  truncated leaf sampler is rejected; misspelled `--only` stages are rejected; drat-trim builds under GCC-14 rules.
 - **small:** both programs at T = a(n) and a(n) + 1 for n ≤ 13, with symmetry breaking off (pq2) and the bound off
   (pqv) for n ≤ 10. Witness boards are checked for attacks, and the orbit counts are compared with Burnside's lemma.
 - **referee:** the independent checks in `code/referee/`. The definition-level search runs for n ≤ 7, the 3^(n²)
   blocking-rule enumeration for n ≤ 4, and the direct CP-SAT model for n ≤ 6. Burnside orbit counts for
-  n = 16, …, 19 must equal the recorded leaf totals. Exact LP certificates are rerun on a prefix of each recorded
+  n = 16, …, 20 must equal the recorded leaf totals. Exact LP certificates are rerun on a prefix of each recorded
   sample.
-- **sat:** placement and line encodings with drat-trim for n ≤ 6, and two random n = 16 leaves.
+- **sat:** placement and line encodings with drat-trim for n ≤ 7, and ten random n = 16 leaves.
 - **certificates:** the Ainley board for n = 16 and all boards of Kamenetsky's file, checked directly for attacks.
-- **logs:** manifest hashes. For each n = 16, …, 19, the cube list is regenerated and compared, and the cube log is
+- **logs:** manifest hashes. For each n = 16, …, 20, the cube list is regenerated and compared, and the cube log is
   checked: one line per cube, all UNSAT, and totals equal to the claims. The complete pqv runs and the pqv slices are
-  checked too.
+  checked too (for n = 18 all 199 slices, with the Burnside total).
 - **replay:** random cubes of each n are rerun, and their log lines must be identical apart from the time.
-- **side:** A260680 for n ≤ 9 and the torus for n ≤ 12 are rerun; A260680(16) is recounted from the recorded optimal
-  boards; and the recorded side results (including the split torus program's exact reproduction of the n = 20 run)
-  are checked.
-- **paper:** the claims macros and a clean LaTeX build.
+- **side:** A260680 for n ≤ 9 and the torus for n ≤ 12 are rerun; the A260680 enumerations are checked like the main
+  runs (manifest, every cube line, totals) and recounted from the recorded optimal boards; the torus runs with the
+  corrected program are checked against the original counters.
+- **paper:** the claims macros, a clean reproducible LaTeX build in `build/paper/`, identical to the committed PDF.
 
 ## What is proved, and what is computed
 
@@ -102,7 +108,7 @@ Lemma 4.1.
   search, and for n = 19 and 20 it was not run;
 - the two programs share the method (Lemmas 2.1–4.1). The SAT/DRAT and exact LP checks avoid Lemmas 3.1–4.1, and the
   definition-level checks avoid all of them, but these checks cover only samples or small n;
-- the side results (A260680 n = 11…16, torus n = 20) have a single implementation.
+- the side results (A260680 n = 11…16, torus n = 20 and 22) have a single implementation.
 
 No independent human review has been recorded.
 
@@ -128,7 +134,8 @@ No independent human review has been recorded.
   - `validation/`, `sat_samples/`, `referee/`, `side/`: the recorded outputs;
   - `certificates/`: the lower-bound boards;
   - `MANIFEST.sha256`.
-- `verification/`: the outputs of the last verification run.
+- `verification/` (git-ignored): the outputs of the last verification run. A run of `scripts/verify.py` does not
+  modify any tracked file: the paper is rebuilt in `build/paper/` and compared byte for byte with the committed PDF.
 
 ## Authorship and AI disclosure
 

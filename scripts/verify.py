@@ -21,7 +21,7 @@ scripts/make_claims_tex.py, so the paper and the gates share one source.  A summ
 hashes goes to verification/summary.json.  The exit status is nonzero if any gate fails, or if the LaTeX
 log has a warning or a bad box.
 """
-import argparse, hashlib, json, os, random, re, shutil, subprocess, sys, tempfile, time
+import argparse, collections, hashlib, json, os, random, re, shutil, subprocess, sys, tempfile, time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -33,6 +33,7 @@ ENV = dict(os.environ, PYTHONHASHSEED='0', OMP_NUM_THREADS='1')
 CLAIMS = json.loads((ROOT / 'claims.json').read_text())
 A = [int(x) for x in CLAIMS['a_known'].split(',')]          # a(1..15) from OEIS
 JOBS = 2
+WRITE_PDF = False
 WORD = {16: 'Sixteen', 17: 'Seventeen', 18: 'Eighteen', 19: 'Nineteen', 20: 'Twenty'}
 NMAX = max(int(k) for k in CLAIMS['runs'])          # largest n settled by the main search
 BIG = list(range(16, NMAX + 1))                        # the cube runs
@@ -138,8 +139,21 @@ def step_build():
     s.gate(rc == 0 and (ROOT / 'tools' / 'drat-trim').exists(), 'drat-trim built (tarball SHA-256 checked)')
     for f in ('pq2.c', 'pqenum.c', 'pqt.c', 'verifier/src/main.rs'):
         s.data['sha256 code/' + f] = sha(CODE / f)
-    s.gate(s.data['sha256 code/pq2.c'] == CLAIMS['sha_pq2c'], 'code/pq2.c is the source used for the recorded runs')
-    s.gate(s.data['sha256 code/verifier/src/main.rs'] == CLAIMS['sha_pqv'], 'code/verifier/src/main.rs is the source used for the slice runs')
+    P = DATA / 'provenance'
+    s.gate(sha(P / 'pq2.c.runs') == CLAIMS['sha_pq2c'], 'data/provenance/pq2.c.runs is the source recorded in the cube-run summaries')
+    s.gate(sha(P / 'main.rs.slice-runs') == CLAIMS['sha_pqv'], 'data/provenance/main.rs.slice-runs is the verifier source of the slice runs')
+    # the current sources differ from the run sources only outside the search: argument parsing (pq2, pqenum),
+    # argument parsing and unsigned masks (pqt), argument checks (pqv).  The search code before those parts
+    # must be identical; replays (step replay) also rerun logged cubes with the current binaries.
+    def head(t, *marks):
+        k = min(t.index(m) for m in marks if m in t)
+        return t[:k].replace('#include <errno.h>\n', '').replace('p=lo+(hi-lo)/2;', 'p=(lo+hi)/2;')
+    for cur, old, marks in (('pq2.c', 'pq2.c.runs', ('// strict integer argument parsing', 'int main(')),
+                            ('pqenum.c', 'pqenum.c.runs', ('// strict integer argument parsing', 'int main(')),
+                            ('pqt.c', 'pqt.c.split-runs', ('// n-bit masks are handled', 'static int rot(')),
+                            ('verifier/src/main.rs', 'main.rs.slice-runs', ('fn fail(', 'fn main()'))):
+        s.gate(head((CODE / cur).read_text(), *marks) == head((P / old).read_text(), *marks),
+               'code/%s: all code before the argument/mask changes is identical to the run source' % cur)
     return s.finish()
 
 
@@ -268,11 +282,14 @@ def step_sat(fast=True):
     # a few random n = 16 leaves (canonical, via pqv --sample), SAT + drat-trim
     k = 10 if fast else 50
     rc, o, e = sh([PQV, 16, 38, 1, '--sample', k, 4711])
-    pairs = [l.split()[:2] for l in o.splitlines() if len(l.split()) == 3]
-    outs = pmap(lambda p: sh([PY, CODE / 'sat_check.py', 'leaf', 16, 38, p[0], p[1]])[1], pairs)
-    for p, o in zip(pairs, outs):
+    pairs = sample_pairs(rc, o, k, 16)
+    s.gate(pairs is not None, 'pqv --sample exited 0 and returned exactly %d valid (R, C) pairs' % k)
+    pairs = pairs or []
+    outs = pmap(lambda p: sh([PY, CODE / 'sat_check.py', 'leaf', 16, 38, p[0], p[1]]), pairs)
+    s.gate(len(outs) == len(pairs) == k, 'every sampled leaf was sent to the SAT check (%d of %d)' % (len(outs), k))
+    for p, (rc2, o, e) in zip(pairs, outs):
         s.note(o.strip())
-        s.gate(o.strip().endswith('UNSAT VERIFIED'), 'n=16 leaf R=%s C=%s UNSAT, proof verified' % tuple(p))
+        s.gate(rc2 == 0 and o.strip() == 'leaf 16 38 %s %s UNSAT VERIFIED' % tuple(p), 'n=16 leaf R=%s C=%s UNSAT, proof verified' % tuple(p))
     rec = (DATA / 'sat_samples' / 'results.txt').read_text()
     tags = [' '.join(l.split()[:2]) for l in rec.splitlines() if l.startswith('n1')]
     cubes = re.findall(r'sat: cube (\d+) \d+ ([01]+) UNSAT VERIFIED', rec)
@@ -286,6 +303,107 @@ def step_sat(fast=True):
     s.gate(m and m.group(1) == CLAIMS['SatSamples'] and rec.count('UNSAT VERIFIED') == int(CLAIMS['SatSamples']),
            'recorded SAT samples: %s checks, all UNSAT with verified proofs' % CLAIMS['SatSamples'])
     return s.finish()
+
+
+def step_robust(fast=True):
+    """Regression tests for defects found in review: resumable drivers bound to run manifests, strict
+    solver arguments, sanitizer runs, sampler fault injection, stage-name checks, drat-trim build flags."""
+    s = Step('robust')
+    td = Path(tempfile.mkdtemp(prefix='pq-robust-', dir=BUILD))
+    def drv(*args):
+        r = subprocess.run([PY] + [str(x) for x in args], capture_output=True, text=True, env=ENV, cwd=ROOT)
+        return r.returncode, r.stdout + r.stderr
+    # 1. the reviewer's repro: results logged for T=10 must not be reused for T=9 (pq2 8 9 is FEASIBLE)
+    rc1, o1 = drv(CODE / 'run_cubes.py', 8, 10, 1, 2, td / 'c')
+    rc2, o2 = drv(CODE / 'run_cubes.py', 8, 9, 1, 2, td / 'c')
+    rc3, o3 = drv(CODE / 'run_cubes.py', 8, 9, 1, 2, td / 'c9')
+    s.note(o2)
+    s.gate(rc1 == 0 and 'VERDICT: INFEASIBLE' in o1 and rc2 != 0 and 'REFUSED' in o2 and 'fields differ: T' in o2,
+           'run_cubes.py refuses to resume a T=10 directory for T=9 (reviewer repro)')
+    s.gate(rc3 == 0 and 'VERDICT: FEASIBLE' in o3, 'run_cubes.py in a fresh directory: n=8, T=9 is FEASIBLE')
+    rc4, o4 = drv(CODE / 'run_cubes.py', 8, 10, 1, 2, td / 'c')
+    s.gate(rc4 == 0 and 'VERDICT: INFEASIBLE' in o4 and (td / 'c' / 'sessions.log').read_text().count('binary_sha256') == 2,
+           'run_cubes.py resumes its own directory and records each session\'s binary')
+    (td / 'legacy').mkdir(); shutil.copy(td / 'c' / 'cubes.log', td / 'legacy' / 'cubes.log')
+    rc5, o5 = drv(CODE / 'run_cubes.py', 8, 10, 1, 2, td / 'legacy')
+    s.gate(rc5 != 0 and 'no run manifest' in o5, 'run_cubes.py refuses a directory with results but no manifest')
+    t = (td / 'c' / 'cubes.log').read_text().replace('UNSAT', 'UNSAX', 1); (td / 'c' / 'cubes.log').write_text(t)
+    rc6, o6 = drv(CODE / 'run_cubes.py', 8, 10, 1, 2, td / 'c')
+    s.gate(rc6 != 0 and 'not a valid result line' in o6, 'run_cubes.py refuses a corrupted result line')
+    rc, o = drv(CODE / 'run_enum.py', 9, 12, 2, 2, td / 'e'); rcb, ob = drv(CODE / 'run_enum.py', 9, 11, 2, 2, td / 'e')
+    s.gate(rc == 0 and rcb != 0 and 'fields differ: a' in ob, 'run_enum.py refuses a directory made for another a')
+    rc, o = drv(CODE / 'run_torus.py', 12, 19, 6, 2, td / 't'); rcb, ob = drv(CODE / 'run_torus.py', 12, 18, 6, 2, td / 't')
+    s.gate(rc == 0 and 'VERDICT INFEASIBLE (all 6 parts)' in o and rcb != 0 and 'fields differ: T' in ob,
+           'run_torus.py refuses a directory made for another T')
+    rc, o = drv(CODE / 'run_pqv_parts.py', 10, 15, 3, td / 'p', 0, 1); rcb, ob = drv(CODE / 'run_pqv_parts.py', 10, 14, 3, td / 'p', 2)
+    rcc, oc = drv(CODE / 'run_pqv_parts.py', 10, 15, 3, td / 'p', 3)
+    s.gate(rc == 0 and rcb != 0 and 'fields differ: T' in ob and rcc != 0, 'run_pqv_parts.py refuses another T and slice ids >= m')
+    # 2. strict solver arguments (each must exit nonzero instead of reporting a verdict)
+    bad = {PQ2: ['4 2 -K 1 -cube 0:1 -Q 1500000000', '4 2 -m 0', '4 2 -m 2 -j 2', '4 2 -K 1 -cube 99999:100000',
+                 '4 2 -K 1 -cube 3:2', '4 2 -K 9', '30 2', '4 x', '4 2 -K', '4 2 -cube 0:1'],
+           PQENUM: ['4 2 -K 1 -cube 0:1 -Q 1500000000', '4 2 -m 2 -j 2', '4 2 -K 1 -cube 99999:100000'],
+           PQT: ['20 52 -m 0', '20 52 -m 2 -j 2', '40 5', '12 x', '12 18 -m', '12 18 -x 1'],
+           PQV: ['4 2 0', '4 2 1 --part 2 2', '4 2 1 --part 0 0', '4 2 1 --bogus', '40 2', '4 -1', '4 2 1 --part 1']}
+    for prog, cases in bad.items():
+        for c in cases:
+            rc, o, e = sh([prog] + c.split(), nice=False)
+            s.gate(rc != 0 and 'INFEASIBLE' not in o and 'UNSAT' not in o, '%s %s is rejected (exit %d)' % (prog.name, c, rc))
+    rc, o, e = sh([PQ2, 4, 3, '-K', 1, '-cube', '0:4'], nice=False)
+    s.gate(rc == 0 and ' INFEASIBLE ' in o, 'pq2 4 3 -K 1 -cube 0:4 (all 4 cubes) still runs')
+    # 3. undefined-behaviour and address sanitizers on small and medium cases
+    san = BUILD / 'san'; san.mkdir(exist_ok=True)
+    for prog in ('pq2', 'pqenum', 'pqt'):
+        rc, o, e = sh(['gcc', '-O1', '-g', '-fsanitize=undefined,address', '-fno-sanitize-recover=all', '-o', san / prog, CODE / (prog + '.c')], nice=False)
+        s.gate(rc == 0, 'sanitizer build of %s' % prog)
+    senv = dict(ENV, UBSAN_OPTIONS='halt_on_error=1:print_stacktrace=1', ASAN_OPTIONS='detect_leaks=0')
+    runs = [('pq2', '8 10'), ('pq2', '10 15'), ('pq2', '11 18'), ('pq2', '12 22 -K 3 -cube 5:9'), ('pq2', '6 1 -selftest 200'),
+            ('pqenum', '9 12'), ('pqt', '12 18'), ('pqt', '12 19'), ('pqt', '13 17'), ('pqt', '16 33'), ('pqt', '20 52 -m 1000 -j 999')]
+    if not fast:
+        runs += [('pq2', '13 25'), ('pqt', '22 65 -m 100000 -j 99999')]
+    for prog, c in runs:
+        r = subprocess.run([str(san / prog)] + c.split(), capture_output=True, text=True, env=senv)
+        s.gate(r.returncode == 0 and 'runtime error' not in r.stderr and 'AddressSanitizer' not in r.stderr,
+               'UBSan+ASan clean: %s %s' % (prog, c))
+    # the same sanitizer runs detect the two defects in the sources used before the fixes (data/provenance/)
+    for old, args, what in (('pqt.c.split-runs', '20 52 -m 1000 -j 999', 'left shift'), ('pq2.c.runs', '4 2 -K 1 -cube 0:1 -Q 1500000000', 'signed integer overflow')):
+        c = san / (old + '.c'); shutil.copy(DATA / 'provenance' / old, c)
+        sh(['gcc', '-O1', '-fsanitize=undefined', '-fno-sanitize-recover=all', '-o', san / (old + '.bin'), c], nice=False)
+        r = subprocess.run([str(san / (old + '.bin'))] + args.split(), capture_output=True, text=True, env=senv)
+        s.gate(r.returncode != 0 and what in r.stderr, 'the pre-fix %s shows the reported defect under UBSan (%s)' % (old, what))
+    rc, o, e = sh(['cargo', 'build', '--offline', '--target-dir', BUILD / 'cargo-debug'], nice=False, cwd=CODE / 'verifier')
+    dbg = BUILD / 'cargo-debug' / 'debug' / 'pqv'
+    r1 = subprocess.run([str(dbg), '10', '15', '2'], capture_output=True, text=True)
+    r2 = subprocess.run([str(dbg), '5', '1', '--selftest', '50'], capture_output=True, text=True)
+    s.gate(rc == 0 and r1.returncode == 0 and 'leaves=46481' in r1.stdout and 'mismatches=0' in r2.stdout,
+           'pqv debug build (integer overflow checks on): n=10 run and selftest')
+    # 4. sampler fault injection: a failed or truncated `pqv --sample` must not pass
+    rc, o, e = sh([PQV, 16, 38, 1, '--sample', 3, 4711], nice=False)
+    s.gate(sample_pairs(rc, o, 3, 16) is not None, 'sample parser accepts a good sample')
+    s.gate(sample_pairs(137, o, 3, 16) is None and sample_pairs(0, '\n'.join(o.splitlines()[:2]), 3, 16) is None
+           and sample_pairs(0, o + 'garbage\n', 3, 16) is None and sample_pairs(0, '', 3, 16) is None,
+           'sample parser rejects a killed sampler, a short sample, extra output and no output')
+    rc, o, e = sh([PQV, 16, 38, 0, '--sample', 3, 4711], nice=False)
+    s.gate(sample_pairs(rc, o, 3, 16) is None, 'sample parser rejects a real failed sampler run (exit %d)' % rc)
+    # 5. stage names
+    for bad_only in ('replays', '', 'logs,replays', 'logs,,paper'):
+        r = subprocess.run([PY, str(ROOT / 'scripts' / 'verify.py'), '--only', bad_only], capture_output=True, text=True, env=ENV, cwd=ROOT)
+        s.gate(r.returncode != 0 and 'ALL GATES PASSED' not in r.stdout, 'verify.py --only %r is rejected' % bad_only)
+    # 6. drat-trim compiles under GCC-14 rules (implicit declarations are errors)
+    src = ROOT / 'tools' / 'drat-trim-src' / 'drat-trim.c'
+    ra = sh(['gcc', '-std=c99', '-D_DEFAULT_SOURCE', '-Werror=implicit-function-declaration', '-O2', '-o', td / 'dt', src], nice=False)[0]
+    rb = sh(['gcc', '-std=c99', '-Werror=implicit-function-declaration', '-O2', '-o', td / 'dt0', src], nice=False)[0]
+    s.gate(ra == 0 and rb != 0, 'drat-trim builds with -std=c99 -D_DEFAULT_SOURCE under GCC-14 rules (and fails without it)')
+    shutil.rmtree(td, ignore_errors=True)
+    return s.finish()
+
+
+def sample_pairs(rc, out, k, n):
+    """The (R, C) pairs printed by `pqv n T 1 --sample k seed`, or None unless the sampler exited 0 and printed
+    exactly k well-formed lines (two n-bit strings and a verdict) and nothing else."""
+    lines = [l.split() for l in out.splitlines() if l.strip()]
+    ok = rc == 0 and len(lines) == k and all(
+        len(p) == 3 and len(p[0]) == len(p[1]) == n and set(p[0] + p[1]) <= set('01') and p[2] in ('PRUNED', 'SEARCHED-UNSAT') for p in lines)
+    return [p[:2] for p in lines] if ok else None
 
 
 def step_certificates():
@@ -391,6 +509,16 @@ def step_logs():
         s.gate(str(lv) == P['leaves'], 'pqv slices n=%d cover %d orbits (claims %s)' % (n, lv, P['leaves']))
         if len(js) == m:
             s.gate(str(lv) == CLAIMS['runs'][str(n)]['leaves'], 'pqv n=%d: all %d slices done, %d orbits = the pq2 and Burnside count' % (n, m, lv))
+    # estimated CPU hours of a complete second-implementation run for n = 19, 20: the measured n = 18 time per
+    # orbit, the orbit counts, and the larger of the two measured per-orbit growth factors of pq2 (n=16->17->18)
+    rows = [l.split() for l in (DATA / 'pqv' / 'pqv_n18_T48_parts.log').read_text().splitlines()]
+    per = sum(float(r[12]) for r in rows) / sum(int(r[4]) for r in rows)
+    cpu = {n: float(CLAIMS['runs'][str(n)]['cpu_seconds']) / int(CLAIMS['runs'][str(n)]['leaves']) for n in (16, 17, 18)}
+    g = max(cpu[17] / cpu[16], cpu[18] / cpu[17])
+    est = {19: per * int(CLAIMS['runs']['19']['leaves']) * g / 3600, 20: per * int(CLAIMS['runs']['20']['leaves']) * g * g / 3600}
+    two = lambda x: float('%.2g' % x)
+    s.gate(two(est[19]) == float(CLAIMS['PqvHoursNineteen']) and two(est[20]) == float(CLAIMS['PqvHoursTwenty']),
+           'estimated full pqv runs: n=19 about %.0f, n=20 about %.0f CPU hours' % (est[19], est[20]))
     # pqv slices are disjoint subsets of the orbit set, so their total cannot exceed it
     for n in PQVN:
         s.gate(int(CLAIMS['pqv_parts'][str(n)]['leaves']) <= int(CLAIMS['runs'][str(n)]['leaves']), 'n=%d slice total <= orbit total' % n)
@@ -435,9 +563,10 @@ def step_side(fast=True):
         o = (DATA / 'side' / ('a260680_n%d.txt' % n)).read_text()
         m = re.search(r'n=%d a=%d .*inequivalent configurations=(\d+) non-peaceful=0' % (n, a_of(n)), o)
         s.gate(m and m.group(1) == CLAIMS['Enum' + ['Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'][n - 11]], 'recorded A260680(%d) = %s' % (n, m.group(1) if m else '?'))
+    for n in sorted(int(k) for k in CLAIMS['enum_runs']):
+        s.gate(*enum_run_ok(n, CLAIMS['enum_runs'][str(n)]))
     sd = DATA / 'side' / 'a260680_n16'
     summ = (sd / 'summary.txt').read_text()
-    s.gate('65536 cube lines, ids 0..65535 each once: True' in summ and str(65536) == CLAIMS['EnumCubesSixteen'], 'A260680(16): all %s cubes of the enumeration completed' % CLAIMS['EnumCubesSixteen'])
     lst = subprocess.run([str(PQENUM), '16', '37', '-K', '4', '-list'], capture_output=True, text=True).stdout
     s.gate('sha256 cubes.txt (pqenum 16 37 -K 4 -list) %s' % hashlib.sha256(lst.encode()).hexdigest() in summ, 'A260680(16): the cube list is regenerated identically')
     boards = '\n'.join(l.split(None, 1)[1] for l in (sd / 'boards.txt').read_text().splitlines()) + '\n'
@@ -446,10 +575,38 @@ def step_side(fast=True):
     s.gate(m and (m.group(1), m.group(3), m.group(4)) == (CLAIMS['EnumLabSixteen'], CLAIMS['EnumSixteen'], '0') and o.strip() == (sd / 'count.txt').read_text().strip()
            and int(CLAIMS['EnumLabSixteen']) == 16 * int(CLAIMS['EnumSixteen']),
            'A260680(16) recounted from the recorded boards: %s labellings, %s inequivalent configurations, all peaceful' % (CLAIMS['EnumLabSixteen'], CLAIMS['EnumSixteen']))
-    tv = (DATA / 'side' / 'torus_valid' / 'summary.txt').read_text()
-    p52 = re.findall(r'^n20_T52 part \d+ 60 torus n=20 T=52 INFEASIBLE reps=\d+ pairs=(\d+) leaves=\d+ searched=(\d+)', tv, re.M)
-    s.gate(len(p52) == 60 and str(sum(int(a) for a, b in p52)) == CLAIMS['TorusPairs'] and str(sum(int(b) for a, b in p52)) == CLAIMS['TorusSearched'],
-           'split torus program reproduces n=20, T=52 exactly (60 parts: %s orbits, %s searched)' % (CLAIMS['TorusPairs'], CLAIMS['TorusSearched']))
+    # torus runs with the corrected program (unsigned masks): known values, the n = 20 counters, n = 22
+    tv = (DATA / 'side' / 'torus_fixed' / 'summary.txt').read_text()
+    parts = collections.defaultdict(list)
+    for l in tv.splitlines():
+        m = re.match(r'^(\S+) part (\d+) (\d+) torus n=(\d+) T=(\d+) (FEASIBLE|INFEASIBLE) reps=\d+ pairs=(\d+) leaves=(\d+) searched=(\d+) nodes2=(\d+) flows=(\d+)', l)
+        if m: parts[m.group(1)].append(m.groups())
+    tkn = [int(x) for x in CLAIMS['a279405_known'].split(',')]
+    vok = True
+    for n in (4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18):
+        a_ = tkn[n - 1]
+        f, g = parts.get('n%d_T%d' % (n, a_), []), parts.get('n%d_T%d' % (n, a_ + 1), [])
+        vok &= any(x[5] == 'FEASIBLE' for x in f) and len(g) == int(g[0][2]) and all(x[5] == 'INFEASIBLE' for x in g)
+    s.gate(vok, 'corrected torus program: feasible at a(n) and infeasible at a(n)+1 for n = 4..14, 16, 18')
+    p52 = parts['n20_T52']; tot = lambda P, k: sum(int(x[k]) for x in P)
+    orig = re.search(r'pairs=(\d+) leaves=(\d+) searched=(\d+) nodes2=(\d+) flows=(\d+)', (DATA / 'side' / 'pqt_n20_T52.out').read_text()).groups()
+    s.gate(len(p52) == 60 and all(x[5] == 'INFEASIBLE' for x in p52) and tuple(str(tot(p52, k)) for k in (6, 7, 8, 9, 10)) == orig
+           and orig[0] == CLAIMS['TorusPairs'] and orig[2] == CLAIMS['TorusSearched'],
+           'corrected torus program, n=20, T=52: all 60 parts infeasible, pairs/leaves/searched/nodes2/flows identical to the original run')
+    s.gate(any(x[5] == 'FEASIBLE' for x in parts['n20_T51']), 'corrected torus program, n=20, T=51: feasible')
+    p65 = parts['n22_T%s' % CLAIMS['TorusTwentyTwoT']]
+    s.gate(len(p65) == 60 and all(x[5] == 'INFEASIBLE' for x in p65) and str(tot(p65, 6)) == CLAIMS['TorusPairsTwentyTwo']
+           and str(tot(p65, 8)) == CLAIMS['TorusSearchedTwentyTwo'],
+           'torus n=22, T=%s: all 60 parts infeasible (%s orbits, %s searched)' % (CLAIMS['TorusTwentyTwoT'], CLAIMS['TorusPairsTwentyTwo'], CLAIMS['TorusSearchedTwentyTwo']))
+    s.gate(any(x[5] == 'FEASIBLE' for x in parts['n22_T%s' % CLAIMS['TorusTwentyTwo']]), 'torus n=22, T=%s: feasible' % CLAIMS['TorusTwentyTwo'])
+    for nn, want in ((20, (CLAIMS['TorusTwenty'], CLAIMS['TorusTwenty'])), (22, (CLAIMS['TorusTwentyTwo'], CLAIMS['TorusTwentyTwoB']))):
+        blk = tv.split('n%d_T%s part' % (nn, want[0]))[-1]
+        pr = subprocess.run([PY, str(CODE / 'check_torus.py'), '/dev/stdin'], input=blk, capture_output=True, text=True).stdout
+        s.gate('torus n=%d white=%s black=%s attacks=0 OK' % ((nn,) + want) in pr, 'torus n=%d board: %s + %s, no toroidal attack (direct check)' % ((nn,) + want))
+    for t in ('n20_T52', 'n22_T64', 'n22_T65'):
+        man = json.loads((DATA / 'side' / 'torus_fixed' / ('%s.run_manifest.json' % t)).read_text())
+        s.gate(man['pqt_source_sha256'] == sha(CODE / 'pqt.c') and 'n%d_T%d' % (man['n'], man['T']) == t and man['M'] == 60,
+               'torus %s ran with the current code/pqt.c in a fresh directory bound to its manifest' % t)
     tk = [int(x) for x in CLAIMS['a279405_known'].split(',')]              # n = 1..18
     for n in range(4, 13 if fast else 15):
         for T in (tk[n - 1], tk[n - 1] + 1):
@@ -467,6 +624,34 @@ def step_side(fast=True):
     return s.finish()
 
 
+def enum_run_ok(n, R):
+    """Check a recorded A260680 enumeration the way the main runs are checked: the run manifest, one valid
+    line per cube of the regenerated cube list (ids, prefixes, fields), totals and hashes as recorded."""
+    import gzip
+    sd = DATA / 'side' / ('a260680_n%d' % n)
+    a = int(R['a'])
+    man = json.loads((sd / 'run_manifest.json').read_text())
+    lst = subprocess.run([str(PQENUM), str(n), str(a), '-K', '4', '-list'], capture_output=True, text=True).stdout
+    cubes = {int(l.split()[1]): l.split()[2] for l in lst.splitlines() if l.startswith('cube ')}
+    txt = gzip.decompress((sd / 'cubes.sorted.log.gz').read_bytes()).decode()
+    rows = [l.split() for l in txt.splitlines()]
+    ok = (man['n'], man['a'], man['K'], man['cube_list_sha256'], man['cubes']) == (n, a, 4, hashlib.sha256(lst.encode()).hexdigest(), len(cubes))
+    ok = ok and man['pqenum_source_sha256'] == sha(DATA / 'provenance' / R['source'])
+    ok = ok and [int(r[1]) for r in rows] == sorted(cubes) and all(len(r) == 16 and r[0] == 'cube' and r[2] == cubes[int(r[1])]
+             and r[3:15:2] == ['n1', 'leaves', 'searched', 'n2', 'flows', 'time'] and r[15] == 'UNSAT' for r in rows)
+    summ = (sd / 'summary.txt').read_text()
+    tot = {}
+    for r in rows:
+        for k, v in zip(r[3:15:2], r[4:15:2]):
+            if k != 'time': tot[k] = tot.get(k, 0) + int(v)
+    ok = ok and ('totals %s' % ' '.join('%s=%d' % kv for kv in sorted(tot.items()))) in summ
+    ok = ok and ('sha256 of the id-sorted cube log %s' % hashlib.sha256(txt.encode()).hexdigest()) in summ
+    ok = ok and str(len(cubes)) == R['cubes']
+    ids = {int(l.split()[0]) for l in (sd / 'boards.txt').read_text().splitlines()}
+    ok = ok and ids <= set(cubes)
+    return ok, 'A260680(%d) enumeration: manifest, all %d cube lines (ids, prefixes, fields), totals and hashes' % (n, len(cubes))
+
+
 def step_paper():
     s = Step('paper')
     rc, o, e = sh([PY, ROOT / 'scripts' / 'make_claims_tex.py', '--check'], nice=False)
@@ -480,15 +665,28 @@ def step_paper():
     figrows = [r.replace('\\\\', '').replace(' ', '') for r in fig.strip().splitlines()]
     cert = [l.replace(' ', '') for l in (DATA / 'certificates' / 'ainley_n16_37.txt').read_text().splitlines() if l and not l.startswith('#')]
     s.gate(figrows == cert, 'Figure 1 is the checked n=16 certificate board')
-    rc, o, e = sh(['latexmk', '-pdf', '-interaction=nonstopmode', '-halt-on-error', 'peaceable-queens.tex'], nice=False, cwd=ROOT / 'paper')
-    log = (ROOT / 'paper' / 'peaceable-queens.log').read_text(errors='replace')
+    # build in build/paper (never in the tracked paper/ directory), reproducibly: the date and PDF id come
+    # from SOURCE_DATE_EPOCH, so the result must be byte-identical to the committed paper/peaceable-queens.pdf
+    bp = BUILD / 'paper'
+    shutil.rmtree(bp, ignore_errors=True); bp.mkdir(parents=True)
+    for f in ('peaceable-queens.tex', 'claims.tex'):
+        shutil.copy2(ROOT / 'paper' / f, bp / f)
+    penv = dict(ENV, SOURCE_DATE_EPOCH=CLAIMS['pdfEpoch'], FORCE_SOURCE_DATE='1')
+    r = subprocess.run(['latexmk', '-pdf', '-interaction=nonstopmode', '-halt-on-error', 'peaceable-queens.tex'], cwd=bp,
+                       capture_output=True, text=True, env=penv)
+    log = (bp / 'peaceable-queens.log').read_text(errors='replace')
     warn = [l for l in log.splitlines() if re.search(r'Warning|Overfull|Underfull', l)]
     s.note('\n'.join(warn))
-    s.gate(rc == 0, 'paper builds with latexmk')
+    s.gate(r.returncode == 0, 'paper builds with latexmk')
     s.gate(not warn, 'no LaTeX warnings or bad boxes (%d found)' % len(warn))
     m = re.search(r'Output written on peaceable-queens.pdf \((\d+) pages', log)
     s.data['pages'] = int(m.group(1)) if m else None
     s.gate(m and m.group(1) == CLAIMS['pages'], 'the PDF has %s pages' % (m.group(1) if m else '?'))
+    built = bp / 'peaceable-queens.pdf'
+    if WRITE_PDF and built.exists():
+        shutil.copy2(built, ROOT / 'paper' / 'peaceable-queens.pdf')
+    s.gate(built.exists() and sha(built) == sha(ROOT / 'paper' / 'peaceable-queens.pdf'),
+           'the committed paper/peaceable-queens.pdf is byte-identical to the reproducible build')
     return s.finish()
 
 
@@ -523,14 +721,14 @@ def step_tamper():
             dst = Path(td) / ('r%d' % len(list(Path(td).iterdir())))
             for f in files:
                 (dst / f).parent.mkdir(parents=True, exist_ok=True); shutil.copy2(ROOT / f, dst / f)
-            shutil.copytree(BUILD, dst / 'build', symlinks=True, ignore=shutil.ignore_patterns('cargo'))
+            shutil.copytree(BUILD, dst / 'build', symlinks=True, ignore=shutil.ignore_patterns('cargo*', 'san', 'paper', 'pq-robust-*'))
             return dst
 
         def run(dst, only):
             r = subprocess.run([PY, str(dst / 'scripts' / 'verify.py'), '--only', only], cwd=dst, capture_output=True, text=True, env=ENV)
             return r.returncode
         base = copy()
-        s.gate(run(base, 'logs,certificates') == 0, 'untouched copy passes the logs and certificates gates')
+        s.gate(run(base, 'logs,certificates,side') == 0, 'untouched copy passes the logs, certificates and side gates')
         cases = []
         c = json.loads((base / 'claims.json').read_text())
         dst = copy(); c2 = json.loads(json.dumps(c)); c2['runs']['19']['leaves'] = str(int(c2['runs']['19']['leaves']) + 1)
@@ -546,6 +744,12 @@ def step_tamper():
         dst = copy(); f = dst / 'data' / 'certificates' / 'ainley_n16_37.txt'
         f.write_text(f.read_text().replace('B . . . . . . . B B B B . . . .', 'B . . . . . . . B B B B . . . W', 1))
         cases.append(('Ainley board: one white queen added in an attacked cell', dst, 'certificates'))
+        dst = copy(); f = dst / 'data' / 'side' / 'a260680_n16' / 'boards.txt'
+        t = f.read_text().splitlines(); del t[5]; f.write_text('\n'.join(t) + '\n')
+        cases.append(('A260680(16): one optimal board deleted', dst, 'side'))
+        dst = copy(); f = dst / 'data' / 'pqv' / 'pqv_n18_T48_parts.log'
+        t = f.read_text().splitlines(); del t[100]; f.write_text('\n'.join(t) + '\n')
+        cases.append(('n=18 verifier: one slice deleted', dst, 'logs'))
         for name, dst, only in cases:
             rc = run(dst, only)
             s.note('%s -> exit %d' % (name, rc))
@@ -559,16 +763,25 @@ def main():
     ap.add_argument('--only'); ap.add_argument('--jobs', type=int, default=2)
     ap.add_argument('--full', type=int, action='append', default=[]); ap.add_argument('--full-pqv', type=int, action='append', default=[])
     ap.add_argument('--tamper', action='store_true')
+    ap.add_argument('--write-pdf', action='store_true', help='copy the reproducible PDF build to paper/ (for maintainers)')
     ap.add_argument('--thorough', action='store_true', help='larger variants of the small, referee, sat, replay and side steps')
     a = ap.parse_args(); JOBS = a.jobs
+    global WRITE_PDF; WRITE_PDF = a.write_pdf
     fast = not a.thorough
-    steps = ['build', 'unit', 'small', 'referee', 'sat', 'certificates', 'logs', 'replay', 'side', 'paper']
-    sel = a.only.split(',') if a.only else steps
+    steps = ['build', 'unit', 'robust', 'small', 'referee', 'sat', 'certificates', 'logs', 'replay', 'side', 'paper']
+    if a.only is not None:
+        sel = [x.strip() for x in a.only.split(',')]
+        bad = [x for x in sel if x not in steps]
+        if not sel or bad or any(not x for x in sel):
+            ap.error('--only: unknown or empty stage name(s) %r; valid: %s' % (bad or sel, ', '.join(steps)))
+    else:
+        sel = steps
     OUT.mkdir(exist_ok=True)
     fns = {'build': step_build, 'unit': step_unit, 'small': lambda: step_small(13 if fast else 15),
            'referee': lambda: step_referee(fast), 'sat': lambda: step_sat(fast), 'certificates': step_certificates,
-           'logs': step_logs, 'replay': lambda: step_replay(fast), 'side': lambda: step_side(fast), 'paper': step_paper}
-    need_build = any(x in sel for x in ('unit', 'small', 'sat', 'logs', 'replay', 'side')) or a.full or a.full_pqv
+           'logs': step_logs, 'replay': lambda: step_replay(fast), 'side': lambda: step_side(fast), 'paper': step_paper,
+           'robust': lambda: step_robust(fast)}
+    need_build = any(x in sel for x in ('unit', 'robust', 'small', 'sat', 'logs', 'replay', 'side')) or a.full or a.full_pqv
     if need_build and 'build' not in sel and not (PQ2.exists() and PQV.exists()):
         sel = ['build'] + sel
     def guarded(name, f):
@@ -584,7 +797,7 @@ def main():
         res.append(step_full_pqv(n))
     if a.tamper:
         res.append(step_tamper())
-    ok = all(r['ok'] for r in res)
+    ok = bool(res) and all(r['ok'] for r in res) and all(r.get('gates') for r in res)
     if not a.only:
         pdf = ROOT / 'paper' / 'peaceable-queens.pdf'
         summary = {'ok': ok, 'steps': res, 'claims_sha256': sha(ROOT / 'claims.json'),

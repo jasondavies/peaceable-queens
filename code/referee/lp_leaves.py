@@ -5,7 +5,8 @@ Lemmas 2-4 and of all project code.
 Fix (R, C).  W-candidates are the cells of R x C, B-candidates those of R' x C'.  With x_d, y_a in [0,1]
 for the diagonals and antidiagonals (1 = W), the LP
     max s  s.t.  s <= sum_{W-cand} z_c,  s <= sum_{B-cand} u_c,
-                 z_c <= x_d(c), z_c <= y_a(c),  u_c <= 1 - x_d(c), u_c <= 1 - y_a(c),  all in [0,1]
+                 z_c <= x_d(c), z_c <= y_a(c),  u_c <= 1 - x_d(c), u_c <= 1 - y_a(c),
+                 x_d, y_a, z_c, u_c in [0,1] and s >= 0
 is a relaxation of max min(W, B) over the diagonal labels (put z_c = [c is a W-cell], u_c = [c is a
 B-cell]).  So if its value is < T, no labelling extending (R, C) has W >= T and B >= T.
 

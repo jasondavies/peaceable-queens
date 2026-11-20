@@ -1,7 +1,0 @@
-
-[gate] ok   paper/claims.tex is in sync with claims.json
-[gate] ok   every \cl macro used in the paper is defined in claims.tex
-[gate] ok   Figure 1 is the checked n=16 certificate board
-[gate] ok   paper builds with latexmk
-[gate] ok   no LaTeX warnings or bad boxes (0 found)
-[gate] ok   the PDF has 10 pages

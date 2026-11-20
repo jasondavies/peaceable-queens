@@ -14,6 +14,7 @@
 #include <string.h>
 #include <time.h>
 #include <stdint.h>
+#include <errno.h>
 #define MAXN 32
 static int n,T,NC,ND,Q=256;
 static int cellD[MAXN*MAXN], cellA[MAXN*MAXN], kindc[MAXN*MAXN];
@@ -84,27 +85,41 @@ static void stage2(int R,int C){
   leaves++; possW=nW; possB=nB; for(int d=0;d<ND;d++){xd[d]=-1;ya[d]=-1;}
   long long b=nodes2; dfs2(0,Q/2); if(nodes2-b>1) leafSearched++;
 }
-static int rot(int x,int s){ int full=(1<<n)-1; return ((x<<s)|(x>>(n-s)))&full; }
-static int rev(int x){ int r=0; for(int i=0;i<n;i++) if(x>>i&1) r|=1<<((n-i)%n); return r; } // i -> -i mod n
-static int rep(int x){ int best=x; int y=x; for(int s=0;s<n;s++){ int a=rot(x,s), b=rot(rev(x),s); if(a<best)best=a; if(b<best)best=b; } (void)y; return best; }
+// n-bit masks are handled as unsigned values (n <= MAXMASK); the rotation works in 64 bits, so no shift overflows
+#define MAXMASK 30
+static unsigned rot(unsigned x,int s){ uint64_t y=x, full=(1ULL<<n)-1; return (unsigned)(((y<<s)|(y>>(n-s)))&full); }
+static unsigned rev(unsigned x){ unsigned r=0; for(int i=0;i<n;i++) if(x>>i&1u) r|=1u<<((n-i)%n); return r; } // i -> -i mod n
+static unsigned rep(unsigned x){ unsigned best=x; for(int s=0;s<n;s++){ unsigned a=rot(x,s), b=rot(rev(x),s); if(a<best)best=a; if(b<best)best=b; } return best; }
+static long long argInt(const char*s,long long lo,long long hi,const char*what){
+  char*e; errno=0; long long v=strtoll(s,&e,10);
+  if(errno||e==s||*e||v<lo||v>hi){fprintf(stderr,"invalid %s '%s' (allowed %lld..%lld)\n",what,s,lo,hi); exit(1);}
+  return v;
+}
 int main(int argc,char**argv){
-  n=atoi(argv[1]); T=atoi(argv[2]); NC=n*n; ND=n; int modM=1,modJ=0;
-  for(int i=3;i<argc;i++){ if(!strcmp(argv[i],"-m")) modM=atoi(argv[++i]); else if(!strcmp(argv[i],"-j")) modJ=atoi(argv[++i]); }
+  if(argc<3){fprintf(stderr,"usage: pqt n T [-m M -j J]\n"); return 1;}
+  n=(int)argInt(argv[1],2,MAXMASK,"n"); T=(int)argInt(argv[2],0,MAXN*MAXN,"T"); NC=n*n; ND=n; int modM=1,modJ=0;
+  for(int i=3;i<argc;i++){
+    if(i+1>=argc){fprintf(stderr,"bad or incomplete option '%s'\n",argv[i]); return 1;}
+    if(!strcmp(argv[i],"-m")) modM=(int)argInt(argv[++i],1,1<<20,"-m");
+    else if(!strcmp(argv[i],"-j")) modJ=(int)argInt(argv[++i],0,1<<20,"-j");
+    else {fprintf(stderr,"bad option '%s'\n",argv[i]); return 1;} }
+  if(modJ>=modM){fprintf(stderr,"invalid partition: need 0 <= -j < -m\n"); return 1;}
   for(int d=0;d<n;d++){dLen[d]=0;aLen[d]=0;}
   for(int i=0;i<n;i++)for(int j=0;j<n;j++){int c=i*n+j; cellD[c]=((i-j)%n+n)%n; cellA[c]=(i+j)%n;
     dCells[cellD[c]][dLen[cellD[c]]++]=c; aCells[cellA[c]][aLen[cellA[c]]++]=c;}
-  int full=(1<<n)-1;
+  unsigned full=(n==32)?0xffffffffu:((1u<<n)-1u);
   // dihedral orbit representatives of n-bit masks
-  int *reps=malloc(sizeof(int)*(1<<n)); int nr=0;
-  for(int x=0;x<=full;x++) if(rep(x)==x) reps[nr++]=x;
-  int *crep=malloc(sizeof(int)*nr); for(int i=0;i<nr;i++) crep[i]=rep(~reps[i]&full);   // rep of the complement
+  unsigned *reps=malloc(sizeof(unsigned)*((size_t)1<<n)); int nr=0;
+  if(!reps){fprintf(stderr,"out of memory\n"); return 1;}
+  for(unsigned x=0;x<=full;x++) if(rep(x)==x) reps[nr++]=x;
+  unsigned *crep=malloc(sizeof(unsigned)*nr); for(int i=0;i<nr;i++) crep[i]=rep(~reps[i]&full);   // rep of the complement
   clock_t t0=clock(); long long pairs=0;
   for(int a=0;a<nr&&!found;a++) if(a%modM==modJ) for(int b=0;b<nr&&!found;b++){
-    int R=reps[a],C=reps[b], pr=__builtin_popcount(R), pc=__builtin_popcount(C);
+    unsigned R=reps[a],C=reps[b]; int pr=__builtin_popcount(R), pc=__builtin_popcount(C);
     if(pr*pc<T || (n-pr)*(n-pc)<T) continue;
     long long me=((long long)R<<n)|C;
     long long o1=((long long)C<<n)|R;  // swap: (rep C, rep R) = (C, R) since both are reps
-    int nR=crep[a], nC=crep[b];
+    unsigned nR=crep[a], nC=crep[b];
     long long o2=((long long)nR<<n)|nC, o3=((long long)nC<<n)|nR;
     if(o1<me||o2<me||o3<me) continue;
     pairs++; stage2(R,C);

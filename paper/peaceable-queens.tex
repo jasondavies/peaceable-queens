@@ -36,12 +36,12 @@ the board white or black, which turns the problem into maximising the smaller of
 fixed rows and columns we bound that by Lagrangian duality, and each Lagrangian subproblem is a minimum
 cut on the $4n-2$ diagonals. With symmetry breaking, the search for $n=20$ meets $\clLeavesTwentySci$
 row/column labellings up to symmetry. A single family of minimum cuts prunes every one of them. That
-search took $\clCpuHTwenty$ CPU hours, mostly on cloud machines. A second implementation repeats the
-whole search for $n\le17$ and $\clPqvFracEighteen\%$ of it for $n=18$. Orbit counts by Burnside's lemma
+search took $\clCpuHTwenty$ CPU hours, mostly on cloud machines. A second, separately written
+implementation repeats the whole search for every $n\le18$. Orbit counts by Burnside's lemma
 confirm that every search is complete, and exact LP certificates and SAT proofs checked by
 \texttt{drat-trim} give further checks. As side results we find that $\clEnumSixteen$ inequivalent
-optimal configurations exist for $n=16$ (OEIS A260680) and that the $20\times20$ torus admits
-$\clTorusTwenty$ queens of each colour but not more (A279405).
+optimal configurations exist for $n=16$ (OEIS A260680) and that the $20\times20$ and $22\times22$ tori
+admit $\clTorusTwenty$ and $\clTorusTwentyTwo$ queens of each colour but not more (A279405).
 \end{abstract}
 
 \noindent\textbf{AI transparency statement.} The results, the computer-assisted proofs, the code and this
@@ -291,9 +291,11 @@ Its pruning is sound by the analogue of Corollary~\ref{cor:sound}. For $n=16$ an
 whole search. It reported infeasibility, and its orbit counts ($\clLeavesSixteen$ and
 $\clLeavesSeventeen$) agree exactly with those of the first program. For $n=18$ we ran it on slices:
 slice $j$ of $m=199$ consists of the canonical pairs with $R\equiv j\pmod{199}$, where bit $i$ of $R$ is
-row $i$, and the slices $j=0,\dots,198$ partition the search. So far $\clPqvPartsEighteen$ slices
-($\clPqvLeavesEighteen$ orbits, $\clPqvFracEighteen\%$ of the total) have been run, and all were pruned.
-The second implementation was not run for $n=19$ and $n=20$.
+row $i$, and the slices $j=0,\dots,198$ partition the search. All $\clPqvPartsEighteen$ slices were run
+and every orbit was pruned; together they contain $\clPqvLeavesEighteen$ orbits, exactly the orbit count of
+the first program and of Burnside's lemma. So for $n\le18$ two independent implementations cover the whole
+search. The second implementation was not run for $n=19$ and $n=20$; we estimate that it would need about
+$\clPqvHoursNineteen$ and $\clPqvHoursTwenty$ CPU hours on our machine.
 
 \paragraph{Orbit counts by Burnside's lemma.} A short independent script counts, for every $n\le20$, the
 $G$-orbits of pairs $(R,C)$ with $|R||C|\ge T$ and $|R^c||C^c|\ge T$. It uses Burnside's lemma and the
@@ -310,18 +312,18 @@ pair from each orbit, and none is missing.
 &z_c\le x_d,\ z_c\le y_e\quad\text{for each $\W$-candidate $c$},\\
 &u_c\le1-x_d,\ u_c\le1-y_e\quad\text{for each $\B$-candidate $c$},
 \end{align*}
-with all variables in $[0,1]$,
+with $x_d,y_e,z_c,u_c\in[0,1]$ and $s\ge0$,
 bounds $\max\min\{W,B\}$ over the diagonal labels. This uses neither supermodularity nor minimum cuts.
 We solve it in floating point with HiGHS~\cite{HiGHS} through SciPy~\cite{SciPy}, round the dual
 multipliers to rationals and repair them to a feasible dual solution. Its objective, evaluated in exact
-rational arithmetic, is then a valid upper bound by weak duality. For each $n=16,\dots,19$ we certified
+rational arithmetic, is then a valid upper bound by weak duality. For each $n=16,\dots,20$ we certified
 $\clLpUniform$ uniformly random pairs $(R,C)$ passing the count bound and $\clLpBalanced$ random
 ``balanced'' pairs (both products $\ge T+n$). We also certified the pair $(R,C)$ of the best known board
 (rows and columns holding a white queen are labelled $\W$) and all pairs within Hamming distance~$2$ of
-it, from $\clLpNbSixteen$ pairs for $n=16$ to $\clLpNbNineteen$ for $n=19$. Every
-certified bound was below $T$. The largest bounds for $n=16,\dots,19$ were
-$\clLpMaxSixteen$, $\clLpMaxSeventeen$, $\clLpMaxEighteen$ and $\clLpMaxNineteen$, against
-$T=\clTSixteen,\clTSeventeen,\clTEighteen,\clTNineteen$.
+it, from $\clLpNbSixteen$ pairs for $n=16$ to $\clLpNbTwenty$ for $n=20$. Every
+certified bound was below $T$. The largest bounds for $n=16,\dots,20$ were
+$\clLpMaxSixteen$, $\clLpMaxSeventeen$, $\clLpMaxEighteen$, $\clLpMaxNineteen$ and $\clLpMaxTwenty$,
+against $T=\clTSixteen,\clTSeventeen,\clTEighteen,\clTNineteen,\clTTwenty$.
 
 \paragraph{SAT with checked proofs.} We used two encodings, each with sequential-counter cardinality
 constraints, and the Glucose solver through PySAT~\cite{PySAT}. The first encodes placements directly by
@@ -355,12 +357,22 @@ of Lemmas~\ref{lem:label}--\ref{lem:sym} and both programs adversarially. It wro
 brute-force and CP-SAT checks above. It found no error affecting the results. Its minor corrections (a
 misstated number of fixed lines for the $n=13$ SAT cubes in an earlier draft, Corollary~\ref{cor:sound}
 as the precise statement of what the pruning needs, and the Burnside test of completeness) are
-incorporated.
+incorporated. An external AI review (ChatGPT Pro) of the code, which also reran the search for $n=16$
+and recomputed the Burnside counts for $n\le20$, found eight defects, now corrected, none of which
+affected the claimed values. The resumable drivers trusted logged results in a reused directory whenever
+the cube list matched, even for a different $T$; every run reported here used a fresh directory for its
+$(n,T)$, and the drivers now bind each directory to a manifest of all parameters and refuse a mismatch.
+The torus program shifted signed integers beyond their width while building symmetry representatives
+(undefined behaviour); with the corrected program the torus runs for $n=20$ and $n=22$ give identical
+counters. The verification script ignored a failure of the leaf sampler and accepted misspelled stage
+names; the completion log of the A260680(16) run was missing from the repository; the pinned
+\texttt{drat-trim} did not compile under GCC~14; the LP above was stated with $s\in[0,1]$; and the
+solvers accepted out-of-range arguments (a huge $Q$ overflowed, and an empty part of a partition reported
+infeasibility). Each correction has a regression test in \texttt{scripts/verify.py}.
 
 \paragraph{What has to be trusted.} The upper bounds rest on Lemmas~\ref{lem:label}--\ref{lem:sym} and
-on the first program. Table~\ref{tab:cover} lists what checked each value. For $n\le17$ a second,
-separately written program repeats the whole search with the same result; for $n=18$ it repeats part of
-it. For $n=19$ and $n=20$ only the first program covers the whole search. There the Burnside counts
+on the first program. Table~\ref{tab:cover} lists what checked each value. For $n\le18$ a second,
+separately written program repeats the whole search with the same result. For $n=19$ and $n=20$ only the first program covers the whole search. There the Burnside counts
 confirm that it visits every orbit; a sample of the cubes computed in the cloud was rerun locally with
 identical results; and the exact LP certificates and SAT proofs on samples check the bound without
 Lemmas~\ref{lem:lag}--\ref{lem:sym}. A self-contained proof certificate would give a value of $p$ and a
@@ -375,9 +387,9 @@ $n$ & first program & second implementation & other checks\\\midrule
 $\le15$ & complete & complete & definition search ($n\le\clBruteN$), CP-SAT ($n\le\clCpsatN$), SAT+DRAT ($n\le\clSatN$)\\
 16 & complete & complete & Burnside; SAT+DRAT on \clSatSixteenLeaves{} leaves; LP; replays\\
 17 & complete & complete & Burnside; LP certificates; replays\\
-18 & complete & $\clPqvFracEighteen\%$ (\clPqvPartsEighteen{} of 199 slices) & Burnside; LP certificates; replays\\
+18 & complete & complete (\clPqvPartsEighteen{} slices) & Burnside; LP certificates; replays\\
 19 & complete & --- & Burnside; LP certificates; \clReplayNineteen{} cloud cubes rerun locally\\
-20 & complete & --- & Burnside; \clReplayTwenty{} cloud cubes rerun locally\\
+20 & complete & --- & Burnside; LP certificates; \clReplayTwenty{} cloud cubes rerun locally\\
 \bottomrule
 \end{tabular}
 \caption{What checked each upper bound. ``Burnside'' means that the number of orbits visited equals the
@@ -406,8 +418,11 @@ the reflections $i\mapsto-i$ and $j\mapsto-j$, transposition and the colour swap
 values for $4\le n\le14$, $n=16$ and $n=18$, each at $a(n)$ and $a(n)+1$. For $n=20$ it gives $\clTorusTwenty$: a placement with
 $\clTorusTwenty$ of each colour exists, and $\clTorusTwentyT$ is impossible ($\clTorusPairs$ orbits, of
 which $\clTorusSearched$ needed a diagonal search, in $\clTorusMinutes$ CPU minutes). The repository version of the program, which can split the search into
-parts and caches the representatives of complements, reproduces all these values and the $n=20$ counts
-exactly. The value for $n=19$ is still
+parts, caches the representatives of complements and uses unsigned masks, reproduces all these values and
+all the $n=20$ counters exactly. For $n=22$ it gives $\clTorusTwentyTwo$: it finds a placement with
+$\clTorusTwentyTwo$ white and $\clTorusTwentyTwoB$ black queens, which we checked directly for toroidal
+attacks, and it shows that $\clTorusTwentyTwoT$ of each colour is impossible ($\clTorusPairsTwentyTwo$
+orbits, of which $\clTorusSearchedTwentyTwo$ needed a diagonal search). The value for $n=19$ is still
 unknown. Odd tori are harder for the method, because the root bound fails for many orbits.
 \end{itemize}
 
@@ -429,7 +444,8 @@ manuscript; he also started some of the cloud computations, using commands prepa
 The computational claims are reproduced by \texttt{scripts/verify.py}. At the time of writing, the
 mathematics and the code have been checked only by AI systems and by computer verification. These checks
 include an adversarial review of the proofs and of both search programs by an independent AI referee,
-who also wrote the Burnside, LP-certificate, brute-force and CP-SAT checks of Section~\ref{sec:ver}. No
+who also wrote the Burnside, LP-certificate, brute-force and CP-SAT checks of Section~\ref{sec:ver}, and an
+external AI review of the code (ChatGPT Pro), whose findings are corrected (Section~\ref{sec:ver}). No
 independent human expert has reviewed the work. The human author has not read this manuscript or checked
 its arguments. The author takes responsibility for the accuracy of this disclosure.
 

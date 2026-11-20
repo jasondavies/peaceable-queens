@@ -177,21 +177,44 @@ fn canonical(r: u32, c: u32, n: usize) -> bool {
     true
 }
 
+fn fail(msg: &str) -> ! { eprintln!("pqv: {}", msg); std::process::exit(2) }
+
+fn num<T: std::str::FromStr>(args: &[String], i: usize, what: &str) -> T {
+    match args.get(i).map(|s| s.parse::<T>()) { Some(Ok(v)) => v, _ => fail(&format!("missing or invalid {}", what)) }
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let n: usize = args[1].parse().unwrap(); let t: i64 = args[2].parse().unwrap();
-    let threads: usize = if args.len() > 3 && !args[3].starts_with("--") { args[3].parse().unwrap() } else { 1 };
+    if args.len() < 3 { fail("usage: pqv n T [threads] [options]"); }
+    let n: usize = num(&args, 1, "n"); let t: i64 = num(&args, 2, "T");
+    if !(1..=30).contains(&n) { fail("n must be in 1..=30"); }
+    if t < 0 { fail("T must be >= 0"); }
+    let threads: usize = if args.len() > 3 && !args[3].starts_with("--") { num(&args, 3, "threads") } else { 1 };
+    if threads == 0 || threads > 1024 { fail("threads must be in 1..=1024"); }
+    let known = ["--nosym", "--nobound", "--part", "--sample", "--minprod", "--selftest"];
+    let mut i = if args.len() > 3 && !args[3].starts_with("--") { 4 } else { 3 };
+    while i < args.len() {
+        match args[i].as_str() {
+            "--nosym" | "--nobound" => i += 1,
+            "--part" | "--sample" => i += 3,
+            "--minprod" | "--selftest" => i += 2,
+            a => fail(&format!("unknown option {} (known: {:?})", a, known)),
+        }
+    }
+    if i > args.len() { fail("incomplete option"); }
     let nosym = args.iter().any(|a| a == "--nosym");
     let nobound = args.iter().any(|a| a == "--nobound");
     let mut sample: Option<(u64, u64)> = None;
     // --part j m : only the rows-masks r with r % m == j (a slice of the full search; the slices j = 0..m-1 partition it)
-    let part: Option<(u32, u32)> = match args.iter().position(|a| a == "--part") { Some(i) => Some((args[i + 1].parse().unwrap(), args[i + 2].parse().unwrap())), None => None };
-    let minprod: i64 = match args.iter().position(|a| a == "--minprod") { Some(i) => args[i + 1].parse().unwrap(), None => 0 };
-    if let Some(i) = args.iter().position(|a| a == "--sample") { sample = Some((args[i + 1].parse().unwrap(), args[i + 2].parse().unwrap())); }
+    let part: Option<(u32, u32)> = match args.iter().position(|a| a == "--part") { Some(i) => Some((num(&args, i + 1, "slice index"), num(&args, i + 2, "slice modulus"))), None => None };
+    if let Some((pj, pm)) = part { if pm == 0 || pj >= pm { fail("--part j m needs m >= 1 and 0 <= j < m"); } }
+    let minprod: i64 = match args.iter().position(|a| a == "--minprod") { Some(i) => num(&args, i + 1, "minprod"), None => 0 };
+    if let Some(i) = args.iter().position(|a| a == "--sample") { sample = Some((num(&args, i + 1, "sample size"), num(&args, i + 2, "sample seed"))); }
     let inst = Arc::new(Inst { n, t });
     if let Some(i) = args.iter().position(|a| a == "--selftest") {
         // compare upper() with brute force over all diagonal labellings, random (R,C), random p
-        let k: u64 = args[i + 1].parse().unwrap(); let mut s: u64 = 99991; let mut bad = 0;
+        let k: u64 = num(&args, i + 1, "selftest trials"); let mut s: u64 = 99991; let mut bad = 0;
+        if n > 7 { fail("--selftest enumerates all diagonal labellings: n must be <= 7"); }
         let full = (1u32 << n) - 1; let nd = 2 * n - 1;
         for _ in 0..k {
             s ^= s << 13; s ^= s >> 7; s ^= s << 17;

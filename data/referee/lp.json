@@ -1,5 +1,5 @@
 {
- "_comment": "code/referee/lp_leaves.py: random n T 2000 1000+n; balanced n T 2000 2000+n; board n T data/certificates/kamenetsky_best_known_12-30.txt",
+ "_comment": "code/referee/lp_leaves.py: random n T 2000 1000+n; balanced n T 2000 2000+n; board n T data/certificates/kamenetsky_best_known_12-30.txt (n = 16..20)",
  "random_16": {
   "mode": "random",
   "n": 16,
@@ -178,6 +178,51 @@
    "1111111111000000000",
    "0000011111000011111",
    52.55555555555555
+  ]
+ },
+ "random_20": {
+  "mode": "random",
+  "n": 20,
+  "T": 59,
+  "checked": 2000,
+  "count_test_excluded": 0,
+  "certified_below_T": 2000,
+  "max_certified_bound": "55421597271/1073741824",
+  "max_certified_bound_float": 51.6153846597299,
+  "max_at": [
+   "11110111000011001000",
+   "11110111110000000000",
+   51.61538461538461
+  ]
+ },
+ "balanced_20": {
+  "mode": "balanced",
+  "n": 20,
+  "T": 59,
+  "checked": 2000,
+  "count_test_excluded": 0,
+  "certified_below_T": 2000,
+  "max_certified_bound": "51",
+  "max_certified_bound_float": 51.0,
+  "max_at": [
+   "00101010010110101010",
+   "11111111110000010000",
+   51.00000000000001
+  ]
+ },
+ "board_20": {
+  "mode": "board",
+  "n": 20,
+  "T": 59,
+  "checked": 821,
+  "count_test_excluded": 0,
+  "certified_below_T": 821,
+  "max_certified_bound": "31377122199/536870912",
+  "max_certified_bound_float": 58.44444446079433,
+  "max_at": [
+   "00000000000111111111",
+   "00001111000000111111",
+   58.44444444444444
   ]
  }
 }

@@ -1,26 +1,36 @@
 #!/usr/bin/env python3
 """Resumable driver: run the independent verifier pqv on slices of the (R,C) search.
 
-  run_pqv_parts.py n T m OUTDIR j1 j2 ...     (one single-threaded process at a time, nice -n 10)
+  run_pqv_parts.py n T m OUTDIR j1 j2 ... [--adopt]   (one single-threaded process at a time, nice -n 10)
 
 Slice j of m is the set of canonical (R,C) with R % m == j (bit i of R = row i is W); the m slices partition
-the full search.  One line per slice is appended to OUTDIR/parts.log:
+the full search.  OUTDIR is bound to a run manifest (runmanifest.py: n, T, m, main.rs SHA-256); several
+drivers with disjoint slice lists may share one OUTDIR.  One line per slice is appended to OUTDIR/parts.log:
   part j m leaves L pruned P searched S verdict V wall secs
-A slice is done iff its line is present, so the driver can be killed and restarted."""
-import os, subprocess, sys, time, hashlib
+Every logged line is validated before it is trusted; a slice is done iff its line is present."""
+import os, subprocess, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import runmanifest as rm
 PQV = os.path.join(HERE, '..', 'build', 'pqv')
-n, T, m, out = sys.argv[1], sys.argv[2], int(sys.argv[3]), sys.argv[4]
-js = [int(x) for x in sys.argv[5:]]
-os.makedirs(out, exist_ok=True)
+SRC = os.path.join(HERE, 'verifier', 'src', 'main.rs')
+args = [x for x in sys.argv[1:] if x != '--adopt']
+if len(args) < 4: sys.exit(__doc__)
+n, T, m, out = args[0], args[1], int(args[2]), args[3]
+js = [int(x) for x in args[4:]]
+if m < 1 or any(not 0 <= j < m for j in js): rm.die('need m >= 1 and 0 <= j < m')
 logp = os.path.join(out, 'parts.log')
-done = set()
-if os.path.exists(logp):
-    for l in open(logp):
-        p = l.split()
-        if p and p[0] == 'part': done.add(int(p[1]))
-with open(os.path.join(out, 'binary.sha256'), 'w') as f:
-    f.write(hashlib.sha256(open(PQV, 'rb').read()).hexdigest() + '  pqv\n')
+rm.bind(out, {'program': 'pqv', 'n': int(n), 'T': int(T), 'm': m, 'pqv_source_sha256': rm.sha_file(SRC)}, PQV, logp,
+        adopt='--adopt' in sys.argv)
+
+
+def check(p):
+    ok = (len(p) == 13 and p[0] == 'part' and p[2] == str(m) and p[3::2][:5] == ['leaves', 'pruned', 'searched', 'verdict', 'wall']
+          and p[1].isdigit() and int(p[1]) < m and p[10] in ('INFEASIBLE', 'FEASIBLE'))
+    return (int(p[1]) if len(p) > 1 and p[1].isdigit() else None), ok, 'format'
+
+
+done = set(rm.read_lines_checked(logp, check, repair=False))
 for j in js:
     if j in done: continue
     t0 = time.time()

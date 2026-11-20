@@ -4,7 +4,6 @@ venv/
 .venv/
 /build/
 /tools/
-/verification/full_*/
 code/verifier/target/
 paper/*.aux
 paper/*.log
@@ -14,3 +13,4 @@ paper/*.fdb_latexmk
 paper/*.synctex.gz
 paper/*.bbl
 paper/*.blg
+/verification/
