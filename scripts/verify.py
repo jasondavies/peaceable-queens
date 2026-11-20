@@ -631,16 +631,21 @@ def step_side(fast=True):
         s.gate(m and m.group(1) == CLAIMS['Enum' + ['Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'][n - 11]], 'recorded A260680(%d) = %s' % (n, m.group(1) if m else '?'))
     for n in sorted(int(k) for k in CLAIMS['enum_runs']):
         s.gate(*enum_run_ok(n, CLAIMS['enum_runs'][str(n)]))
-    sd = DATA / 'side' / 'a260680_n16'
-    summ = (sd / 'summary.txt').read_text()
-    lst = subprocess.run([str(PQENUM), '16', '37', '-K', '4', '-list'], capture_output=True, text=True).stdout
-    s.gate('sha256 cubes.txt (pqenum 16 37 -K 4 -list) %s' % hashlib.sha256(lst.encode()).hexdigest() in summ, 'A260680(16): the cube list is regenerated identically')
-    boards = '\n'.join(l.split(None, 1)[1] for l in (sd / 'boards.txt').read_text().splitlines()) + '\n'
-    o = subprocess.run([PY, str(CODE / 'count_configs.py'), '16', '37'], input=boards, capture_output=True, text=True).stdout
-    m = re.search(r'labellings=(\d+) distinct cell-boards=(\d+) inequivalent configurations=(\d+) non-peaceful=(\d+)', o); s.note(o.strip())
-    s.gate(m and (m.group(1), m.group(3), m.group(4)) == (CLAIMS['EnumLabSixteen'], CLAIMS['EnumSixteen'], '0') and o.strip() == (sd / 'count.txt').read_text().strip()
-           and int(CLAIMS['EnumLabSixteen']) == 16 * int(CLAIMS['EnumSixteen']),
-           'A260680(16) recounted from the recorded boards: %s labellings, %s inequivalent configurations, all peaceful' % (CLAIMS['EnumLabSixteen'], CLAIMS['EnumSixteen']))
+    for n, a_ in ((16, 37), (17, 42)):
+        w = WORD[n]
+        if 'Enum' + w not in CLAIMS: continue
+        sd = DATA / 'side' / ('a260680_n%d' % n)
+        summ = (sd / 'summary.txt').read_text()
+        lst = subprocess.run([str(PQENUM), str(n), str(a_), '-K', '4', '-list'], capture_output=True, text=True).stdout
+        s.gate('sha256 cubes.txt (pqenum %d %d -K 4 -list) %s' % (n, a_, hashlib.sha256(lst.encode()).hexdigest()) in summ,
+               'A260680(%d): the cube list is regenerated identically' % n)
+        boards = '\n'.join(l.split(None, 1)[1] for l in (sd / 'boards.txt').read_text().splitlines()) + '\n'
+        o = subprocess.run([PY, str(CODE / 'count_configs.py'), str(n), str(a_)], input=boards, capture_output=True, text=True).stdout
+        m = re.search(r'labellings=(\d+) distinct cell-boards=(\d+) inequivalent configurations=(\d+) non-peaceful=(\d+)', o); s.note(o.strip())
+        s.gate(m and (m.group(1), m.group(3), m.group(4)) == (CLAIMS['EnumLab' + w], CLAIMS['Enum' + w], '0') and o.strip() == (sd / 'count.txt').read_text().strip()
+               and int(CLAIMS['EnumLab' + w]) == 16 * int(CLAIMS['Enum' + w]) and str(a_) == str(a_of(n)),
+               'A260680(%d) recounted from the recorded boards: %s labellings, %s inequivalent configurations, all peaceful'
+               % (n, CLAIMS['EnumLab' + w], CLAIMS['Enum' + w]))
     # torus runs with the corrected program (unsigned masks): known values, the n = 20 counters, n = 22
     tv = (DATA / 'side' / 'torus_fixed' / 'summary.txt').read_text()
     parts = collections.defaultdict(list)

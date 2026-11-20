@@ -16,8 +16,8 @@ n × n board with no queen attacking a queen of the other colour. The values a(1
   D4 × colour swap. For every n ≤ 20 the bound at the root prunes every (rows, columns) orbit, so no diagonal
   search is ever needed. The n = 20 search meets 5.7 × 10¹⁰ orbits.
 - **Side results, each from a single implementation.** They reproduce all the known terms of their sequences:
-  - A260680 (inequivalent optimal configurations): 696, 4, 2155, 579, 2298, 26 for n = 11, …, 16;
-  - A279405 (torus): the values at n = 20 and n = 22 are 51 and 64.
+  - [A260680](https://oeis.org/A260680) (inequivalent optimal configurations): 696, 4, 2155, 579, 2298, 26, 5 for n = 11, …, 17;
+  - [A279405](https://oeis.org/A279405) (torus): the values at n = 20 and n = 22 are 51 and 64.
 
 ## What was checked, for each n
 
@@ -88,7 +88,7 @@ The default run covers these steps.
   checked: one line per cube, all UNSAT, and totals equal to the claims. The complete pqv runs and the pqv slices are
   checked too (for n = 18 all 199 slices, with the Burnside total).
 - **replay:** random cubes of each n are rerun, and their log lines must be identical apart from the time.
-- **side:** A260680 for n ≤ 9 and the torus for n ≤ 12 are rerun; the A260680 enumerations are checked like the main
+- **side:** [A260680](https://oeis.org/A260680) for n ≤ 9 and the torus for n ≤ 12 are rerun; the [A260680](https://oeis.org/A260680) enumerations are checked like the main
   runs (manifest, every cube line, totals) and recounted from the recorded optimal boards; the torus runs with the
   corrected program are checked against the original counters.
 - **paper:** the claims macros, a clean reproducible LaTeX build in `build/paper/`, identical to the committed PDF.
@@ -109,7 +109,7 @@ Lemma 4.1.
   Burnside counts, replays of cloud-computed cubes and the LP certificates are the cross-checks;
 - the two programs share the method (Lemmas 2.1–4.1). The SAT/DRAT and exact LP checks avoid Lemmas 3.1–4.1, and the
   definition-level checks avoid all of them, but these checks cover only samples or small n;
-- the side results (A260680 n = 11…16, torus n = 20 and 22) have a single implementation.
+- the side results ([A260680](https://oeis.org/A260680) n = 11…17, torus n = 20 and 22) have a single implementation.
 
 No independent human review has been recorded.
 
@@ -119,7 +119,7 @@ No independent human review has been recorded.
 - `code/`:
   - `pq2.c`: the main search;
   - `verifier/`: the second implementation (Rust, `pqv`);
-  - `pqenum.c`, `count_configs.py`: A260680;
+  - `pqenum.c`, `count_configs.py`: [A260680](https://oeis.org/A260680);
   - `pqt.c`, `check_torus.py`: the torus;
   - `run_cubes.py`, `run_pqv_parts.py`, `run_enum.py`, `run_torus.py`: resumable drivers;
   - `modal/`: the ephemeral Modal dispatcher used for most n = 19 and 20 cubes (`modal_pq_v1_used_for_n19.py` is the
@@ -148,5 +148,5 @@ the declaration in the paper.
 ## License
 
 Apache License 2.0; see [LICENSE](LICENSE). The board file `data/certificates/kamenetsky_best_known_12-30.txt` is
-D. Kamenetsky's file from the OEIS (oeis.org/A250000/a250000_3.txt), included unchanged under the OEIS licence
+D. Kamenetsky's file from the OEIS ([oeis.org/A250000/a250000_3.txt](https://oeis.org/A250000/a250000_3.txt)), included unchanged under the OEIS licence
 (CC BY-SA 4.0). drat-trim, which is downloaded separately, has its own licence (MIT).

@@ -1,0 +1,10 @@
+{
+ "K": 4,
+ "a": 42,
+ "adopted": "written after the run (2026-11-20) for the fresh directory created by code/run_enum.py 17 42 4 6 on 2026-11-20 (single session, paused and resumed by SIGSTOP/SIGCONT); that driver version had no manifest support",
+ "cube_list_sha256": "836fb55765c37e408164aad0650a391f99b19604a4817349685e9af6fd75546f",
+ "cubes": 65536,
+ "n": 17,
+ "pqenum_source_sha256": "0cd7d48fba261ceaff658cafb1f5fa547adc6a58a86184728ac01a67dfde49ab",
+ "program": "pqenum"
+}

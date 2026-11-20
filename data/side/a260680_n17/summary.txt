@@ -1,0 +1,5 @@
+pqenum 17 42 -K 4: 65536 cube lines, ids 0..65535 each once: True
+totals flows=22945362852 leaves=13952767408 n1=31031077168 n2=13952781008 searched=80 cpu_seconds 131833.5
+sha256 of the id-sorted cube log ee5d83be059d98c78447d6ca22339cdf3282c04bae261f8f978510114595129d
+sha256 cubes.txt (pqenum 17 42 -K 4 -list) 836fb55765c37e408164aad0650a391f99b19604a4817349685e9af6fd75546f
+boards.txt: every S line (W B board), prefixed by its cube id; count.txt: count_configs.py 17 42 on them

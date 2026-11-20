@@ -421,6 +421,8 @@
  "EnumSixteen": "26",
  "EnumLabSixteen": "416",
  "EnumCubesSixteen": "65536",
+ "EnumSeventeen": "5",
+ "EnumLabSeventeen": "80",
  "SatSixteenLeaves": "400",
  "ReplayNineteen": "24",
  "ReplayTwenty": "24",
@@ -428,6 +430,11 @@
  "enum_runs": {
   "16": {
    "a": "37",
+   "cubes": "65536",
+   "source": "pqenum.c.runs"
+  },
+  "17": {
+   "a": "42",
    "cubes": "65536",
    "source": "pqenum.c.runs"
   }
