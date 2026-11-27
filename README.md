@@ -2,25 +2,29 @@
 
 This repository holds a paper and its verification material. The paper concerns OEIS
 [A250000](https://oeis.org/A250000): a(n) is the largest m such that m white and m black queens can be placed on an
-n × n board with no queen attacking a queen of the other colour. The refereed literature and the OEIS gave a(n) for
-n ≤ 15. In August–September 2026 F. Arevalo determined a(16) = 37, a(17) = 42 and a(18) = 47 in an unrefereed,
-AI-assisted computational note ([fabianarevalo.com/peaceable-queens](https://fabianarevalo.com/peaceable-queens),
+n × n board with no queen attacking a queen of the other colour. The OEIS gave a(n) for n ≤ 15. N. DiMichele and
+M. Forbes determined a(16) = 37 by integer programming
+([INFORMS Trans. Educ. 26(3), 2026, published online August 2025](https://doi.org/10.1287/ited.2024.0122)). In
+August–September 2026 F. Arevalo determined a(17) = 42 and a(18) = 47, and independently a(16) = 37, in an
+unrefereed, AI-assisted computational note ([fabianarevalo.com/peaceable-queens](https://fabianarevalo.com/peaceable-queens),
 code in [farev/Matematica](https://github.com/farev/Matematica/tree/main/conjectures/peaceable-queens)).
 
-**Correction.** An earlier version of this repository (commits up to aa07de5), and the OEIS A250000 edit that came
-with it, presented a(16)–a(18), and the torus values for n = 20 and 22, as new. The AI system's first literature
-search had missed Arevalo's note and J. P. Harries's work on even tori. This version credits both.
+**Corrections.** Earlier versions of this repository, and the OEIS A250000 edits that came with them, gave
+incorrect credit. Commits up to aa07de5 presented a(16)–a(18), and the torus values for n = 20 and 22, as new;
+commit cf8679e credited a(16) to Arevalo. The AI system's literature searches had missed the paper of DiMichele and
+Forbes, Arevalo's note and J. P. Harries's work on even tori. This version credits all three.
 
 ## Results
 
 - **New: a(19) = 52 and a(20) = 58.** Both equal ⌊7n²/48⌋, so Ainley's 1977 constructions are optimal on these
   boards. The lower bounds are known boards (the OEIS file of best known solutions by D. Kamenetsky), each checked
   directly for attacks. The upper bounds come from an exhaustive, computer-assisted search.
-- **Independent confirmation: a(16) = 37, a(17) = 42, a(18) = 47**, first determined by Arevalo. Here each of
+- **Independent confirmation: a(16) = 37, a(17) = 42, a(18) = 47**, first determined by DiMichele and Forbes
+  (a(16)) and by Arevalo (a(17), a(18)). Here each of
   n = 16, 17, 18 is checked by two separately written programs that cover the whole search.
 - **Method.** Label every row, column, diagonal and antidiagonal white or black. Then a(n) is the maximum over
   labellings of min(#white cells, #black cells) (Lemma 2.1). This reformulation is known (Arevalo's Lemma 1; line
-  variables go back to Smith–Petrie–Gent and Prestwich–Beck, 2004). The new ingredient is the bound. For fixed rows
+  variables go back to Smith–Petrie–Gent and Prestwich–Beck, 2004, and are used by DiMichele–Forbes). The new ingredient is the bound. For fixed rows
   and columns, min(W, B) is bounded by Lagrangian duality, and each Lagrangian subproblem is a minimum cut on the
   4n − 2 diagonals, a joint bound over both diagonal families. Symmetry breaking uses D4 × colour swap. For every
   n ≤ 20 the bound at the root prunes every (rows, columns) orbit, so no diagonal search is ever needed. The n = 20
@@ -156,8 +160,8 @@ No independent human review has been recorded.
 
 Author: Jason Davies. AI systems produced the mathematics, the code and the manuscript: Claude Opus 5.5 (Anthropic),
 via Claude Code, under the author's direction. The author started some of the cloud runs with commands prepared by
-the AI system. The AI system's first literature search missed the prior work of Arevalo and Harries; see the
-correction above. The author has not read the manuscript or checked the arguments; see
+the AI system. The AI system's literature searches missed the prior work of DiMichele and Forbes, Arevalo and
+Harries; see the corrections above. The author has not read the manuscript or checked the arguments; see
 the declaration in the paper.
 
 ## License

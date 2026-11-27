@@ -28,9 +28,9 @@
 \maketitle
 \begin{abstract}
 Let $a(n)$ be the largest $m$ such that $m$ white and $m$ black queens can be placed on an $n\times n$
-board with no queen attacking a queen of the other colour (OEIS A250000). The refereed literature and
-the OEIS gave $a(n)$ for $n\le15$, and in 2026 Arevalo determined $a(16)$, $a(17)$ and $a(18)$ in an
-unrefereed, AI-assisted computational note. We prove $a(19)=\claNineteen$ and $a(20)=\claTwenty$, which
+board with no queen attacking a queen of the other colour (OEIS A250000). The OEIS gave $a(n)$ for
+$n\le15$; DiMichele and Forbes determined $a(16)$ by integer programming in 2025, and in 2026 Arevalo
+determined $a(17)$ and $a(18)$ in an unrefereed, AI-assisted computational note. We prove $a(19)=\claNineteen$ and $a(20)=\claTwenty$, which
 were open, and we confirm $a(16)=\claSixteen$, $a(17)=\claSeventeen$ and $a(18)=\claEighteen$
 independently, with two separately written programs. In each case $a(n)=\lfloor7n^2/48\rfloor$, so the
 constructions that Ainley gave in 1977 are optimal on these boards. The proof is computer-assisted. As in
@@ -51,9 +51,9 @@ follow from Harries's exact formula for even tori.
 \noindent\textbf{AI transparency statement.} The results, the computer-assisted proofs, the code and this
 manuscript were produced by artificial intelligence. The human author initiated the broader research and
 directed the AI systems, but did not write the text and has not checked the arguments. The AI system's
-first literature search missed the work of Arevalo and of Harries discussed below, and an earlier version
-of this paper, and our edit of OEIS A250000, presented $a(16)$--$a(18)$ as new. Details are given at the
-end of the paper.
+literature searches missed the work of DiMichele and Forbes, of Arevalo and of Harries discussed below,
+and earlier versions of this paper, and our edits of OEIS A250000, gave incorrect credit for
+$a(16)$--$a(18)$. Details are given at the end of the paper.
 
 \section{Introduction}
 
@@ -72,7 +72,9 @@ $a(1),\dots,a(15)=0,0,1,2,4,5,7,9,12,14,17,21,24,28,32$ were obtained with sever
 and Gent~\cite{SPG} used constraint programming with symmetry breaking (see also~\cite{Petrie}), and
 Prestwich and Beck~\cite{PB} obtained $a(12)$ and $a(13)$. In 2014 Pratt confirmed $a(1),\dots,a(13)$ by integer
 programming and gave upper bounds such as $a(16)\le64$ and $a(19)\le90$. Tabatabai found $a(14)$ and
-$a(15)$ by integer programming in 2018 (all three in~\cite{OEIS}). The problem is also an exercise in
+$a(15)$ by integer programming in 2018 (all three in~\cite{OEIS}). DiMichele and Forbes~\cite{DF}
+determined $a(16)=37$ with an integer program over line variables, solved by Gurobi in about $40$ days
+(published online in August 2025). The problem is also an exercise in
 Knuth's volume on satisfiability~\cite{Knuth}.
 
 Since $\lfloor 7n^2/48\rfloor$ matches every known value except $n=5$ and $n=9$ (where $a(n)$ is one
@@ -86,12 +88,13 @@ studied the asymptotics~\cite{Kane}.
 \paragraph{Prior and concurrent work.} Describing a placement by labels on lines is not new. Smith,
 Petrie and Gent~\cite[\S5]{SPG} used binary line variables (a line has no white queen, or no black
 queen) and remarked that one could search on the $6n$ line variables alone. Prestwich and Beck~\cite{PB}
-wrote an integer program with $0/1$ line variables, and the upper bounds of Clinch et al.~\cite{CDHS}
+wrote an integer program with $0/1$ line variables, as does the tighter formulation of DiMichele and
+Forbes~\cite{DF}, and the upper bounds of Clinch et al.~\cite{CDHS}
 use the regions cut out by the lines that meet one army. Arevalo~\cite{Arevalo} states the line-labelling
 reformulation of Lemma~\ref{lem:label} below, with a proof (Lemma~1 of~\cite{Arevalo}). With a search that also
 takes rows and columns before diagonals, the product bound $m\le|R||C|$, a bound for each diagonal family
-on its own, and the group $D_4\times\{\text{colour swap}\}$, Arevalo determined $a(16)=37$, $a(17)=42$ and $a(18)=47$
-in August and September 2026. The note is AI-assisted and unrefereed; its runs for $n=17$ and $18$ use a
+on its own, and the group $D_4\times\{\text{colour swap}\}$, Arevalo determined $a(17)=42$ and $a(18)=47$, and
+independently $a(16)=37$, in August and September 2026. The note is AI-assisted and unrefereed; its runs for $n=17$ and $18$ use a
 single engine, and its DRUP proofs go up to $n=7$. It lists $a(19)$ as future work, and it asks, as an open
 question, for a joint bound over both diagonal families. Our minimum-cut Lagrangian bound
 (Lemmas~\ref{lem:lag} and~\ref{lem:cut}) is such a joint bound; we have not found it elsewhere. On the
@@ -101,8 +104,8 @@ Lagrangian. The formula gives the torus values for $n=20$ and $22$ in Section~\r
 Harries also found
 $t(15)=20$ and $t(17)=28$. Thus our new results are $a(19)$ and $a(20)$, the counts A260680$(11..17)$ and
 the minimum-cut bound; for $a(16)$--$a(18)$ and the torus our computations are independent confirmations.
-An earlier version of this paper, and our edit of OEIS A250000, presented $a(16)$--$a(18)$ as new, because
-the AI system's first literature search missed Arevalo's note.
+Earlier versions of this paper, and our edits of OEIS A250000, first presented $a(16)$--$a(18)$ as new and
+then credited $a(16)$ to Arevalo, because the AI system's literature searches missed these works.
 
 \begin{theorem}\label{thm:main}
 $a(16)=\claSixteen$, $a(17)=\claSeventeen$, $a(18)=\claEighteen$, $a(19)=\claNineteen$ and
@@ -113,7 +116,7 @@ The lower bounds come from known constructions. For $n=16$ we use the Ainley arr
 OEIS entry (Figure~\ref{fig:16}). For $n=17,\dots,20$ we use the boards in Kamenetsky's file of best known
 solutions~\cite{OEIS}. We checked each of them directly for attacks. The new content of
 Theorem~\ref{thm:main} is the upper bounds for $n=19$ and $20$; for $n=16,17,18$ the upper bounds confirm
-Arevalo's~\cite{Arevalo}. The upper bounds say that no placement has $\clTSixteen$, $\clTSeventeen$, $\clTEighteen$, $\clTNineteen$ or
+those of DiMichele and Forbes~\cite{DF} ($n=16$) and Arevalo~\cite{Arevalo} ($n=16,17,18$). The upper bounds say that no placement has $\clTSixteen$, $\clTSeventeen$, $\clTEighteen$, $\clTNineteen$ or
 $\clTTwenty$ queens of each colour, respectively.
 
 \begin{figure}[htbp]
@@ -166,7 +169,7 @@ queen, and in particular none attacks one.
 \end{proof}
 
 This reformulation is known: it is Lemma~1 of Arevalo~\cite{Arevalo}, its torus form is Lemma~6 of
-Harries~\cite{Harries}, and binary line variables go back to~\cite{SPG,PB}. The proof shows that it does
+Harries~\cite{Harries}, and binary line variables go back to~\cite{SPG,PB} (see also~\cite{DF}). The proof shows that it does
 not matter whether ``attack'' allows blocking. So the question is whether
 some labelling has $W\ge T$ and $B\ge T$, where $T=\lfloor7n^2/48\rfloor+1$.
 
@@ -487,9 +490,10 @@ the organisation and writing of the text. The system was Claude Opus~5.5 (Anthro
 Claude Code. The human author directed the AI systems but wrote no part of the
 manuscript; the human author also started some of the cloud computations, using commands prepared by
 the AI system.
-The AI system's first literature search missed the work of Arevalo~\cite{Arevalo} and of
-Harries~\cite{Harries}, which a later check found; this version credits it, and corrects the earlier
-version's claim that $a(16)$--$a(18)$ and the torus values for $n=20,22$ were new.
+The AI system's literature searches missed the work of DiMichele and Forbes~\cite{DF}, of
+Arevalo~\cite{Arevalo} and of Harries~\cite{Harries}, which later checks found; this version credits it,
+and corrects the earlier versions' claims that $a(16)$--$a(18)$ and the torus values for $n=20,22$ were
+new and that Arevalo first determined $a(16)$.
 
 The computational claims are reproduced by \texttt{scripts/verify.py}. At the time of writing, the
 mathematics and the code have been checked only by AI systems and by computer verification. These checks
@@ -516,6 +520,9 @@ for peaceable queens}, in: Proceedings of the Symposium on Algorithm Engineering
 (ALENEX 2025), SIAM, 2025, 160--167.
 \href{https://doi.org/10.1137/1.9781611978339.13}{doi:10.1137/1.9781611978339.13}; arXiv:2406.06974,
 \href{https://doi.org/10.48550/arXiv.2406.06974}{doi:10.48550/arXiv.2406.06974}.
+\bibitem{DF} N.~DiMichele, M.~Forbes, \emph{Puzzle---Queen puzzles: an educational approach to integer
+programming techniques}, INFORMS Trans.\ Educ.\ \textbf{26}(3) (2026), 247--253; published online
+August~1, 2025. \href{https://doi.org/10.1287/ited.2024.0122}{doi:10.1287/ited.2024.0122}.
 \bibitem{GT} A.~V.~Goldberg, R.~E.~Tarjan, \emph{A new approach to the maximum-flow problem}, J.\ ACM
 \textbf{35} (1988), 921--940. \href{https://doi.org/10.1145/48014.61051}{doi:10.1145/48014.61051}.
 \bibitem{Harries} J.~P.~Harries, \emph{Peaceable queens on even tori: an exact parity formula}, preprint,

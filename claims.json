@@ -1,6 +1,6 @@
 {
  "_comment": "Every number of the paper that a computation checks. scripts/verify.py compares recomputed values and the recorded logs (data/) with these values exactly; scripts/make_claims_tex.py writes paper/claims.tex from this file.",
- "Date": "November 20, 2026",
+ "Date": "November 27, 2026",
  "a_known": "0,0,1,2,4,5,7,9,12,14,17,21,24,28,32",
  "aSixteen": "37",
  "aSeventeen": "42",
@@ -426,7 +426,7 @@
  "SatSixteenLeaves": "400",
  "ReplayNineteen": "24",
  "ReplayTwenty": "24",
- "pdfEpoch": "1795132800",
+ "pdfEpoch": "1795737600",
  "enum_runs": {
   "16": {
    "a": "37",
@@ -447,5 +447,5 @@
  "TorusPairsTwentyTwo": "2101660623",
  "TorusSearchedTwentyTwo": "80",
  "TorusTwentyTwoB": "66",
- "pages": "11"
+ "pages": "12"
 }
